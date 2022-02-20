@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -103,22 +104,22 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
 
-//    @Override
-//    public List<BoardDetailDTO> search(GoodsSearchDTO goodsSearchDTO) {
-//        // 검색타입이 2가지니까 분리한다
-//        if (goodsSearchDTO.getSelect().equals("boardWriter")) {
-//            // Containing 은 %검색어% 앞뒤로 알맞는 단어가 있으면 검색이 된다.
-//            List<BoardEntity> boardEntityList = gr.findByBoardWriterContaining(goodsSearchDTO.getSearch());
-//            // DTO 타입으로 변환
-//            List<BoardDetailDTO> boardDetailDTOList = BoardDetailDTO.toChangeDTOList(boardEntityList);
-//            System.out.println("boardDetailDTOList = " + boardDetailDTOList);
-//            return boardDetailDTOList;
-//        } else {
-//            List<BoardEntity> boardEntityList = gr.findByBoardTitleContaining(goodsSearchDTO.getSearch());
-//            // DTO 타입으로 변환
-//            List<BoardDetailDTO> boardDetailDTOList = BoardDetailDTO.toChangeDTOList(boardEntityList);
-//            return boardDetailDTOList;
-//        }
-//    }
+    @Override
+    public List<GoodsDetailDTO> search(GoodsSearchDTO goodsSearchDTO) {
+        // 검색타입이 2가지니까 분리한다
+        if (goodsSearchDTO.getSelect().equals("goodsWriter")) {
+            // Containing 은 %검색어% 앞뒤로 알맞는 단어가 있으면 검색이 된다.
+            List<GoodsEntity> goodsEntityList = gr.findByGoodsWriterContaining(goodsSearchDTO.getSearch());
+            // DTO 타입으로 변환
+            List<GoodsDetailDTO> goodsDetailDTOList = GoodsDetailDTO.toChangeDTOList(goodsEntityList);
+            System.out.println("goodsDetailDTOList = " + goodsDetailDTOList);
+            return goodsDetailDTOList;
+        } else {
+            List<GoodsEntity> goodsEntityList = gr.findByGoodsTitleContaining(goodsSearchDTO.getSearch());
+            // DTO 타입으로 변환
+            List<GoodsDetailDTO> goodsDetailDTOList = GoodsDetailDTO.toChangeDTOList(goodsEntityList);
+            return goodsDetailDTOList;
+        }
+    }
 }
 

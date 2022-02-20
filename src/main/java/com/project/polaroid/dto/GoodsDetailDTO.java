@@ -37,6 +37,7 @@ public class GoodsDetailDTO {
         GoodsDetailDTO goodsDetailDTO = new GoodsDetailDTO();
         goodsDetailDTO.setGoodsId(goodsEntity.getId());
         goodsDetailDTO.setGoodsWriter(goodsEntity.getGoodsWriter());
+        goodsDetailDTO.setGoodsTitle(goodsEntity.getGoodsTitle());
         goodsDetailDTO.setGoodsContents(goodsEntity.getGoodsContents());
         goodsDetailDTO.setGoodsView(goodsEntity.getGoodsView());
         goodsDetailDTO.setGoodsLike(goodsEntity.getGoodsLike());

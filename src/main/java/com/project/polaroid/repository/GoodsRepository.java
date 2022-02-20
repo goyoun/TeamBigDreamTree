@@ -10,6 +10,9 @@ import java.util.List;
 
 
 public interface GoodsRepository extends JpaRepository<GoodsEntity, Long> {
+    List<GoodsEntity> findByGoodsWriterContaining(String search);
+
+    List<GoodsEntity> findByGoodsTitleContaining(String search);
 
 //    // BoardEntity가 맞는건가요? 네 보드에서  boardid 정보를 가져와서 goodsid 랑
 //    // 그럼 조회하고자 하는 테이블이 뭔데요? 여기는 GoodsEntity를 조회하는 내용이어야지.

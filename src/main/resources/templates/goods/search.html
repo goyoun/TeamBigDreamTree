@@ -20,13 +20,13 @@
     </thead>
     <tbody>
     <tr th:each="goods: ${goodsList}">
-        <td th:text="${goods.boardId}"></td>
+        <td th:text="${goods.goodsId}"></td>
         <td>
-            <a th:href="@{|/goods/${goods.boardId}|}">
-                <span th:text="${goods.boardTitle}"> </span>
+            <a th:href="@{|/goods/${goods.goodsId}|}">
+                <span th:text="${goods.goodsTitle}"> </span>
             </a>
         </td>
-        <td th:text="${goods.boardWriter}"></td>
+        <td th:text="${goods.goodsWriter}"></td>
 
         <!-- 제목 클릭시 상세조회화면 findAll.html로 이동 /board/2, /board/111 등-->
         <!--        ajax를 이용해서 상세조회를 해봅시다. -->

@@ -76,15 +76,13 @@ public class GoodsController {
         return "goods/buy";
     }
 
-
-
-//    //굿즈보드 서치
-//    @GetMapping("search")
-//    public String search(@ModelAttribute GoodsSearchDTO goodsSearchDTO, Model model) {
-//        // 검색결과를 가지고 가야하니까 Model
-//        List<BoardDetailDTO> goodsDetailDTOList = gs.search(goodsSearchDTO);
-//        model.addAttribute("boardList", goodsDetailDTOList);
-//        return "/goods/search";
+    //굿즈보드 서치
+    @GetMapping("search")
+    public String search(@ModelAttribute GoodsSearchDTO goodsSearchDTO, Model model) {
+        // 검색결과를 가지고 가야하니까 Model
+        List<GoodsDetailDTO> goodsDetailDTOList = gs.search(goodsSearchDTO);
+        model.addAttribute("goodsList", goodsDetailDTOList);
+        return "/goods/search";
 
 
         // 굿즈보드 본인게시글 확인
@@ -94,7 +92,7 @@ public class GoodsController {
         // 굿즈보드 구매
 
 
-//    }
+    }
 }
 
 
