@@ -5,6 +5,7 @@ import com.project.polaroid.dto.GoodsSaveDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -27,9 +28,6 @@ public class GoodsEntity extends BaseEntity {
     private BoardEntity boardEntity;
 
     @Column
-    private String goodsWriter;
-
-    @Column
     private String goodsTitle;
 
     @Column
@@ -47,18 +45,27 @@ public class GoodsEntity extends BaseEntity {
     @Column
     private int goodsLike;
 
+    @Column
+    private String goodsInFor;
+
     @OneToMany(mappedBy = "goodsEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<GoodsPhotoEntity> GoodsPhotoEntity = new ArrayList<>();
 
-    public static GoodsEntity toGoodsEntitySave(GoodsSaveDTO goodsSaveDTO) {
+    // 멤버엔티티 참조
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="member_id")
+    private MemberEntity goodsWriter;
+
+    public static GoodsEntity toGoodsEntitySave(GoodsSaveDTO goodsSaveDTO, MemberEntity memberEntity) {
         GoodsEntity goodsEntity = new GoodsEntity();
-        goodsEntity.setGoodsWriter(goodsSaveDTO.getGoodsWriter());
+//        goodsEntity.setGoodsWriter(goodsSaveDTO.getGoodsWriter());
+        goodsEntity.setGoodsWriter(memberEntity);
         goodsEntity.setGoodsContents(goodsSaveDTO.getGoodsContents());
         goodsEntity.setGoodsTitle(goodsSaveDTO.getGoodsTitle());
         goodsEntity.setGoodsPrice(goodsSaveDTO.getGoodsPrice());
+        goodsEntity.setGoodsInFor(goodsSaveDTO.getGoodsInFor());
         goodsEntity.setGoodsLike(0);
         goodsEntity.setGoodsView(0);
-
         return goodsEntity;
     }
 }

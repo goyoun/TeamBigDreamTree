@@ -21,6 +21,7 @@ public class GoodsSaveDTO {
     private int goodsView;
     private int goodsLike;
     private List<MultipartFile> goodsFile;
+    private String goodsInFor;
 
 
 

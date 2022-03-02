@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @Table(name="goodscomment_table")
-public class GoodsCommentEntity extends BaseEntity{
+public class GoodsCommentEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,17 +36,20 @@ public class GoodsCommentEntity extends BaseEntity{
     @JoinColumn(name="member_id")
     private MemberEntity memberEntity;
 
-    public static GoodsCommentEntity toSaveEntity(GoodsCommentSaveDTO goodsCommentSaveDTO, BoardEntity boardEntity, MemberEntity memberEntity) {
-        GoodsCommentEntity commentEntity = new GoodsCommentEntity();
-        commentEntity.setGoodsCommentWriter(memberEntity.getMemberEmail());
-        commentEntity.setGoodsCommentContents(goodsCommentSaveDTO.getCommentContents());
+//    public static GoodsCommentEntity toSaveEntity(GoodsCommentSaveDTO goodsCommentSaveDTO, BoardEntity boardEntity, MemberEntity memberEntity) {
+//        GoodsCommentEntity goodsCommentEntity = new GoodsCommentEntity();
+//        goodsCommentEntity.setGoodsCommentWriter(memberEntity.getMemberEmail());
+//        goodsCommentEntity.setGoodsCommentContents(goodsCommentSaveDTO.get());
+//
+//        goodsCommentEntity.setBoardEntity(boardEntity);
+//        goodsCommentEntity.setMemberEntity(memberEntity);
+//        return goodsCommentEntity;
+//    }
 
-        commentEntity.setBoardEntity(boardEntity);
-        commentEntity.setMemberEntity(memberEntity);
-        return commentEntity;
+
+    public static GoodsCommentEntity toGoodsCommentEntity(GoodsCommentSaveDTO goodsCommentSaveDTO) {
+        GoodsCommentEntity goodsCommentEntity = new GoodsCommentEntity();
+        goodsCommentEntity.setGoodsCommentContents(goodsCommentSaveDTO.getGoodsCommentContents());
+        return goodsCommentEntity;
     }
-
-
-
-
 }

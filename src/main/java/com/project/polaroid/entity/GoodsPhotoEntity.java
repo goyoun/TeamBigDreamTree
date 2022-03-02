@@ -23,5 +23,6 @@ public class GoodsPhotoEntity {
         @Column
         private String goodsFilename;
 
+
     }
 

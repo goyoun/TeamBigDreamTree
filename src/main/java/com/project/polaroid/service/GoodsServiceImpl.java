@@ -2,10 +2,8 @@ package com.project.polaroid.service;
 
 import com.project.polaroid.common.PagingConst;
 import com.project.polaroid.dto.*;
-import com.project.polaroid.entity.BoardEntity;
 import com.project.polaroid.entity.GoodsEntity;
 import com.project.polaroid.entity.GoodsPhotoEntity;
-import com.project.polaroid.entity.PhotoEntity;
 import com.project.polaroid.repository.GoodsPhotoRepository;
 import com.project.polaroid.repository.GoodsRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +25,9 @@ import java.util.Optional;
 public class GoodsServiceImpl implements GoodsService {
     private final GoodsRepository gr;
     private final GoodsPhotoRepository gpr;
+    private final MemberService ms;
 
-
+    // 페이징
     @Override
     public Page<GoodsPagingDTO> paging(Pageable pageable) {
         int page = pageable.getPageNumber();
@@ -40,60 +39,46 @@ public class GoodsServiceImpl implements GoodsService {
         // Entity는 서비스 밖으로 나가면 안됨
         // Page<BoardEntity> => Page(BoardPagingDTO) 로 변환시켜야하지만 페이징은 안된다.
         Page<GoodsPagingDTO> goodsList = goodsEntities.map(
-                // 엔티티 객체를 담기위한 반복용 변수 board
+                // 엔티티 객체를 담기위한 반복용 변수 goods
                 goods -> new GoodsPagingDTO(
                         goods.getId(),
-                        goods.getGoodsWriter(),
+                        goods.getGoodsWriter().getMemberNickname(),
                         goods.getGoodsTitle(),
                         goods.getGoodsContents(),
-                        goods.getGoodsPrice())
+                        goods.getGoodsPrice(),
+                        GoodsPhotoDetailDTO.toGoodsPhotoDetailDTOList(goods.getGoodsPhotoEntity()))
         );
         return goodsList;
     }
 
+    // 디테일
     @Override
     @Transactional
     public GoodsDetailDTO findById(Long goodsId) {
-        /*
-            1. MemberRepository로 부터 해당 회원의 정보를 MemberEntity로 가져옴.
-            2. MemberEntity를 MemberDetailDTO로 바꿔서 컨트롤러로 리턴.
-         */
-        // 1.
-        // Optional = null 방지
+
         Optional<GoodsEntity> optionalGoodsEntity = gr.findById(goodsId);
-        /*
-            Optional 객체 메서드
-            - isPresnet(): 데이터가 있으면 true, 없으면 false 반환
-            - isEmpty(); 데이터가 없으면 true, 있으면 false 반환
-            - get(): Optional 객체에 들어있는 실제 데이터를 가져올때
-         */
         GoodsDetailDTO goodsDetailDTO=null;
         if(optionalGoodsEntity.isPresent()) {
             GoodsEntity goodsEntity = optionalGoodsEntity.get();
             goodsDetailDTO = GoodsDetailDTO.toGoodsDetailDTO(goodsEntity);
         }
-//        // .get() 은 옵셔널안에 Entity를 꺼냄
-//        BoardEntity boardEntity = optionalBoardEntity.get();
-//        // 2.
-//        BoardDetailDTO boardDetailDTO = BoardDetailDTO.toBoardDetailDTO(boardEntity);
         return goodsDetailDTO;
-        // 위의 4줄을 밑에 한줄로도 가능하다.
-        //return MemberDetailDTO.toMemberDetailDTO(mr.findById(memberId).get())
-
     }
 
+    // 글쓰기 기능
     @Override
-    public Long save(GoodsSaveDTO goodsSaveDTO) {
-        GoodsEntity goodsEntity = GoodsEntity.toGoodsEntitySave(goodsSaveDTO);
+    public Long save(GoodsSaveDTO goodsSaveDTO, Long memberId) {
+        GoodsEntity goodsEntity = GoodsEntity.toGoodsEntitySave(goodsSaveDTO, ms.findById(memberId));
         Long goodsId = gr.save(goodsEntity).getId();
         return goodsId;
     }
 
+    // 파일저장 기능
     @Override
     public void saveFile(Long goodsId, MultipartFile goodsFile) throws IOException {
         String goodsFilename = goodsFile.getOriginalFilename();
         goodsFilename = System.currentTimeMillis() + "-" + goodsFilename;
-        String savePath = "C:\\Development\\source\\springboot\\Polaroid\\src\\main\\resources\\static\\goodsFile\\"+goodsFilename;
+        String savePath = "C:\\Development\\source\\springboot\\Polaroid\\src\\main\\resources\\static\\goodsFile\\" + goodsFilename;
         if (!goodsFile.isEmpty()) {
             goodsFile.transferTo(new File(savePath));
         }
@@ -101,25 +86,92 @@ public class GoodsServiceImpl implements GoodsService {
         goodsPhotoEntity.setGoodsEntity(gr.findById(goodsId).get());
         goodsPhotoEntity.setGoodsFilename(goodsFilename);
         gpr.save(goodsPhotoEntity);
+
     }
 
 
     @Override
-    public List<GoodsDetailDTO> search(GoodsSearchDTO goodsSearchDTO) {
-        // 검색타입이 2가지니까 분리한다
-        if (goodsSearchDTO.getSelect().equals("goodsWriter")) {
-            // Containing 은 %검색어% 앞뒤로 알맞는 단어가 있으면 검색이 된다.
-            List<GoodsEntity> goodsEntityList = gr.findByGoodsWriterContaining(goodsSearchDTO.getSearch());
-            // DTO 타입으로 변환
-            List<GoodsDetailDTO> goodsDetailDTOList = GoodsDetailDTO.toChangeDTOList(goodsEntityList);
-            System.out.println("goodsDetailDTOList = " + goodsDetailDTOList);
-            return goodsDetailDTOList;
+    public Page<GoodsPagingDTO> search(GoodsSearchDTO goodsSearchDTO, Pageable pageable) {
+        if(goodsSearchDTO.getSelect().equals("goodsTitle")){
+            Page<GoodsEntity> goodsEntityList = gr.findByGoodsTitleContaining(goodsSearchDTO.getSearch(), PageRequest.of(pageable.getPageNumber()-1, PagingConst.PAGE_LIMIT, Sort.by(Sort.Direction.DESC, "id")));
+            Page<GoodsPagingDTO> goodsList = goodsEntityList.map(
+                    goods -> new GoodsPagingDTO(
+                            goods.getId(),
+                            goods.getGoodsWriter().getMemberNickname(),
+                            goods.getGoodsTitle(),
+                            goods.getGoodsContents(),
+                            goods.getGoodsPrice(),
+                            GoodsPhotoDetailDTO.toGoodsPhotoDetailDTOList(goods.getGoodsPhotoEntity()))
+            );
+            return goodsList;
         } else {
-            List<GoodsEntity> goodsEntityList = gr.findByGoodsTitleContaining(goodsSearchDTO.getSearch());
-            // DTO 타입으로 변환
-            List<GoodsDetailDTO> goodsDetailDTOList = GoodsDetailDTO.toChangeDTOList(goodsEntityList);
-            return goodsDetailDTOList;
+            Page<GoodsEntity> goodsEntities =  gr.searchWriter(goodsSearchDTO.getSearch(), PageRequest.of(pageable.getPageNumber() - 1, PagingConst.PAGE_LIMIT, Sort.by(Sort.Direction.DESC, "id")));
+            Page<GoodsPagingDTO> goodsList = goodsEntities.map(
+                    goods -> new GoodsPagingDTO(
+                            goods.getId(),
+                            goods.getGoodsWriter().getMemberNickname(),
+                            goods.getGoodsTitle(),
+                            goods.getGoodsContents(),
+                            goods.getGoodsPrice(),
+                            GoodsPhotoDetailDTO.toGoodsPhotoDetailDTOList(goods.getGoodsPhotoEntity()))
+
+            );
+            return goodsList;
         }
     }
+
+//    @Override
+//    public Page<GoodsPagingDTO> searchPage(String select, String search, Pageable pageable) {
+//        if(select.equals("goodsTitle")){
+//            Page<GoodsEntity> goodsEntityList = gr.findByGoodsTitleContaining(search, PageRequest.of(pageable.getPageNumber()-1, PagingConst.PAGE_LIMIT, Sort.by(Sort.Direction.DESC, "id")));
+//            Page<GoodsPagingDTO> goodsList = goodsEntityList.map(
+//                    goods -> new GoodsPagingDTO(
+//                            goods.getId(),
+//                            goods.getGoodsWriter().getMemberNickname(),
+//                            goods.getGoodsTitle(),
+//                            goods.getGoodsContents(),
+//                            goods.getGoodsPrice(),
+//                            GoodsPhotoDetailDTO.toGoodsPhotoDetailDTOList(goods.getGoodsPhotoEntity()))
+//            );
+//            return goodsList;
+//        } else {
+//            Page<GoodsEntity> goodsEntities =  gr.searchWriter(search, PageRequest.of(pageable.getPageNumber() - 1, PagingConst.PAGE_LIMIT, Sort.by(Sort.Direction.DESC, "id")));
+//            Page<GoodsPagingDTO> goodsList = goodsEntities.map(
+//                    goods -> new GoodsPagingDTO(
+//                            goods.getId(),
+//                            goods.getGoodsWriter().getMemberNickname(),
+//                            goods.getGoodsTitle(),
+//                            goods.getGoodsContents(),
+//                            goods.getGoodsPrice(),
+//                            GoodsPhotoDetailDTO.toGoodsPhotoDetailDTOList(goods.getGoodsPhotoEntity()))
+//
+//            );
+//            return goodsList;
+//        }
+//    }
+
+    // 굿즈 내글 리스트
+    @Override
+    @Transactional
+    public Page<GoodsPagingDTO> list(Long memberId, Pageable pageable) {
+        int page = pageable.getPageNumber();
+        page = (page == 1) ? 0 : (page - 1);
+        //                        몇페이지? / 몇개씩 볼껀지       / 무슨 기준으로 정렬할지 (내림차순)/ 기준 컬럼 (Entity 필드이름) /
+        Page<GoodsEntity> goodsDetailDTO = gr.findByIdGoodsWriter(memberId, PageRequest.of(pageable.getPageNumber() - 1, PagingConst.PAGE_LIMIT, Sort.by(Sort.Direction.DESC, "id")));
+        Page<GoodsPagingDTO> goodsList = goodsDetailDTO.map(
+                goods -> new GoodsPagingDTO(
+                        goods.getId(),
+                        goods.getGoodsWriter().getMemberNickname(),
+                        goods.getGoodsTitle(),
+                        goods.getGoodsContents(),
+                        goods.getGoodsPrice(),
+                        GoodsPhotoDetailDTO.toGoodsPhotoDetailDTOList(goods.getGoodsPhotoEntity()))
+
+        );
+        return goodsList;
+    }
+
+
+
 }
 

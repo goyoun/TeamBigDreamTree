@@ -1,12 +1,12 @@
 package com.project.polaroid.service;
 
-import com.project.polaroid.common.PagingConst;
 import com.project.polaroid.dto.BoardDetailDTO;
 import com.project.polaroid.dto.BoardPagingDTO;
 import com.project.polaroid.dto.BoardSaveDTO;
 import com.project.polaroid.dto.PhotoDetailDTO;
 import com.project.polaroid.entity.BoardEntity;
 import com.project.polaroid.entity.PhotoEntity;
+import com.project.polaroid.page.PagingConst;
 import com.project.polaroid.repository.BoardRepository;
 import com.project.polaroid.repository.PhotoRepository;
 import lombok.RequiredArgsConstructor;
@@ -42,31 +42,19 @@ public class BoardServiceImpl implements BoardService {
         return boardId;
     }
 
-//    @Override
-//    public Long save(BoardSaveDTO boardSaveDTO) throws IOException {
-//        MultipartFile boardFile = boardSaveDTO.getBoardFile();
-//        String boardFilename = boardFile.getOriginalFilename();
-//        boardFilename = System.currentTimeMillis() + "-" + boardFilename;
-//        String savePath = "/Users/sky/EclipseJava/source/EndlessScrolling/src/main/resources/static/image/" + boardFilename;
-//        if (!boardFile.isEmpty()) {
-//            boardFile.transferTo(new File(savePath));
-//        }
-//        boardSaveDTO.setBoardFilename(boardFilename);
-//        System.out.println("boardSaveDTO.getBoardFilename() = " + boardSaveDTO.getBoardFilename());
-//        BoardEntity boardEntity = BoardEntity.toSaveBoardEntity(boardSaveDTO);
-//        return br.save(boardEntity).getId();
-//    }
-
     @Override
     public void saveFile(Long boardId, MultipartFile boardFile) throws IOException {
         String boardFilename = boardFile.getOriginalFilename();
         boardFilename = System.currentTimeMillis() + "-" + boardFilename;
-        String savePath = "/Users/sky/EclipseJava/source/SpringBoot/Polaroid/src/main/resources/static/upload/" + boardFilename;
+        String savePath = "C:\\Development\\source\\springboot\\Polaroid\\src\\main\\resources\\static\\boardFile\\" + boardFilename;
+
+//   지석이용    String savePath = "/Users/sky/EclipseJava/source/SpringBoot/Polaroid/src/main/resources/static/upload/" + boardFilename;
+
         if (!boardFile.isEmpty()) {
             boardFile.transferTo(new File(savePath));
         }
         PhotoEntity photoEntity = new PhotoEntity();
-        photoEntity.setBoardEntity(br.findById(boardId).get());
+        photoEntity.setBoardId(br.findById(boardId).get());
         photoEntity.setBoardFilename(boardFilename);
         pr.save(photoEntity);
     }
@@ -75,6 +63,7 @@ public class BoardServiceImpl implements BoardService {
     public BoardDetailDTO findById(Long boardId) {
         return BoardDetailDTO.toBoardDetailDTO(br.findById(boardId).get());
     }
+
 
     @Override
     public Page<BoardPagingDTO> paging(Pageable pageable) {
@@ -90,5 +79,4 @@ public class BoardServiceImpl implements BoardService {
         );
         return boardList;
     }
-
 }

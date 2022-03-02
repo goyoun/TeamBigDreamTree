@@ -37,6 +37,18 @@ public class BoardController {
         System.out.println("boardList.isFirst() = " + boardList.isFirst()); // 첫 페이지인지 여부
         System.out.println("boardList.isLast() = " + boardList.isLast()); // 마지막 페이지인지 여부
 
+//        Long boardId = 1000000000000L;
+//
+//        for(BoardPagingDTO b: boardList) {
+//            if(b.getBoardId() <= boardId) {
+//                boardId = b.getBoardId();
+//            }
+//        }
+//
+//        System.out.println("boardId = " + boardId);
+//
+//        model.addAttribute("boardId", boardId);
+
         return "board/main";
     }
 
@@ -63,11 +75,13 @@ public class BoardController {
     }
 
     @GetMapping("{boardId}")
-    public String findByDetail(@PathVariable Long boardId, Model model) {
+    public String findById(@PathVariable Long boardId, Model model) {
         System.out.println("boardId = " + boardId);
         BoardDetailDTO boardDetailDTO = bs.findById(boardId);
+        System.out.println("boardDetailDTO.getPhoto() = " + boardDetailDTO.getPhoto());
         model.addAttribute("board", boardDetailDTO);
-        model.addAttribute("firstImage", boardDetailDTO.getPhoto().get(0).getBoardFilename());
+        model.addAttribute("imageSize", boardDetailDTO.getPhoto().size());
+        System.out.println("boardDetailDTO.getPhoto().size() = " + boardDetailDTO.getPhoto().size());
         return "board/findById";
     }
 

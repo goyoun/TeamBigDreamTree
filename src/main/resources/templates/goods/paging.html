@@ -9,7 +9,27 @@
     }
 </script>
 
-<body class="container">
+<style>
+    .img-wrapper {
+        /*width: 100%;*/
+        /*height: 400px;*/
+        /*overflow: hidden;*/
+        width: 400px;
+        height:400px;
+        margin: 0 auto;
+        overflow:hidden;
+        position:relative;
+
+    }
+    .imgFile {
+        width: 100%;
+        height: 100%;
+        object-fit:cover;
+        /*object-fit: contain;*/
+    }
+</style>
+
+<body class="container-lg">
 
 <h2>GoodsBoard</h2><hr>
 <!--닉네임 <p th:text="${session['memberNickName']}"></p> <hr>-->
@@ -17,6 +37,8 @@
 <hr>
 
 <a href="/goods/save"> 글쓰기 </a>
+<a th:href="@{|/goods/list/${member}|}"> 그새끼리스트 </a>
+<a href="/goods/wishList"> 찜목록 </a>
 
 <hr>
 <!--<c:choose>-->
@@ -33,7 +55,7 @@
 <div class="container-fluid">
     <form action="/goods/search" method="get" class="d-flex">
         <select name="select" id="select">
-            <option value="goodsWriter"> 글쓴이 </option>
+            <option value="memberNickname"> 글쓴이 </option>
             <option value="goodsTitle"> 제목 </option>
         </select>
         <input name="search" class="form-control me-2" type="search" placeholder="검색어를 입력하세요" aria-label="Search">
@@ -41,40 +63,69 @@
     </form>
 </div>
 
-<table class="table">
-    <thead>
-    <tr>
-        <th scope="col">번호</th>
-        <th scope="col">제목</th>
-        <th scope="col">작성자</th>
-        <th scope="col">내용</th>
-        <th scope="col">가격</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="goods: ${goodsList}">
-        <td th:text="${goods.goodsId}"></td>
-        <td>
-            <a th:href="@{|/goods/${goods.goodsId}|}">
-                <p th:text="${goods.goodsTitle}"> </p>
-            </a>
-        </td>
-        <td th:text="${goods.goodsWriter}"></td>
-        <td th:text="${goods.goodsContents}"></td>
-        <td th:text="${goods.goodsPrice}"></td>
-    </tr>
-    </tbody>
-</table>
+<div class="container">
+
+<div class="row row-cols-1 row-cols-sm-1 row-cols-md-3 g-3">
+        <div class="col" th:each="goods: ${goodsList}">
+            <div class="card shadow-sm">
+                <a th:href="@{|/goods/${goods.goodsId}|}">
+                    <div class="img-wrapper">
+                        <img class="rounded mx-auto d-block mt-3 btn imgFile" alt="" th:src="@{|/goodsFile/${goods.getPhotoList().get(0).getGoodsFilename()}|}">
+                    </div>
+                </a>
+                <div class="card-body">
+                    <div class="d-flex bd-highlight mb-3">
+                        <div class="me-auto p-2 bd-highlight">
+                            <p class="card-text"> <h4 th:text="${goods.goodsTitle}"> </h4> <font style="vertical-align: inherit;">
+                            <font style="vertical-align: inherit;"> </font><font style="vertical-align: inherit;">
+
+                            </font></font></p>
+                        </div>
+<!--                        <div class="p-2 bd-highlight">-->
+<!--                            <img id="heart" src="/resources/like/like2.png" style="width:20px"> ${cc.b_likecount}-->
+<!--                            <img src="/resources/like/eye.png" style="width:20px"> ${cc.b_hits}-->
+<!--                        </div>-->
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div style="border:1px solid black; border-radius: 1rem">
+                            <font class="p-2" style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+                                <a th:href="@{|/goods/list/${goods.}|}"><h4 th:text="${goods.memberNickname}"></h4></a> </font></font>
+                        </div>
+                        <small class="text-muted"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+                            <h3 th:text="${goods.goodsPrice}+원"> </h3>
+                        </font></font>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 <!-- 브라우저 주소창에 보이는 주소값: /board?page=1
      html에서 타임리프로 작성하는 주소값: 특정페이지를 요청할떄 > /board(page=1)
      리퀘스트매핑이 /board/* 이면 => /board/(page=1) 이런식-->
-<div class="container">
-    <ul class="pagination">
+
+    <ul class="pagination pagination-lg justify-content-center mt-5">
         <li class="page-item">
             <!-- 첫페이지로 가는 링크 First  -->
-            <a class="page-link" th:href="@{/goods(page=1)}">
+            <a class="page-link" th:href="@{/goods/(page=1)}">
                 <span>First</span>
             </a>
         </li>
@@ -84,7 +135,7 @@
                     첫번째 페이지일때 클릭하면 링크가 # 그자리에 머문다
                     boardList.number = getNumber()
                     첫번째 페이지가 아닐경우에는 하나 작은 페이지를 요청하게 된다.-->
-            <a class="page-link" th:href="${goodsList.first} ? '#' : @{/goods(page=${goodsList.number})}">
+            <a class="page-link" th:href="${goodsList.first} ? '#' : @{/goods/(page=${goodsList.number})}">
                 <span>&lt;</span> <!-- &lt; = <  / html문법임-->
             </a>
         </li>
@@ -92,21 +143,21 @@
         <li th:each="page: ${#numbers.sequence(startPage, endPage)}"
             th:class="${page == goodsList.number + 1} ? 'page-item active'">
             <!--            해당페이지를 클릭하면 컨트롤러에 페이지 요청하는 곳 -->
-            <a class="page-link" th:text="${page}" th:href="@{/goods(page=${page})}"></a>
+            <a class="page-link" th:text="${page}" th:href="@{/goods/(page=${page})}"></a>
         </li>
 
         <!--       다음페이지 요청
                     현재 3페이지를 보고 있다면 다음 페이지는 4페이지이다.
                     getNumber() 값은 2이기때문에 4페이지를 보고싶다면 getNumber()+2를 해야 컨트롤러에 4를 요청 할 수 있다.-->
         <li th:class="${goodsList.last} ? 'disabled'">
-            <a class="page-link" th:href="${goodsList.last} ? '#' : @{/goods(page=${goodsList.number + 2})}">
+            <a class="page-link" th:href="${goodsList.last} ? '#' : @{/goods/(page=${goodsList.number + 2})}">
                 <span>&gt;</span>
             </a>
         </li>
 
         <li class="page-item">
             <!--           마지막으로 가는페이징 페이지요청을 totalPage로 요청 가장큰숫자 요청해서 마지막으로 가짐. -->
-            <a class="page-link" th:href="@{/goods(page=${goodsList.totalPages})}">
+            <a class="page-link" th:href="@{/goods/(page=${goodsList.totalPages})}">
                 <span>Last</span>
             </a>
         </li>

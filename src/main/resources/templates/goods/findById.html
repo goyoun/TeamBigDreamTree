@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="https://service.iamport.kr/js/iamport.payment-1.1.5.js"></script>
 
     <script>
         function buy() {
@@ -20,10 +22,30 @@
     </script>
 
 </head>
+<style>
+    .img-wrapper {
+        /*width: 100%;*/
+        /*height: 400px;*/
+        /*overflow: hidden;*/
+        width: 600px;
+        height:600px;
+        margin: 0 auto;
+        overflow:hidden;
+        position:relative;
+
+    }
+    .imgFile {
+        width: 100%;
+        height: 100%;
+        object-fit:cover;
+        /*object-fit: contain;*/
+    }
+</style>
 <body>
 
 <h2> 상품정보 </h2>
 <a href="/goods/"> 돌아가기 </a>
+<div class="container">
 <table class="table">
     <thead>
     <tr>
@@ -31,8 +53,8 @@
         <th scope="col">작성자</th>
         <th scope="col">제목</th>
         <th scope="col">작성내용</th>
-        <th scope="col">사진</th>
         <th scope="col">작성시간</th>
+        <th scope="col">가격</th>
     </tr>
     </thead>
     <tbody>
@@ -45,6 +67,9 @@
         <td th:text="${goods.goodsWriter}">작성자</td>
         <td th:text="${goods.goodsTitle}">제목</td>
         <td th:text="${goods.goodsContents}">작성내용</td>
+        <td th:text="${goods.createTime}">작성시간</td>
+        <td th:text="${goods.goodsPrice}">가격</td>
+        <input id="price" type="hidden" th:value="${goods.goodsPrice}">
 <!--            <img th:src="@{|/image/${goods.goodsFilename}|}" alt="로딩" style="width:50px; height:50px;">-->
 
 <!--        <td th:text="${goods.goodsDate}">작성시간</td>-->
@@ -52,9 +77,10 @@
     </tr>
     </tbody>
 </table>
+    <div class="center">
 <div class="img-wrapper" th:each="goodsFile: ${goods.getGoodsPhoto()}">
-    <img th:src="@{|/goodsFile/${goodsFile.getGoodsFilename}|}" class="d-block" alt="...">
-    <img th:src="@{|/goodsFile/${goodsFile.goodsFilename}|}" class="d-block" alt="...">
+    <img th:src="@{|/goodsFile/${goodsFile.getGoodsFilename}|}" class="imgFile d-block" alt="...">
+</div>
 
 </div>
 <!--<a th:href="@{|/goods/update/${goods.goodsId}|}" th:if="${goods.getGoodsWriter().equals(session['loginId'])}">수정하기</a>-->
@@ -62,37 +88,67 @@
 <!--<button th:if="${session['loginId'].equals('admin')}" th:onclick="deleteById([[${goods.goodsId}]])"> 삭제 </button>-->
 
 <br><hr>
-<h2> 댓글 </h2>
-<div id="comment-write">
-    <input type="text" id="goodsCommentWriter" th:value="${session['loginId']}" readonly><br><br>
-    <input type="text" id="goodsCommentContents" placeholder="내용"><br><br>
-    <button id="comment-write-btn"> 댓글등록 </button>
+
+    <div class="card text-center">
+
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true"> 상품정보 </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false"> 상품후기 </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false"> FAQ </button>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">상품내용
+            <h2 th:text="${goods.goodsInFor}"> 상품내용 </h2>
+    </div>
+
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            <h2> 댓글 </h2>
+            <div id="comment-write">
+                <input type="text" id="goodsCommentWriter" th:value="${session['loginId']}" readonly><br><br>
+                <input type="text" id="goodsCommentContents" placeholder="내용"><br><br>
+                <button id="comment-write-btn"> 댓글등록 </button>
+            </div>
+
+            <div id="comment-area">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">댓글번호</th>
+                        <th scope="col">작성자</th>
+                        <th scope="col">내용</th>
+                        <th scope="col">작성시간</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="goodsComment: ${goodsComment}">
+                        <td th:text="${goodsComment.goodsCommentId}"> 댓글번호 </td>
+                        <td th:text="${goodsComment.goodsCommentWriter}"> 작성자 </td>
+                        <td th:text="${goodsComment.goodsCommentContents}"> 내용 </td>
+                        <td th:text="${goodsComment.createTime}"> 작성시간 </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">FAQ</div>
+    </div>
+
+    </div>
+
+
+
+    <div class="d-grid gap-2 col-6 mx-auto mt-5 mb-5">
+<button id="check_module" class="btn-primary"> 구매하기 </button>
+    </div>
 </div>
-
-<div id="comment-area">
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">댓글번호</th>
-            <th scope="col">작성자</th>
-            <th scope="col">내용</th>
-            <th scope="col">작성시간</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="goodsComment: ${goodsComment}">
-            <td th:text="${goodsComment.goodsCommentId}"> 댓글번호 </td>
-            <td th:text="${goodsComment.goodsCommentWriter}"> 작성자 </td>
-            <td th:text="${goodsComment.goodsCommentContents}"> 내용 </td>
-            <td th:text="${goodsComment.createTime}"> 작성시간 </td>
-        </tr>
-        </tbody>
-    </table>
-
-</div>
-
-<button class="btn-primary" onclick="buy()"> 구매하기 </button>
-
 </body>
 <script>
     $("#comment-write-btn").click(function (){
@@ -120,22 +176,64 @@
         })
     })
 
+</script>
 
-    // function deleteById(goodsId) {
-    //     console.log(goodsId);
-    //     const reqUrl = "/goods/"+goodsId;
-    //     $.ajax({
-    //         type : 'delete',
-    //         url: reqUrl,
-    //         success: function () {
-    //             // 삭제를 성공하면 회원목록 페이지를 다시 요청하도록
-    //             location.href= '/goods/';
-    //         },
-    //         error: function () {
-    //             alert('ajax 실패');
-    //         }
-    //     });
-    // }
+
+<script th:inline="javascript">
+
+    /*<![CDATA[*/
+        let goodsInfo = /*[[${goods}]]*/
+    /*]]*/
+
+
+
+
+    // const price = document.getElementById("price").value
+    // console.log(price)
+
+    console.log(goodsInfo)
+
+    $("#check_module").click(function () {
+
+        const IMP = window.IMP; // 생략가능
+        IMP.init('imp59250378');
+        // i'mport 관리자 페이지 -> 내정보 -> 가맹점식별코드
+        // ''안에 띄어쓰기 없이 가맹점 식별코드를 붙여넣어주세요. 안그러면 결제창이 안뜹니다.
+        IMP.request_pay({
+            pg: 'kakao',
+            pay_method: 'card',
+            merchant_uid: 'merchant_' + new Date().getTime(),
+            /*
+             *  merchant_uid에 경우
+             *  https://docs.iamport.kr/implementation/payment
+             *  위에 url에 따라가시면 넣을 수 있는 방법이 있습니다.
+             */
+            name: '주문명 : ' + goodsInfo.goodsTitle,
+            // 결제창에서 보여질 이름
+            // name: '주문명 : ${auction.a_title}',
+            // 위와같이 model에 담은 정보를 넣어 쓸수도 있습니다.
+            amount: goodsInfo.goodsPrice,
+            // amount: ${bid.b_bid},
+            // 가격
+            buyer_name: '이름',
+            // 구매자 이름, 구매자 정보도 model값으로 바꿀 수 있습니다.
+            // 구매자 정보에 여러가지도 있으므로, 자세한 내용은 맨 위 링크를 참고해주세요.
+            buyer_postcode: '123-456',
+        }, function (rsp) {
+            console.log(rsp);
+            if (rsp.success) {
+                let msg = '결제가 완료되었습니다.';
+                msg += '결제 금액 : ' + rsp.paid_amount;
+                // success.submit();
+                // 결제 성공 시 정보를 넘겨줘야한다면 body에 form을 만든 뒤 위의 코드를 사용하는 방법이 있습니다.
+                // 자세한 설명은 구글링으로 보시는게 좋습니다.
+            } else {
+                let msg = '결제에 실패하였습니다.';
+                msg += '에러내용 : ' + rsp.error_msg;
+            }
+            alert(msg);
+        });
+    });
 </script>
 
 
