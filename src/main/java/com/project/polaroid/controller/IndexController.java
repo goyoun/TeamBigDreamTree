@@ -32,7 +32,6 @@ public class IndexController {
     String sendCode="";
     @PostMapping("/sendMail")
     public @ResponseBody String sendMail(@RequestParam("mail") String mail) {
-        System.out.println("IndexController.sendMail");
         Random random=new Random();
         String code="";
 

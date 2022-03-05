@@ -1,14 +1,18 @@
 package com.project.polaroid.controller;
 
+import com.project.polaroid.dto.CommentDetailDTO;
 import com.project.polaroid.dto.CommentSaveDTO;
+import com.project.polaroid.dto.GoodsCommentDetailDTO;
 import com.project.polaroid.dto.GoodsCommentSaveDTO;
 import com.project.polaroid.service.CommentService;
 import com.project.polaroid.service.GoodsCommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Controller
@@ -18,9 +22,18 @@ public class GoodsCommentController {
 
     private final GoodsCommentService gcs;
 
-    @GetMapping("save")
-    public String save(@ModelAttribute GoodsCommentSaveDTO goodsCommentSaveDTO) {
+    @PostMapping("save")
+    public @ResponseBody List<GoodsCommentDetailDTO> save (@ModelAttribute GoodsCommentSaveDTO goodsCommentSaveDTO) {
+        System.out.println("댓글이 넘어오나요?1");
         Long goodsCommentId = gcs.save(goodsCommentSaveDTO);
-        return null;
+        List<GoodsCommentDetailDTO> goodsCommentList = gcs.findAll(goodsCommentSaveDTO.getGoodsId());
+        return goodsCommentList;
+    }
+
+    @DeleteMapping("{goodsCommentId}")
+    public ResponseEntity delete (@PathVariable Long goodsCommentId) {
+        System.out.println("댓글이 넘어오나요?2");
+        gcs.deleteById(goodsCommentId);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

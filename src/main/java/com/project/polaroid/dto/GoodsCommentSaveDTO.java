@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 
 public class GoodsCommentSaveDTO {
+
+    private Long memberId;
     private Long goodsId;
-    private String goodsCommentWriter;
+
     private String goodsCommentContents;
 }

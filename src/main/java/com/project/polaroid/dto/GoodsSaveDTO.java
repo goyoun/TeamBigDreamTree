@@ -20,6 +20,7 @@ public class GoodsSaveDTO {
     private int goodsPrice;
     private int goodsView;
     private int goodsLike;
+    private int goodsStock;
     private List<MultipartFile> goodsFile;
     private String goodsInFor;
 

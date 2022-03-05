@@ -1,6 +1,7 @@
 package com.project.polaroid.entity;
 
 import com.project.polaroid.dto.BoardSaveDTO;
+import com.project.polaroid.dto.BoardUpdateDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,8 +20,8 @@ public class BoardEntity extends BaseEntity {
     @Column(name = "board_id")
     private Long id;
 
-    @Column
-    private String boardWriter;
+//    @Column
+//    private String boardWriter;
 
     @Column(length = 2000)
     private String boardContents;
@@ -47,10 +48,18 @@ public class BoardEntity extends BaseEntity {
     @JoinColumn(name = "member_id") // 부모테이블의 pk 컬럼이름
     private MemberEntity memberId;
 
-    public static BoardEntity toBoardEntity(BoardSaveDTO boardSaveDTO) {
+    public static BoardEntity toBoardEntity(BoardSaveDTO boardSaveDTO,MemberEntity memberEntity) {
         BoardEntity boardEntity = new BoardEntity();
-        boardEntity.setBoardWriter(boardSaveDTO.getBoardWriter());
+        boardEntity.setMemberId(memberEntity);
         boardEntity.setBoardContents(boardSaveDTO.getBoardContents());
+        return boardEntity;
+    }
+
+    public static BoardEntity toUpdateBoardEntity(BoardUpdateDTO boardUpdateDTO, MemberEntity memberEntity) {
+        BoardEntity boardEntity = new BoardEntity();
+        boardEntity.setId(boardUpdateDTO.getBoardId());
+        boardEntity.setMemberId(memberEntity);
+        boardEntity.setBoardContents(boardUpdateDTO.getBoardContents());
         return boardEntity;
     }
 }

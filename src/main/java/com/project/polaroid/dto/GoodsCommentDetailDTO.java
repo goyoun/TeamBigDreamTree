@@ -15,9 +15,12 @@ import java.util.List;
 @AllArgsConstructor
 public class GoodsCommentDetailDTO {
     private Long goodsCommentId;
-    private Long boardId;
-    private String goodsCommentWriter;
+    private Long goodsId;
+    private Long memberId;
+    private String memberNickName;
+    private String memberEmail;
     private String goodsCommentContents;
+
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 
@@ -26,18 +29,20 @@ public class GoodsCommentDetailDTO {
         GoodsCommentDetailDTO goodsCommentDetailDTO = new GoodsCommentDetailDTO();
         // 옮겨담기
         goodsCommentDetailDTO.setGoodsCommentId(goodsCommentEntity.getId());
-        goodsCommentDetailDTO.setGoodsCommentWriter(goodsCommentEntity.getGoodsCommentWriter());
-        goodsCommentDetailDTO.setGoodsCommentContents(goodsCommentEntity.getGoodsCommentWriter());
+        goodsCommentDetailDTO.setGoodsId(goodsCommentEntity.getId());
+        goodsCommentDetailDTO.setMemberId(goodsCommentEntity.getMemberId().getId());
+        goodsCommentDetailDTO.setMemberNickName(goodsCommentEntity.getMemberId().getMemberNickname());
+        goodsCommentDetailDTO.setMemberEmail(goodsCommentEntity.getMemberId().getMemberEmail());
+        goodsCommentDetailDTO.setGoodsCommentContents(goodsCommentEntity.getGoodsCommentContents());
         goodsCommentDetailDTO.setCreateTime(goodsCommentEntity.getCreateTime());
         goodsCommentDetailDTO.setUpdateTime(goodsCommentEntity.getUpdateTime());
-        goodsCommentDetailDTO.setBoardId(goodsCommentEntity.getBoardEntity().getId());
         return goodsCommentDetailDTO;
     }
 
-    public static List<GoodsCommentDetailDTO> toCommentDetailDTOList(List<GoodsCommentEntity> goodsCommentEntityList) {
+    public static List<GoodsCommentDetailDTO> toGoodsCommentDetailDTOList(List<GoodsCommentEntity> goodsCommentEntityList) {
         List<GoodsCommentDetailDTO> goodsCommentDetailDTOList = new ArrayList<>();
         for (GoodsCommentEntity c: goodsCommentEntityList) {
-            goodsCommentDetailDTOList.add(toGoodsCommentDetailDTO(c));
+            goodsCommentDetailDTOList.add(GoodsCommentDetailDTO.toGoodsCommentDetailDTO(c));
         }
         return goodsCommentDetailDTOList;
     }

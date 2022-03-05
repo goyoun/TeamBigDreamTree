@@ -110,9 +110,11 @@
             <img class="header_logo_img" src="/image/logo_white.png" onclick="location.href='/board/'" />
         </div>
         <div class="header_search_box vertical_mid">
-            <input class="header_search_input fs_16" type="text" placeholder="Search" />
+            <input class="header_search_input fs_16" id="keyword" type="text" placeholder="Search" />
             <div class="header_search_btn">
-                <img class="header_search_btn_img" src="/image/search.png" />
+                <button onclick="tagSearch()">
+                    <img class="header_search_btn_img" src="/image/search.png"/>
+                </button>
             </div>
         </div>
         <div class="header_right vertical_mid">
@@ -179,4 +181,10 @@
     </section>
 </div>
 </body>
+<script>
+    function tagSearch() {
+        let keyword = document.getElementById("keyword").value
+        location.href = "/board/search/" + keyword.replace("#", "")
+    }
+</script>
 </html>

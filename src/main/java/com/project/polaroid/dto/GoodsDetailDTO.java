@@ -23,12 +23,16 @@ public class GoodsDetailDTO {
     private String goodsTitle;
     private String goodsContents;
     private int goodsPrice;
+    private int goodsStock;
     private String goodsFilename;
     private LocalDateTime goodsDate;
-    private List<GoodsCommentDetailDTO> goodsCommentList;
     private int goodsView;
-    private int goodsLike;
+    private int goodsLikeCount;
     private String goodsInFor;
+
+    private List<GoodsCommentDetailDTO> goodsCommentList;
+
+    private String memberFilename;
 
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
@@ -43,10 +47,15 @@ public class GoodsDetailDTO {
         goodsDetailDTO.setGoodsContents(goodsEntity.getGoodsContents());
         goodsDetailDTO.setGoodsPrice(goodsEntity.getGoodsPrice());
         goodsDetailDTO.setGoodsView(goodsEntity.getGoodsView());
-        goodsDetailDTO.setGoodsLike(goodsEntity.getGoodsLike());
+        goodsDetailDTO.setGoodsLikeCount(goodsEntity.getGoodsLikeEntityList().size());
         goodsDetailDTO.setCreateTime(goodsEntity.getCreateTime());
         goodsDetailDTO.setUpdateTime(goodsEntity.getUpdateTime());
         goodsDetailDTO.setGoodsInFor(goodsEntity.getGoodsInFor());
+        goodsDetailDTO.setGoodsStock(goodsEntity.getGoodsStock());
+        goodsDetailDTO.setGoodsCommentList(GoodsCommentDetailDTO.toGoodsCommentDetailDTOList(goodsEntity.getGoodsCommentEntityList()));
+
+        goodsDetailDTO.setMemberFilename(goodsEntity.getGoodsWriter().getMemberFilename());
+
         goodsDetailDTO.setGoodsPhoto(GoodsPhotoDetailDTO.toGoodsPhotoDetailDTOList(goodsEntity.getGoodsPhotoEntity()));
 
             return goodsDetailDTO;

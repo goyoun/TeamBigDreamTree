@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<input type="text" id="goodsId" th:value="${goods.goodsId}"><br>
+<input type="text" id="memberId" th:value="${goods.memberId}"><br>
+<input type="text" id="goodsContents" th:value="${goods.goodsContents}" placeholder="내용"><br>
+<button onclick="goodsUpdate()">수정</button>
+</body>
+<script>
+    function goodsUpdate() {
+        console.log("함수 호출")
+        const boardId = document.getElementById("goodsId").value
+        const memberId = document.getElementById("memberId").value
+        const goodsContents = document.getElementById("goodsContents").value
+        console.log(boardId,memberId,goodsContents)
+    }
+</script>
+</html>

@@ -16,15 +16,19 @@ public class LikeEntity {
     @Column(name = "like_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private BoardEntity boardId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private MemberEntity memberId;
 
-    @Column
-    private int likeStatus;
+    public static LikeEntity toLikeEntity(MemberEntity memberEntity, BoardEntity boardEntity){
+        LikeEntity likeEntity = new LikeEntity();
+        likeEntity.setMemberId(memberEntity);
+        likeEntity.setBoardId(boardEntity);
+        return likeEntity;
+    }
 
 }

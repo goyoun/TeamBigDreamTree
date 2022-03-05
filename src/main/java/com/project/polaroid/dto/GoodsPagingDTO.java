@@ -11,10 +11,15 @@ import java.util.List;
 @NoArgsConstructor
 public class GoodsPagingDTO {
     private Long goodsId;
+    private Long memberId;
     private String memberNickname;
     private String goodsTitle;
     private String goodsContents;
     private int goodsPrice;
+    private int goodsView;
+    private int goodsLikeCount;
+    private int goodsStock;
     private List<GoodsPhotoDetailDTO> photoList;
+
 
 }

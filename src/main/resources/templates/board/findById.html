@@ -87,14 +87,15 @@
                 <!-- board detail contents 1 -->
                 <div class="board_detail_contents_1">
                     <div class="dis_inblock mr_15">
-                        <img class="board_detail_contents_1_like_img" onclick="likeCheck()" id="board-detail-like-btn" src="/image/like_default.png" />
-                        <label class="fs_14 pt_2">486</label>
+                        <img class="board_detail_contents_1_like_img" id="board-detail-like-btn" src="/image/like_default.png" />
+                        <label class="fs_14 pt_2"><span th:text="${board.boardLikeCount}"></span></label>
+                        <input type="hidden" id="like_check" th:value="${like}">
                     </div>
                     <div class="dis_inblock">
                         <img class="board_detail_contents_1_comment_img" onclick="commentCheck()" id="board-detail-comment-btn" src="/image/comment_default.png" />
                     </div>
                     <div class="dis_inblock board_detail_contents_1_date_time">
-                        <label class="fs_14 color_999"><span th:text="${board.createTime}"></span></label>
+                        <label class="fs_14 color_999"><span th:text="${#temporals.format(board.getCreateTime(), 'yyyy-MM-dd HH:mm')}"></span></label>
                     </div>
                 </div>
                 <!-- board detail content 1 -->
@@ -114,38 +115,22 @@
                 <!-- board detail content 3 -->
                 <div class="board_detail_contents_3" id="board-detail-comment_box">
                     <div class="board_detail_contents_3_comment_1">
-                        <input type="hidden" value="loginName" />
-                        <input class="board_detail_contents_3_comment_1_input fs_14" type="text" placeholder="댓글 작성" />
-                        <input class="board_detail_contents_3_comment_1_btn input_btn fs_14" type="button" value="등록" />
+                        <input type="hidden" id="boardId" name="boardId" th:value="${board.boardId}">
+                        <input type="hidden" id="memberId" name="memberId" th:value="${session.LoginNumber}" />
+                        <input class="board_detail_contents_3_comment_1_input fs_14" id="commentContents" type="text" placeholder="댓글 작성" value=""/>
+                        <input class="board_detail_contents_3_comment_1_btn input_btn fs_14" type="button" id="commentSave" value="등록" />
                     </div>
-                    <div class="board_detail_contents_3_comment_2">
+                    <div class="board_detail_contents_3_comment_2" id="comment">
                         <!-- 댓글 목록 예시 -->
                         <table>
                             <tbody>
-                            <tr>
-                                <td class="comment_name">우럭아왜우럭</td>
-                                <td class="comment_text">오렌지먹은지얼마나오렌지</td>
-                                <td class="comment_date">2022-02-21 13:35</td>
-                                <td class="comment_delete_btn"></td>
-                            </tr>
-                            <tr>
-                                <td class="comment_name">밥</td>
-                                <td class="comment_text">떡볶이, 곱창, 치킨, 피자, 회, 냉면, 삼겹살, 파스타, 닭발, 쭈꾸미, 햄버거, 감자튀김, 돈까스, 짬뽕, 족발, 보쌈, 튀김, 모밀, 라멘, 초밥, 우동</td>
-                                <td class="comment_date">2022-02-21 13:31</td>
-                                <td class="comment_delete_btn"></td>
-                            </tr>
-                            <tr>
-                                <td class="comment_name">loginName</td>
-                                <td class="comment_text">본인이 작성한 댓글만 삭제 가능</td>
-                                <td class="comment_date">2022-02-21 10:22</td>
-                                <td class="comment_delete_btn">X</td>
-                            </tr>
-                            <tr>
-                                <td class="comment_name">왕꿈트리</td>
-                                <td class="comment_text">로 아 들 어 와</td>
-                                <td class="comment_date">2022-02-21 09:04</td>
-                                <td class="comment_delete_btn"></td>
-                            </tr>
+                            <tr th:each="comment: ${commentList}">
+                                <td class="comment_name" th:text="${comment.memberNickname}"></td>
+                                <td class="comment_text" th:text="${comment.getCommentContents()}"></td>
+                                <td class="comment_date" th:text="${#temporals.format(comment.getCreateTime(), 'MM-dd HH:mm')}"></td>
+                                <td style="width: 20px" th:if="${session['LoginEmail'].equals(comment.memberEmail)}">
+                                    <button class="comment_delete_btn" th:onclick="commentDelete([[${comment.commentId}]])">X</button>
+                                </td>
                             </tbody>
                         </table>
                         <!-- 댓글 목록 예시 -->
@@ -164,23 +149,101 @@
 </body>
 <script>
     let content = document.getElementById("boardContents").value
-    console.log(content)
     let splitedArray = content.split(' ');
     let linkedContent = '';
     for (let word in splitedArray) {
         word = splitedArray[word];
         if (word.indexOf('#') == 0) {
-            let reqUrl = "/board/search/" + word
-            word = '<a href='+reqUrl+'>' + word + '</a>';
+            let reqUrl = "/board/search/"+word.replace('#',"")
+            word = '<a href="'+reqUrl+'">' + word + '</a>';
         }
         linkedContent += word + ' ';
     }
     document.getElementById('contentElement').innerHTML = linkedContent;
     // content.innerHTML = linkedContent;
 
-    function commentWrite() {
+    const comment = document.getElementById("commentSave")
+    comment.addEventListener("click", function () {
+        let commentContents = document.getElementById("commentContents").value
+        let boardId = document.getElementById("boardId").value
+        let memberId = document.getElementById("memberId").value
+        if (!commentContents) {
+            alert("내용을 입력해주세요.")
+        } else {
+            $.ajax({
+                type: "post",
+                url: "/comment/save",
+                data: {
+                    "memberId": memberId,
+                    "boardId": boardId,
+                    "commentContents": commentContents
+                },
+                dataType: "json",
+                success: function (result) {
+                    alert("댓글작성이 완료되었습니다.")
+                    location.reload()
+                },
+                error: function (result) {
+                    alert("ajax 실페")
+                }
+            })
 
+        }
+    })
+
+    const commentDelete = (commentId) => {
+        const reqUrl = "/comment/" + commentId
+        $.ajax({
+            type: "delete",
+            url: reqUrl,
+            success: function () {
+                alert("댓글삭제가 완료되었습니다.")
+                location.reload()
+            },
+            error: function () {
+                alert("ajax 실패")
+            }
+        })
     }
+
+    $(document).ready(function () {
+        let likeVal = document.getElementById('like_check').value
+        const boardId = document.getElementById("boardId").value
+        const memberId = document.getElementById("memberId").value
+        // console.log(memberId);
+        // console.log(likeVal);
+        const likeImg = document.getElementById("board-detail-like-btn")
+
+        if (likeVal > 0) {
+            likeImg.src = "/image/like.png";
+        } else {
+            likeImg.src = "/image/like_default.png";
+        }
+        // 좋아요 버튼을 클릭 시 실행되는 코드
+        likeImg.addEventListener("click", function () {
+            $.ajax({
+                url: '/board/like',
+                type: 'POST',
+                data: {'boardId': boardId, 'memberId': memberId},
+                success: function (data) {
+                    if (data == 1) {
+                        $("#likeImg").attr("src", "/image/like.png");
+                        // location.href="/board/"+boardId;
+                        location.reload()
+
+                    } else {
+                        $("#likeImg").attr("src", "/image/like_default.png");
+                        // location.href="/board/"+boardId;
+                        location.reload()
+                    }
+                }, error: function () {
+                    console.log('오타 찾으세요')
+                }
+
+            });
+
+        });
+    });
 
 </script>
 

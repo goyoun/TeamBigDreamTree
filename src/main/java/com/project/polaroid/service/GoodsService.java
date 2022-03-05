@@ -19,13 +19,21 @@ public interface GoodsService {
 
     void saveFile(Long goodsId, MultipartFile g) throws IOException;
 
-
     Page<GoodsPagingDTO> list(Long memberId, Pageable pageable);
-
-    // 서치기능
-//    List<GoodsDetailDTO> search(GoodsSearchDTO goodsSearchDTO);
 
     Page<GoodsPagingDTO> search(GoodsSearchDTO goodsSearchDTO, Pageable pageable);
 
-//    Page<GoodsPagingDTO> searchPage(String select, String search, Pageable pageable);
+    int findLike(Long goodsId, Long memberId);
+
+    int saveLike(Long goodsId, Long memberId);
+
+    Long update(GoodsUpdateDTO goodsUpdateDTO);
+
+    void deleteById(Long goodsId);
+
+    void viewUp(Long goodsId);
+
+    void pay(Long goodsId, int count);
+
+    List<GoodsDetailDTO> pick(Long memberId);
 }

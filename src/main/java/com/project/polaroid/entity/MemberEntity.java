@@ -70,10 +70,6 @@ public class MemberEntity {
     @OneToMany(mappedBy = "memberId", cascade = CascadeType.ALL, orphanRemoval = true,  fetch = FetchType.LAZY)
     private List<LikeEntity> likeEntityList = new ArrayList<>();
 
-    // 굿즈
-    @OneToMany(mappedBy = "goodsWriter", cascade = CascadeType.ALL, orphanRemoval = true,  fetch = FetchType.LAZY)
-    private List<GoodsEntity> goodsEntityList = new ArrayList<>();
-
     @Builder
     public MemberEntity(String memberEmail, String memberPw, String memberFilename, String memberRole, String memberProvider, String memberProviderId) {
         this.memberEmail = memberEmail;

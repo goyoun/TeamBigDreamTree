@@ -3,9 +3,13 @@ package com.project.polaroid.service;
 import com.project.polaroid.common.PagingConst;
 import com.project.polaroid.dto.*;
 import com.project.polaroid.entity.GoodsEntity;
+import com.project.polaroid.entity.GoodsLikeEntity;
 import com.project.polaroid.entity.GoodsPhotoEntity;
+import com.project.polaroid.entity.MemberEntity;
+import com.project.polaroid.repository.GoodsLikeRepository;
 import com.project.polaroid.repository.GoodsPhotoRepository;
 import com.project.polaroid.repository.GoodsRepository;
+import com.project.polaroid.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,8 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
+import java.lang.reflect.Member;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +30,8 @@ public class GoodsServiceImpl implements GoodsService {
     private final GoodsRepository gr;
     private final GoodsPhotoRepository gpr;
     private final MemberService ms;
+    private final GoodsLikeRepository glr;
+    private final MemberRepository mr;
 
     // 페이징
     @Override
@@ -42,15 +48,18 @@ public class GoodsServiceImpl implements GoodsService {
                 // 엔티티 객체를 담기위한 반복용 변수 goods
                 goods -> new GoodsPagingDTO(
                         goods.getId(),
+                        goods.getGoodsWriter().getId(),
                         goods.getGoodsWriter().getMemberNickname(),
                         goods.getGoodsTitle(),
                         goods.getGoodsContents(),
                         goods.getGoodsPrice(),
+                        goods.getGoodsView(),
+                        goods.getGoodsLikeEntityList().size(),
+                        goods.getGoodsStock(),
                         GoodsPhotoDetailDTO.toGoodsPhotoDetailDTOList(goods.getGoodsPhotoEntity()))
         );
         return goodsList;
     }
-
     // 디테일
     @Override
     @Transactional
@@ -97,10 +106,14 @@ public class GoodsServiceImpl implements GoodsService {
             Page<GoodsPagingDTO> goodsList = goodsEntityList.map(
                     goods -> new GoodsPagingDTO(
                             goods.getId(),
+                            goods.getGoodsWriter().getId(),
                             goods.getGoodsWriter().getMemberNickname(),
                             goods.getGoodsTitle(),
                             goods.getGoodsContents(),
                             goods.getGoodsPrice(),
+                            goods.getGoodsView(),
+                            goods.getGoodsLikeEntityList().size(),
+                            goods.getGoodsStock(),
                             GoodsPhotoDetailDTO.toGoodsPhotoDetailDTOList(goods.getGoodsPhotoEntity()))
             );
             return goodsList;
@@ -109,10 +122,14 @@ public class GoodsServiceImpl implements GoodsService {
             Page<GoodsPagingDTO> goodsList = goodsEntities.map(
                     goods -> new GoodsPagingDTO(
                             goods.getId(),
+                            goods.getGoodsWriter().getId(),
                             goods.getGoodsWriter().getMemberNickname(),
                             goods.getGoodsTitle(),
                             goods.getGoodsContents(),
                             goods.getGoodsPrice(),
+                            goods.getGoodsView(),
+                            goods.getGoodsLikeEntityList().size(),
+                            goods.getGoodsStock(),
                             GoodsPhotoDetailDTO.toGoodsPhotoDetailDTOList(goods.getGoodsPhotoEntity()))
 
             );
@@ -120,35 +137,84 @@ public class GoodsServiceImpl implements GoodsService {
         }
     }
 
-//    @Override
-//    public Page<GoodsPagingDTO> searchPage(String select, String search, Pageable pageable) {
-//        if(select.equals("goodsTitle")){
-//            Page<GoodsEntity> goodsEntityList = gr.findByGoodsTitleContaining(search, PageRequest.of(pageable.getPageNumber()-1, PagingConst.PAGE_LIMIT, Sort.by(Sort.Direction.DESC, "id")));
-//            Page<GoodsPagingDTO> goodsList = goodsEntityList.map(
-//                    goods -> new GoodsPagingDTO(
-//                            goods.getId(),
-//                            goods.getGoodsWriter().getMemberNickname(),
-//                            goods.getGoodsTitle(),
-//                            goods.getGoodsContents(),
-//                            goods.getGoodsPrice(),
-//                            GoodsPhotoDetailDTO.toGoodsPhotoDetailDTOList(goods.getGoodsPhotoEntity()))
-//            );
-//            return goodsList;
-//        } else {
-//            Page<GoodsEntity> goodsEntities =  gr.searchWriter(search, PageRequest.of(pageable.getPageNumber() - 1, PagingConst.PAGE_LIMIT, Sort.by(Sort.Direction.DESC, "id")));
-//            Page<GoodsPagingDTO> goodsList = goodsEntities.map(
-//                    goods -> new GoodsPagingDTO(
-//                            goods.getId(),
-//                            goods.getGoodsWriter().getMemberNickname(),
-//                            goods.getGoodsTitle(),
-//                            goods.getGoodsContents(),
-//                            goods.getGoodsPrice(),
-//                            GoodsPhotoDetailDTO.toGoodsPhotoDetailDTOList(goods.getGoodsPhotoEntity()))
-//
-//            );
-//            return goodsList;
-//        }
-//    }
+    @Override
+    public int findLike(Long goodsId, Long memberId) {
+        GoodsEntity goodsEntity = gr.findById(goodsId).get();
+        MemberEntity memberEntity = mr.findById(memberId).get();
+        GoodsLikeEntity likeStatus = glr.findByGoodsEntityAndMemberEntity(goodsEntity, memberEntity);
+        if (likeStatus != null){
+            int like = 1;
+            System.out.println("좋아요가 넘어오나요4");
+            return like;
+        } else {
+            int like = 0;
+            System.out.println("좋아요가 넘어오나요5");
+            return like;
+        }
+    }
+
+    @Transactional
+    @Override
+    public int saveLike(Long goodsId, Long memberId) {
+
+        GoodsEntity goodsEntity = gr.findById(goodsId).get();
+        MemberEntity memberEntity = mr.findById(memberId).get();
+        GoodsLikeEntity likeStatus = glr.findByGoodsEntityAndMemberEntity(goodsEntity, memberEntity);
+
+        if (likeStatus == null){
+            GoodsEntity goods = gr.findById(goodsId).get();
+            MemberEntity member = mr.findById(memberId).get();
+
+            GoodsLikeEntity goodsLikeEntity = GoodsLikeEntity.toGoodsLikeEntity(goods, member);
+            glr.save(goodsLikeEntity);
+            System.out.println("좋아요가 넘어오나요2");
+            return 1;
+        }else {
+            glr.deleteByGoodsEntityAndMemberEntity(goodsEntity, memberEntity);
+            System.out.println("좋아요가 넘어오나요3");
+            return 0;
+        }
+    }
+
+    @Override
+    public Long update(GoodsUpdateDTO goodsUpdateDTO) {
+        MemberEntity memberEntity = mr.findById(goodsUpdateDTO.getMemberId()).get();
+        GoodsEntity goodsEntity = GoodsEntity.toUpdateGoodsEntity(goodsUpdateDTO,memberEntity);
+        return gr.save(goodsEntity).getId();
+    }
+
+    @Override
+    public void deleteById(Long goodsId) {
+        gr.deleteById(goodsId);
+    }
+
+    @Transactional
+    @Override
+    public void viewUp(Long goodsId) {
+        gr.viewUp(goodsId);
+    }
+
+    // 결제
+    @Transactional
+    @Override
+    public void pay(Long goodsId, int count) {
+        gr.stockDown(goodsId,count);
+    }
+
+    @Override
+    public List<GoodsDetailDTO> pick(Long memberId) {
+        MemberEntity memberEntity = mr.findById(memberId).get();
+        List<GoodsLikeEntity> goodsLikeEntityList = glr.findAllByMemberEntity(memberEntity);
+        List<GoodsEntity> goodsEntityList = new ArrayList<>();
+        for (GoodsLikeEntity g: goodsLikeEntityList) {
+            goodsEntityList.add(gr.findById(g.getGoodsEntity().getId()).get());
+        }
+        List<GoodsDetailDTO> goodsDetailDTOList = new ArrayList<>();
+        for (GoodsEntity g: goodsEntityList) {
+            goodsDetailDTOList.add(GoodsDetailDTO.toGoodsDetailDTO(g));
+        }
+        return goodsDetailDTOList;
+    }
 
     // 굿즈 내글 리스트
     @Override
@@ -161,10 +227,14 @@ public class GoodsServiceImpl implements GoodsService {
         Page<GoodsPagingDTO> goodsList = goodsDetailDTO.map(
                 goods -> new GoodsPagingDTO(
                         goods.getId(),
+                        goods.getGoodsWriter().getId(),
                         goods.getGoodsWriter().getMemberNickname(),
                         goods.getGoodsTitle(),
                         goods.getGoodsContents(),
                         goods.getGoodsPrice(),
+                        goods.getGoodsView(),
+                        goods.getGoodsLikeEntityList().size(),
+                        goods.getGoodsStock(),
                         GoodsPhotoDetailDTO.toGoodsPhotoDetailDTOList(goods.getGoodsPhotoEntity()))
 
         );

@@ -17,39 +17,37 @@ public class GoodsCommentEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="goodscomment_id")
+    @Column(name="goodsComment_id")
     private Long id;
     @Column
-    private String goodsCommentWriter;
-    @Column
     private String goodsCommentContents;
-
 
     // 원글의 게시글 번호를 참조하기 위한 설정 댓글:게시글 N:1
     // 보드 엔티티 연관관계
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="board_id") // 부모테이블(참조하고자하는 테이블)의 pk 컬럼이름
-    private BoardEntity boardEntity; // 참조하고자 하는 테이블을 관리하는 엔티티
+    @JoinColumn(name="goods_id") // 부모테이블(참조하고자하는 테이블)의 pk 컬럼이름
+    private GoodsEntity goodsId; // 참조하고자 하는 테이블을 관리하는 엔티티
 
     // 회원 엔티티 연관관계
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="member_id")
-    private MemberEntity memberEntity;
+    private MemberEntity memberId;
 
-//    public static GoodsCommentEntity toSaveEntity(GoodsCommentSaveDTO goodsCommentSaveDTO, BoardEntity boardEntity, MemberEntity memberEntity) {
+//    public static GoodsCommentEntity toSaveEntity(GoodsCommentSaveDTO goodsCommentSaveDTO, GoodsEntity goodsEntity, MemberEntity memberEntity) {
 //        GoodsCommentEntity goodsCommentEntity = new GoodsCommentEntity();
-//        goodsCommentEntity.setGoodsCommentWriter(memberEntity.getMemberEmail());
-//        goodsCommentEntity.setGoodsCommentContents(goodsCommentSaveDTO.get());
-//
-//        goodsCommentEntity.setBoardEntity(boardEntity);
-//        goodsCommentEntity.setMemberEntity(memberEntity);
+//        goodsCommentEntity.setGoodsId(goodsEntity);
+//        goodsCommentEntity.setMemberId(memberEntity);
+//        goodsCommentEntity.setGoodsCommentContents(goodsCommentSaveDTO.getGoodsCommentContents());
 //        return goodsCommentEntity;
 //    }
 
 
-    public static GoodsCommentEntity toGoodsCommentEntity(GoodsCommentSaveDTO goodsCommentSaveDTO) {
+    public static GoodsCommentEntity toGoodsCommentEntity(GoodsCommentSaveDTO goodsCommentSaveDTO, GoodsEntity goodsEntity, MemberEntity memberEntity) {
         GoodsCommentEntity goodsCommentEntity = new GoodsCommentEntity();
+
         goodsCommentEntity.setGoodsCommentContents(goodsCommentSaveDTO.getGoodsCommentContents());
+        goodsCommentEntity.setGoodsId(goodsEntity);
+        goodsCommentEntity.setMemberId(memberEntity);
         return goodsCommentEntity;
     }
 }
