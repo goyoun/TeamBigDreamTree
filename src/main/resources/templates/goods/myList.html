@@ -2,12 +2,72 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <link href="/css/reset.css" rel="stylesheet" type="text/css">
+    <link href="/css/common.css" rel="stylesheet" type="text/css">
+    <link href="/css/shop_my_list.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+            crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<!--    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>-->
+    <script src="/js/common.js"></script>
+    <title>POLAROID</title>
 </head>
 <body>
+
+<div class="header">
+    <div class="max_box_2 vertical_box">
+        <div class="header_logo vertical_mid">
+            <img class="header_logo_img" src="/image/logo_white.png" onclick="location.href='/'"/>
+        </div>
+        <div class="header_search_box vertical_mid">
+            <form action="/goods/search" method="get" class="text-center">
+                <select name="select" id="select">
+                    <option value="goodsTitle"> 제목 </option>
+                </select>
+                <input name="search" class="header_search_input fs_16" type="text" placeholder="Search"/>
+                <div class="header_search_btn">
+                    <button type="submit"> <img class="header_search_btn_img" src="/image/search.png"/> </button>
+                </div>
+            </form>
+        </div>
+        <div class="header_right vertical_mid">
+            <!-- 채팅 -->
+            <div class="header_chat">
+                <img class="header_chat_img" src="/image/chat.png"/>
+            </div>
+            <!-- 좋아요 모아보기 -->
+            <div class="header_like">
+                <a th:href="@{|/goods/pick/${memberId}|}"> <img class="header_like_img" src="/image/like.png"/> </a>
+            </div>
+            <!-- 사용자 정보 -->
+            <div class="header_user" id="userToggleButton">
+                <img class="header_user_img" src="/image/user_default.png"/>
+            </div>
+            <div class="header_user_toggle_box" id="userToggleMenu">
+                <input class="header_user_toggle_btn fs_14" type="button" value="마이페이지"
+                       onclick="location.href='/my_page'"/>
+                <input class="header_user_toggle_btn fs_14" id="show" type="button" onclick="location.href='/logout'"
+                       value="로그아웃"/>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="contents">
+    <div class="max_box_3 pt_60">
+        <div class="shop_title">
+            <p class="shop_title_name" th:text="${memberNickname}+'님의 ShoppingMall'"> </p>
+            <p class="shop_title_text">의 쇼핑몰</p>
+        </div>
+
+    </div>
+</div>
+
+
 <h2 th:text="${memberNickname}+'님의 ShoppingMall'" class="text-center"> </h2>
 <div class="col" th:each="goodsName: ${goodsList}">
 </div>
@@ -53,12 +113,78 @@
 </div>
 
 
+<div class="contents" style="background-color: #fff;">
+    <div class="max_box_2 pt_60">
+        <div class="shop_my_list_title_box">
+            <p class="fs_24 fw_b" th:text="${memberNickname}+'님의 ShoppingMall'">리스트</p>
+            <div class="title_bottom_line"></div>
+        </div>
+        <div class="dis_flex mb_20">
+            <div class="shop_my_list_top_1">
+                <select class="shop_my_list_top_select">
+                    <option value="5">5개씩</option>
+                    <option value="10">10개씩</option>
+                    <option value="20">20개씩</option>
+                </select>
+            </div>
+            <div class="shop_my_list_top_2">
+                <input class="shop_my_list_save_btn" type="button" value="글쓰기" onclick="location.href='/goods/save'"/>
+            </div>
+        </div>
+        <table class="table shop_list_table">
+            <thead>
+            <tr>
+                <th scope="col">번호</th>
+                <th scope="col">상품 이름</th>
+                <!--                <th scope="col">작성자</th>-->
+                <!--                <th scope="col">내용</th>-->
+                <th scope="col">가격</th>
+                <th scope="col">조회수</th>
+                <th scope="col">찜갯수</th>
+                <th scope="col">게시일시</th>
+                <th scope="col">세부내용보기</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!--            <tr th:each="goods: ${goodsList}">-->
+            <!--                <td th:text="${goods.goodsId}"></td>-->
+            <!--                <td>-->
+            <!--                    <a th:href="@{|/goods/${goods.goodsId}|}">-->
+            <!--                        <p th:text="${goods.goodsTitle}"></p>-->
+            <!--                    </a>-->
+            <!--                </td>-->
+            <!--                <td th:text="${goods.goodsWriter}"></td>-->
+            <!--                <td th:text="${goods.goodsContents}"></td>-->
+            <!--                <td th:text="${goods.goodsPrice}"></td>-->
+            <!--            </tr>-->
+            <tr th:each="goods: ${goodsList}">
+                <td th:text="${goods.goodsId}"></td>
+                <td th:text="${goods.goodsTitle}"></td>
+                <!--                <td th:text="${goods.goodsWriter}"></td>-->
+                <!--                <td th:text="${goods.goodsContents}"></td>-->
+                <td th:text="${goods.goodsPrice}+원"></td>
+                <td th:text="${goods.goodsView}"></td>
+                <td th:text="${goods.goodsLikeCount}"></td>
+                <td th:text="${#temporals.format(goods.getCreateTime(), 'yyyy-MM-dd HH:mm')}"></td>
+                <td>
+                    <!--                    <input class="shop_my_list_detail_btn" type="button" th:href="@{|/goods/${goods.goodsId}|}" value="상세" />-->
+                    <a th:href="@{|/goods/${goods.goodsId}|}">
+                        <img class="shop_my_list_detail_btn_img" src="/image/menu.png" />
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
 <!-- 페이지 -->
 <ul class="pagination pagination-lg justify-content-center mt-5">
     <li class="page-item">
         <!-- 첫페이지로 가는 링크 First  -->
         <a class="page-link" th:href="@{|/goods/list/${memberId}/?page=1|}">
-<!--            <a class="page-link" th:href="@{/goods/search(page=1,select=${select},search=${search})}">-->
+            <!--            <a class="page-link" th:href="@{/goods/search(page=1,select=${select},search=${search})}">-->
             <span>First</span>
         </a>
     </li>

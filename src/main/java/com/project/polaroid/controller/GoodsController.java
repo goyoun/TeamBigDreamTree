@@ -70,6 +70,7 @@ public class GoodsController {
         GoodsDetailDTO goods = gs.findById(goodsId);
 
         Long memberId = (Long) session.getAttribute("LoginNumber");
+        model.addAttribute("memberId", memberId);
         model.addAttribute("member",ms.findById(memberId));
 
         model.addAttribute("goods", goods);
@@ -147,22 +148,24 @@ public class GoodsController {
     @GetMapping("update/{goodsId}")
     public String updateForm(@PathVariable Long goodsId, Model model) {
         GoodsDetailDTO goodsDetailDTO = gs.findById(goodsId);
+        System.out.println("goodsDetailDTO.getMemberId() = " + goodsDetailDTO.getMemberId());
         model.addAttribute("goods", goodsDetailDTO);
         return "goods/update";
     }
 
-    // 글업데이트
+    // 글 업데이트
     @PutMapping("{goodsId}")
     public ResponseEntity update(@RequestBody GoodsUpdateDTO goodsUpdateDTO) {
-        Long goodsId = gs.update(goodsUpdateDTO);
+        System.out.println("goodsUpdateDTO = " + goodsUpdateDTO);
+        gs.update(goodsUpdateDTO);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     // 글삭제
     @DeleteMapping("{goodsId}")
-    public String deleteById(@PathVariable Long goodsId) {
+    public ResponseEntity deleteById(@PathVariable Long goodsId) {
         gs.deleteById(goodsId);
-        return "redirect:/goods/";
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     // 찜목록

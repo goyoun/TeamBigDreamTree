@@ -54,6 +54,8 @@ public class GoodsDetailDTO {
         goodsDetailDTO.setGoodsStock(goodsEntity.getGoodsStock());
         goodsDetailDTO.setGoodsCommentList(GoodsCommentDetailDTO.toGoodsCommentDetailDTOList(goodsEntity.getGoodsCommentEntityList()));
 
+        goodsDetailDTO.setMemberId(goodsEntity.getGoodsWriter().getId());
+
         goodsDetailDTO.setMemberFilename(goodsEntity.getGoodsWriter().getMemberFilename());
 
         goodsDetailDTO.setGoodsPhoto(GoodsPhotoDetailDTO.toGoodsPhotoDetailDTOList(goodsEntity.getGoodsPhotoEntity()));

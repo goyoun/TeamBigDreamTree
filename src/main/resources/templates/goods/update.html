@@ -3,20 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<!--    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>-->
+    <h2>GoodsUpdate.html</h2>
 </head>
 <body>
 <input type="text" id="goodsId" th:value="${goods.goodsId}"><br>
 <input type="text" id="memberId" th:value="${goods.memberId}"><br>
-<input type="text" id="goodsContents" th:value="${goods.goodsContents}" placeholder="내용"><br>
+제목: <input type="text" id="goodsTitle" th:value="${goods.goodsTitle}" placeholder="제목"><br>
+내용: <input type="text" id="goodsContents" th:value="${goods.goodsContents}" placeholder="내용"><br>
+가격: <input type="text" id="goodsPrice" th:value="${goods.goodsPrice}" placeholder="가격"><br>
+재고: <input type="text" id="goodsStock" th:value="${goods.goodsStock}" placeholder="재고"><br>
+
 <button onclick="goodsUpdate()">수정</button>
+
 </body>
+
 <script>
     function goodsUpdate() {
-        console.log("함수 호출")
-        const boardId = document.getElementById("goodsId").value
-        const memberId = document.getElementById("memberId").value
-        const goodsContents = document.getElementById("goodsContents").value
-        console.log(boardId,memberId,goodsContents)
+        const goods = document.getElementById("goodsId").value
+        const member = document.getElementById("memberId").value
+        const contents = document.getElementById("goodsContents").value
+        const price = document.getElementById("goodsPrice").value
+        const stock = document.getElementById("goodsStock").value
+        const title = document.getElementById("goodsTitle").value
+        const reqUrl = "/goods/"+goods
+        const updateData = JSON.stringify({
+            goodsId: goods,
+            memberId: member,
+            goodsContents: contents,
+            goodsPrice: price,
+            goodsStock: stock,
+            goodsTitle: title
+        })
+        $.ajax({
+            type: "put",
+            url: reqUrl,
+            data: updateData,
+            contentType: "application/json",
+            success: function () {
+                alert("수정이 완료되었습니다.")
+                location.href=reqUrl
+            }, error: function () {
+                alert("ajax 오류")
+            }
+        })
     }
 </script>
 </html>

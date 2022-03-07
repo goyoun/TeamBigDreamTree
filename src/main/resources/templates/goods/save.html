@@ -2,27 +2,139 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-
+    <link href="/css/reset.css" rel="stylesheet" type="text/css">
+    <link href="/css/common.css" rel="stylesheet" type="text/css">
+    <link href="/css/shop_save.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+            crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<!--    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>-->
+    <script src="/js/common.js"></script>
+    <title>POLAROID</title>
 </head>
+
 <body>
-<h2>save</h2>
-<form action="/goods/save" name="wow1" method="post" enctype="multipart/form-data">
-    <input th:value="${member.memberNickname}"type="text" id="memberNickname" name="memberNickname" placeholder="작성자" readonly><br>
-    <input type="text" id="goodsTitle" name="goodsTitle" placeholder="제목"> <br>
-    <input type="text" id="goodsPrice" name="goodsPrice" placeholder="가격"><br>
-    <input type="text" id="goodsContents" name="goodsContents" placeholder="내용"><br>
-    <input type="number" id="goodsStock" name="goodsStock" placeholder="재고"><br>
-    <input id="avatars"  type="file" name="goodsFile" multiple="multiple" accept="image/*" >
-    <div class="form-floating">
-    <textarea name="goodsInFor" class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
-    <label for="floatingTextarea2"> 상품정보를 입력하세요 </label>
+
+
+
+<div class="header">
+    <div class="max_box_2 vertical_box">
+        <div class="header_logo vertical_mid">
+            <img class="header_logo_img" src="/image/logo_white.png" onclick="location.href='/main'"/>
+        </div>
+        <div class="header_search_box vertical_mid">
+            <input class="header_search_input fs_16" type="text" placeholder="Search"/>
+            <div class="header_search_btn">
+                <img class="header_search_btn_img" src="/image/search.png"/>
+            </div>
+        </div>
+        <div class="header_right vertical_mid">
+            <!-- 채팅 -->
+            <div class="header_chat">
+                <img class="header_chat_img" src="/image/chat.png"/>
+            </div>
+            <!-- 좋아요 모아보기 -->
+            <div class="header_like">
+                <img class="header_like_img" src="/image/like.png"/>
+            </div>
+            <!-- 사용자 정보 -->
+            <div class="header_user" id="userToggleButton">
+                <img class="header_user_img" src="/image/user_default.png"/>
+            </div>
+            <div class="header_user_toggle_box" id="userToggleMenu">
+                <input class="header_user_toggle_btn fs_14" type="button" value="마이페이지"
+                       onclick="location.href='/my_page'"/>
+                <input class="header_user_toggle_btn fs_14" id="show" type="button" onclick="location.href='/logout'"
+                       value="로그아웃"/>
+            </div>
+
+        </div>
     </div>
-    <div id="check"></div>
-</form>
+</div>
+
+<!-- 로그아웃 확인 팝업 -->
+<!-- 해야함 -->
+<!-- 로그아웃 확인 팝업 -->
+<!-- header -->
+
+<div class="contents" style="background-color: #fff;">
+    <div class="max_box pt_60">
+        <div class="shop_save_title_box">
+            <p class="fs_24 fw_b">상품 등록</p>
+            <div class="title_bottom_line"></div>
+        </div>
+        <!--        <form action="/goods/save" name="wow1" method="post" enctype="multipart/form-data">-->
+        <!--            <input type="text" id="goodsWriter" name="goodsWriter" placeholder="작성자"><br>-->
+        <!--            <input type="text" id="goodsTitle" name="goodsTitle" placeholder="제목"> <br>-->
+        <!--            <input type="text" id="goodsPrice" name="goodsPrice" placeholder="가격"><br>-->
+        <!--            <input type="text" id="goodsContents" name="goodsContents" placeholder="내용"><br>-->
+        <!--            <input type="file" id="goodsFile" name="goodsFile" value="상품내용파일" multiple/><br>-->
+        <!--            <div class="form-floating">-->
+        <!--            <textarea name="goodsInFor" class="form-control" placeholder="Leave a comment here" id="floatingTextarea2"-->
+        <!--                      style="height: 100px"></textarea>-->
+        <!--                <label for="floatingTextarea2"> 상품정보를 입력하세요 </label>-->
+        <!--            </div>-->
+        <!--        </form>-->
+        <form action="/goods/save" name="wow1" method="post" enctype="multipart/form-data">
+            <div class="input_box">
+                <p class="input_label fs_14">작성자</p>
+                <input th:value="${member.memberNickname}" class="input_text_5 fs_14" type="text" id="memberNickname" name="memberNickname" placeholder="작성자" readonly>
+            </div>
+            <div class="input_box">
+                <p class="input_label fs_14">제목</p>
+                <input class="input_text_5 fs_14" type="text" id="goodsTitle" name="goodsTitle">
+            </div>
+            <div class="input_box">
+                <p class="input_label fs_14">가격</p>
+                <input class="input_text_5 fs_14" type="text" id="goodsPrice" name="goodsPrice">
+            </div>
+            <div class="input_box">
+                <p class="input_label fs_14">내용</p>
+                <input class="input_text_5 fs_14" type="text" id="goodsContents" name="goodsContents">
+            </div>
+            <div class="input_box">
+                <p class="input_label fs_14">재고</p>
+                <input class="input_text_5 fs_14" type="text" id="goodsStock" name="goodsStock">
+            </div>
+            <div class="input_box">
+                <p class="input_label fs_14">상품 이미지</p>
+                <input class="ml_5 shop_save_input_file" type="file" id="avatars" name="goodsFile" value="상품내용파일" multiple="multiple" accept="image/*"/>
+            </div>
+            <div class="input_box_2">
+                <p class="input_label fs_14">상품 정보</p>
+                <textarea class="input_text_6" name="goodsInFor" id="floatingTextarea2"></textarea>
+                <label for="floatingTextarea2"> 상품정보를 입력하세요 </label>
+            </div>
+            <div id="check"></div>
+
+            <div class="input_box mt_30">
+                <p class="input_label fs_16"></p>
+                <input class="long_btn_2 signup_btn fs_16 fw_b" type="submit" value="저장하기"/>
+            </div>
+        </form>
+
+
+    </div>
+
+</div>
+
+<!--<h2>save</h2>-->
+<!--<form action="/goods/save" name="wow1" method="post" enctype="multipart/form-data">-->
+<!--    <input th:value="${member.memberNickname}" type="text" id="memberNickname" name="memberNickname" placeholder="작성자" readonly><br>-->
+<!--    <input type="text" id="goodsTitle" name="goodsTitle" placeholder="제목"> <br>-->
+<!--    <input type="text" id="goodsPrice" name="goodsPrice" placeholder="가격"><br>-->
+<!--    <input type="text" id="goodsContents" name="goodsContents" placeholder="내용"><br>-->
+<!--    <input type="number" id="goodsStock" name="goodsStock" placeholder="재고"><br>-->
+<!--    <input id="avatars"  type="file" name="goodsFile" multiple="multiple" accept="image/*" >-->
+<!--    <div class="form-floating">-->
+<!--    <textarea name="goodsInFor" class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>-->
+<!--    <label for="floatingTextarea2"> 상품정보를 입력하세요 </label>-->
+<!--    </div>-->
+<!--    <div id="check"></div>-->
+<!--</form>-->
 
 
 <!--<button onclick='button_click();'>저장하기</button>-->
@@ -51,7 +163,7 @@
             alert(`10개 이하로 올려주세요.`);
             return;
         } else {
-            check.innerHTML = "<input type='submit' value='저장하기'/>"
+            check.innerHTML = ""
         }
 
         // TODO: continue uploading on server

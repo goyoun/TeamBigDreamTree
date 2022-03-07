@@ -66,11 +66,19 @@ public class GoodsEntity extends BaseEntity {
         return goodsEntity;
     }
 
-    public static GoodsEntity toUpdateGoodsEntity(GoodsUpdateDTO goodsUpdateDTO, MemberEntity memberEntity) {
-        GoodsEntity goodsEntity = new GoodsEntity();
-        goodsEntity.setId(goodsUpdateDTO.getGoodsId());
-        goodsEntity.setGoodsWriter(memberEntity);
-        goodsEntity.setGoodsContents(goodsUpdateDTO.getGoodsContents());
-        return goodsEntity;
+    public static GoodsEntity toUpdateGoodsEntity(GoodsUpdateDTO goodsUpdateDTO, GoodsEntity goodsEntity, MemberEntity memberEntity) {
+        GoodsEntity goods = new GoodsEntity();
+        goods.setId(goodsUpdateDTO.getGoodsId());
+        goods.setGoodsWriter(memberEntity);
+        goods.setGoodsTitle(goodsUpdateDTO.getGoodsTitle());
+        goods.setGoodsPrice(goodsUpdateDTO.getGoodsPrice());
+        goods.setGoodsStock(goodsUpdateDTO.getGoodsStock());
+        goods.setGoodsContents(goodsUpdateDTO.getGoodsContents());
+        goods.setGoodsView(goodsEntity.getGoodsView());
+        goods.setGoodsInFor(goodsEntity.getGoodsInFor());
+        goods.setGoodsCommentEntityList(goodsEntity.getGoodsCommentEntityList());
+        goods.setGoodsPhotoEntity(goodsEntity.getGoodsPhotoEntity());
+        goods.setGoodsLikeEntityList(goodsEntity.getGoodsLikeEntityList());
+        return goods;
     }
 }

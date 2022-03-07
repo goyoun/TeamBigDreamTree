@@ -56,6 +56,8 @@ public class GoodsServiceImpl implements GoodsService {
                         goods.getGoodsView(),
                         goods.getGoodsLikeEntityList().size(),
                         goods.getGoodsStock(),
+                        goods.getCreateTime(),
+                        goods.getUpdateTime(),
                         GoodsPhotoDetailDTO.toGoodsPhotoDetailDTOList(goods.getGoodsPhotoEntity()))
         );
         return goodsList;
@@ -114,6 +116,8 @@ public class GoodsServiceImpl implements GoodsService {
                             goods.getGoodsView(),
                             goods.getGoodsLikeEntityList().size(),
                             goods.getGoodsStock(),
+                            goods.getCreateTime(),
+                            goods.getUpdateTime(),
                             GoodsPhotoDetailDTO.toGoodsPhotoDetailDTOList(goods.getGoodsPhotoEntity()))
             );
             return goodsList;
@@ -130,6 +134,8 @@ public class GoodsServiceImpl implements GoodsService {
                             goods.getGoodsView(),
                             goods.getGoodsLikeEntityList().size(),
                             goods.getGoodsStock(),
+                            goods.getCreateTime(),
+                            goods.getUpdateTime(),
                             GoodsPhotoDetailDTO.toGoodsPhotoDetailDTOList(goods.getGoodsPhotoEntity()))
 
             );
@@ -179,8 +185,9 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public Long update(GoodsUpdateDTO goodsUpdateDTO) {
         MemberEntity memberEntity = mr.findById(goodsUpdateDTO.getMemberId()).get();
-        GoodsEntity goodsEntity = GoodsEntity.toUpdateGoodsEntity(goodsUpdateDTO,memberEntity);
-        return gr.save(goodsEntity).getId();
+        GoodsEntity goodsEntity = gr.findById(goodsUpdateDTO.getGoodsId()).get();
+        GoodsEntity goods = GoodsEntity.toUpdateGoodsEntity(goodsUpdateDTO, goodsEntity,memberEntity);
+        return gr.save(goods).getId();
     }
 
     @Override
@@ -235,6 +242,8 @@ public class GoodsServiceImpl implements GoodsService {
                         goods.getGoodsView(),
                         goods.getGoodsLikeEntityList().size(),
                         goods.getGoodsStock(),
+                        goods.getCreateTime(),
+                        goods.getUpdateTime(),
                         GoodsPhotoDetailDTO.toGoodsPhotoDetailDTOList(goods.getGoodsPhotoEntity()))
 
         );

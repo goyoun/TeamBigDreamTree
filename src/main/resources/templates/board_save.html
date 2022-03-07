@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="/css/reset.css" rel="stylesheet" type="text/css">
+    <link href="/css/common.css" rel="stylesheet" type="text/css">
+    <link href="/css/board_save.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="/js/common.js"></script>
+    <title>POLAROID</title>
+</head>
+<body>
+<!-- header -->
+<div class="header">
+    <div class="max_box_2 vertical_box">
+        <div class="header_logo vertical_mid">
+            <img class="header_logo_img" src="/image/logo_white.png" onclick="location.href='/main'" />
+        </div>
+        <div class="header_search_box vertical_mid">
+            <input class="header_search_input fs_16" type="text" placeholder="Search" />
+            <div class="header_search_btn">
+                <img class="header_search_btn_img" src="/image/search.png" />
+            </div>
+        </div>
+        <div class="header_right vertical_mid">
+            <!-- 채팅 -->
+            <div class="header_chat">
+                <img class="header_chat_img" src="/image/chat.png" />
+            </div>
+            <!-- 좋아요 모아보기 -->
+            <div class="header_like">
+                <img class="header_like_img" src="/image/like.png" />
+            </div>
+            <!-- 사용자 정보 -->
+            <div class="header_user" id="userToggleButton">
+                <img class="header_user_img" src="image/user_default.png" />
+            </div>
+            <div class="header_user_toggle_box" id="userToggleMenu">
+                <input class="header_user_toggle_btn fs_14" type="button" value="마이페이지" onclick="location.href='/my_page'" />
+                <input class="header_user_toggle_btn fs_14" id="show" type="button"  onclick="location.href='/logout'" value="로그아웃" />
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- 로그아웃 확인 팝업 -->
+<!-- 해야함 -->
+<!-- 로그아웃 확인 팝업 -->
+<!-- header -->
+<div class="contents" style="background-color: #fff !important;">
+    <div class="max_box_3 pt_60">
+        <div class="board_save_box">
+            <div class="mb_40 text_center">
+                <p class="fs_24 fw_b">새 게시물</p>
+                <div class="title_bottom_line"></div>
+            </div>
+            <div class="board_save_img_box">
+                <!--                    &lt;!&ndash; 이미지 추가 시 보이는 이미지(예시) &ndash;&gt;-->
+                <!--                    <img class="board_save_img" src="/image/ex01.jpg" />-->
+                <!--                    &lt;!&ndash; 이미지 추가 버튼 &ndash;&gt;-->
+                <!--                    <input class="board_save_img_btn" type="button" value="+" />-->
+                <!--                    <input class="board_save_img_btn" type="button" value="+" />-->
+                <!--                    <input class="board_save_img_btn" type="button" value="+" />-->
+                <!--                    <input class="board_save_img_btn" type="button" value="+" />-->
+                <!--                    <input class="board_save_img_btn" type="button" value="+" />-->
+                <label class="input-file-button" for="input-file1">
+                    +
+                </label>
+                <input type="file" id="input-file1" style="display: none;"/>
+                <label class="input-file-button" for="input-file2">
+                    +
+                </label>
+                <input type="file" id="input-file2" style="display: none;"/>
+                <label class="input-file-button" for="input-file3">
+                    +
+                </label>
+                <input type="file" id="input-file3" style="display: none;"/>
+                <label class="input-file-button" for="input-file4">
+                    +
+                </label>
+                <input type="file" id="input-file4" style="display: none;"/>
+                <label class="input-file-button" for="input-file5">
+                    +
+                </label>
+                <input type="file" id="input-file5" style="display: none;"/>
+
+            </div>
+            <div class="vertical_box mb_15">
+                <p class="board_save_contents_name">내용</p>
+                <textarea class="board_save_contents_input vertical_mid"></textarea>
+            </div>
+            <!--                <div class="vertical_box">-->
+            <!--                    <p class="board_save_contents_name">태그</p>-->
+            <!--                    <input class="board_save_contents_input vertical_mid" type="text" />-->
+            <!--                </div>-->
+            <input class="board_save_btn" type="button" value="저장하기" />
+        </div>
+    </div>
+</div>
+</body>
+</html>

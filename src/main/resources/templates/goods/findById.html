@@ -2,11 +2,18 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <link href="/css/reset.css" rel="stylesheet" type="text/css">
+    <link href="/css/common.css" rel="stylesheet" type="text/css">
+    <link href="/css/shop_my_detail.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+            crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="/js/common.js"></script>
     <script type="text/javascript" src="https://service.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+    <title>POLAROID</title>
 
     <script>
         function buy() {
@@ -43,131 +50,218 @@
 </style>
 <body>
 
-<h2> 상품정보 </h2>
-<a href="/goods/"> 돌아가기 </a>
-<a th:href="@{|/goods/update/${goodsId}|}"> 수정하기 </a>
+<div class="header">
+    <div class="max_box_2 vertical_box">
+        <div class="header_logo vertical_mid">
+            <img class="header_logo_img" src="/image/logo_white.png" onclick="location.href='/'"/>
+        </div>
+        <div class="header_search_box vertical_mid">
+            <form action="/goods/search" method="get" class="text-center">
+                <select name="select" id="select">
+                    <option value="goodsTitle"> 제목 </option>
+                </select>
+                <input name="search" class="header_search_input fs_16" type="text" placeholder="Search"/>
+                <div class="header_search_btn">
+                    <button type="submit"> <img class="header_search_btn_img" src="/image/search.png"/> </button>
+                </div>
+            </form>
+        </div>
+        <div class="header_right vertical_mid">
+            <!-- 채팅 -->
+            <div class="header_chat">
+                <img class="header_chat_img" src="/image/chat.png"/>
+            </div>
+            <!-- 좋아요 모아보기 -->
+            <div class="header_like">
+                <a th:href="@{|/goods/pick/${memberId}|}"> <img class="header_like_img" src="/image/like.png"/> </a>
+            </div>
+            <!-- 사용자 정보 -->
+            <div class="header_user" id="userToggleButton">
+                <img class="header_user_img" src="/image/user_default.png"/>
+            </div>
+            <div class="header_user_toggle_box" id="userToggleMenu">
+                <input class="header_user_toggle_btn fs_14" type="button" value="마이페이지"
+                       onclick="location.href='/my_page'"/>
+                <input class="header_user_toggle_btn fs_14" id="show" type="button" onclick="location.href='/logout'"
+                       value="로그아웃"/>
+            </div>
+
+        </div>
+    </div>
+</div>
 <!--<input type="hidden" th:value="${session.LoginNumber}" id="memberId" name="memberId">-->
 <!--<input type="hidden" th:value="${goods.goodsId}" id="goodsId" name="goodsId">-->
 
-<div class="container">
-<table class="table">
-    <thead>
-    <tr>
-        <th scope="col">번호</th>
-        <th scope="col">작성자</th>
-        <th scope="col">제목</th>
-        <th scope="col">작성내용</th>
-        <th scope="col">작성시간</th>
-        <th scope="col">가격</th>
-        <th scope="col">좋아요</th>
-        <th scope="col">조회수</th>
-        <th scope="col">재고</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <!--        수정기능, 수정화면(update.html)에서 비밀번호를 입력받고 일치하면 수정처리 일치하지 않으면 수정X
-                    수정처리도 post방식(폼에서 바로 요청하는)
-                             put방식 (ajax를 이용하여 요청하는) 두가지로 모두 해보기
-                             수정이 완료되면 수정후 상세페이지를 출력 -->
-        <td th:text="${goods.goodsId}">번호</td>
-        <td th:text="${goods.goodsWriter}">작성자</td>
-        <td th:text="${goods.goodsTitle}">제목</td>
-        <td th:text="${goods.goodsContents}">작성내용</td>
-        <td th:text="${goods.createTime}">작성시간</td>
-        <td th:text="${goods.goodsPrice}">가격</td>
-        <td th:text="${goods.goodsLikeCount}">좋아요수</td>
-        <td th:text="${goods.goodsView}">조회수</td>
-        <td th:text="${goods.goodsStock}">재고</td>
-        <input id="price" type="hidden" th:value="${goods.goodsPrice}">
-<!--            <img th:src="@{|/image/${goods.goodsFilename}|}" alt="로딩" style="width:50px; height:50px;">-->
+<!--<div class="container">-->
+<!--    <table class="table">-->
+<!--        <thead>-->
+<!--        <tr>-->
+<!--            <th scope="col">번호</th>-->
+<!--            <th scope="col">작성자</th>-->
+<!--            <th scope="col">제목</th>-->
+<!--            <th scope="col">작성내용</th>-->
+<!--            <th scope="col">작성시간</th>-->
+<!--            <th scope="col">가격</th>-->
+<!--            <th scope="col">찜</th>-->
+<!--            <th scope="col">조회수</th>-->
+<!--            <th scope="col">재고</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        <tr>-->
+<!--            &lt;!&ndash;        수정기능, 수정화면(update.html)에서 비밀번호를 입력받고 일치하면 수정처리 일치하지 않으면 수정X-->
+<!--                        수정처리도 post방식(폼에서 바로 요청하는)-->
+<!--                                 put방식 (ajax를 이용하여 요청하는) 두가지로 모두 해보기-->
+<!--                                 수정이 완료되면 수정후 상세페이지를 출력 &ndash;&gt;-->
+<!--            <td th:text="${goods.goodsId}">번호</td>-->
+<!--            <td th:text="${goods.goodsWriter}">작성자</td>-->
+<!--            <td th:text="${goods.goodsTitle}">제목</td>-->
+<!--            <td th:text="${goods.goodsContents}">작성내용</td>-->
+<!--            <td th:text="${#temporals.format(goods.getCreateTime(), 'yyyy-MM-dd HH:mm')}">작성시간</td>-->
+<!--            <td th:text="${goods.goodsPrice}+원">가격</td>-->
+<!--            <td th:text="${goods.goodsLikeCount}">찜</td>-->
+<!--            <td th:text="${goods.goodsView}">조회수</td>-->
+<!--            <td th:text="${goods.goodsStock}">재고</td>-->
+<!--            <input id="price" type="hidden" th:value="${goods.goodsPrice}">-->
+<!--            &lt;!&ndash;            <img th:src="@{|/image/${goods.goodsFilename}|}" alt="로딩" style="width:50px; height:50px;">&ndash;&gt;-->
 
-<!--        <td th:text="${goods.goodsDate}">작성시간</td>-->
+<!--            &lt;!&ndash;        <td th:text="${goods.goodsDate}">작성시간</td>&ndash;&gt;-->
 
-    </tr>
-    </tbody>
-</table>
-    <div class="center">
-<div class="img-wrapper" th:each="goodsFile: ${goods.getGoodsPhoto()}">
-    <img th:src="@{|/goodsFile/${goodsFile.getGoodsFilename}|}" class="imgFile d-block" alt="...">
-</div>
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--    </table>-->
 
-</div>
-<!--<a th:href="@{|/goods/update/${goods.goodsId}|}" th:if="${goods.getGoodsWriter().equals(session['loginId'])}">수정하기</a>-->
-<!--<button th:if="${goods.getGoodsWriter().equals(session['loginId'])}" th:onclick="deleteById([[${goods.goodsId}]])"> 삭제 </button>-->
-<!--<button th:if="${session['loginId'].equals('admin')}" th:onclick="deleteById([[${goods.goodsId}]])"> 삭제 </button>-->
+<div class="contents" style="background-color: #fff;">
+    <div class="max_box_2 pt_60">
+        <div class="pb_20 text_center">
+            <p class="fs_24 fw_b">상품 내용</p>
+            <div class="title_bottom_line"></div>
+        </div>
+        <div class="text_right mb_20">
+            <input class="shop_my_detail_top_btn" type="button" value="뒤로가기" onclick="location.href='/goods/'"/>
+            <input class="shop_my_detail_top_btn" type="button" th:onclick="goodsDelete([[${goodsId}]])" value="삭제"/>
+            <button class="shop_my_detail_top_btn" type="button" value="수정"> <a th:href="@{|/goods/update/${goodsId}|}"> 수정하기 </a> </button>
+<!--            <button><a class="shop_my_detail_top_btn" type="button" th:href="@{|/goods/update/${goodsId}|}"> 수정하기 </a></button>-->
+        </div>
 
-<br><hr>
+        <div>
+            <div class="text_center">
+                <div class="shop_my_detail_img_box" th:each="goodsFile: ${goods.getGoodsPhoto()}">
+                  <img th:src="@{|/goodsFile/${goodsFile.getGoodsFilename}|}" class="shop_my_detail_img" alt="...">
+                </div>
+            </div>
+
+        <div class="shop_my_detail_contents_box">
+            <div class="shop_my_detail_contents_1">
+                <p class="shop_my_detail_contents_1_text" >좋아요 수 :</p>
+                <p class="shop_my_detail_contents_1_result" th:text="${goods.goodsLikeCount}" ></p>
+            </div>
+            <div class="shop_my_detail_contents_1">
+                <p class="shop_my_detail_contents_1_text">조회 수 :</p>
+                <p class="shop_my_detail_contents_1_result"  th:text="${goods.goodsView}" ></p>
+            </div>
+        </div>
+
+    </div>
+    <!--<a th:href="@{|/goods/update/${goods.goodsId}|}" th:if="${goods.getGoodsWriter().equals(session['loginId'])}">수정하기</a>-->
+    <!--<button th:if="${goods.getGoodsWriter().equals(session['loginId'])}" th:onclick="deleteById([[${goods.goodsId}]])"> 삭제 </button>-->
+    <!--<button th:if="${session['loginId'].equals('admin')}" th:onclick="deleteById([[${goods.goodsId}]])"> 삭제 </button>-->
+
+    <br><hr>
 
     <div class="card text-center">
 
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true"> 상품정보 </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false"> 상품후기 </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false"> FAQ </button>
-        </li>
-    </ul>
-    <div class="tab-content" id="myTabContent">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true"> 상품정보 </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false"> 상품후기 </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false"> FAQ </button>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
 
-        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">상품내용
-            <h2 th:text="${goods.goodsInFor}"> 상품내용 </h2>
-    </div>
-
-        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-            <h2> 댓글 </h2>
-            <div id="comment-write">
-                <input type="hidden" id="goodsId" name="goodId" th:value="${goods.goodsId}">
-                <input type="hidden" id="memberId" name="memberId" th:value="${session['LoginNumber']}" readonly><br><br>
-                <input type="text" id="memberNickname" name="memberNickname" th:value="${member.memberNickname}" readonly><br><br>
-                <input type="text" id="goodsCommentContents" placeholder="내용"><br><br>
-                <button id="goodsCommentSave"> 댓글등록 </button>
-            </div>
-
-            <div id="comment-area">
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">댓글번호</th>
-                        <th scope="col">작성자</th>
-                        <th scope="col">내용</th>
-                        <th scope="col">작성시간</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="goodsComment: ${goodsCommentList}">
-                        <td th:text="${goodsComment.goodsCommentId}"> 댓글번호 </td>
-                        <td th:text="${goodsComment.memberNickName}"> 작성자 </td>
-                        <td th:text="${goodsComment.goodsCommentContents}"> 내용 </td>
-                        <td th:text="${#temporals.format(goodsComment.getCreateTime(), 'MM-dd HH:mm')}"> 작성시간 </td>
-                        <td style="width: 20px" th:if="${session['LoginEmail'].equals(goodsComment.memberEmail)}">
-                            <button class="comment_delete_btn" th:onclick="goodsCommentDelete([[${goodsComment.goodsCommentId}]])">X</button>
-                    </tr>
-                    </tbody>
-                </table>
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">상품내용
+                <div class="input_box_3">
+                    <p class="input_label">상품 이름</p>
+                    <input class="input_text_5" type="text" th:value="${goods.goodsTitle}" readonly>
+                </div>
+                <div class="input_box_2">
+                    <p class="input_label">상세 설명</p>
+                    <textarea class="input_text_7" th:text="${goods.goodsInFor}" readonly></textarea>
+                </div>
+                <div class="input_box_3">
+                    <p class="input_label">가격</p>
+                    <input class="input_text_5" type="text" th:value="${goods.goodsPrice}+원" readonly/>
+                </div>
+                <div class="input_box_3">
+                    <p class="input_label">수량</p>
+                    <input class="input_text_8" type="text" th:value="${goods.goodsStock}" readonly />
+                    <div class="shop_my_detail_sold_out_box">
+                        <input class="shop_my_detail_sold_out_check" type="checkbox" />
+                        <p class="shop_my_detail_sold_out_check_text">품절</p>
+                    </div>
+                </div>
 
             </div>
+
+            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <h2> 댓글 </h2>
+                <div id="comment-write">
+                    <input type="hidden" id="goodsId" name="goodId" th:value="${goods.goodsId}">
+                    <input type="hidden" id="memberId" name="memberId" th:value="${session['LoginNumber']}" readonly><br><br>
+                    <input type="text" id="memberNickname" name="memberNickname" th:value="${member.memberNickname}" readonly><br><br>
+                    <input type="text" id="goodsCommentContents" placeholder="내용"><br><br>
+                    <button id="goodsCommentSave"> 댓글등록 </button>
+                </div>
+
+                <div id="comment-area">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">댓글번호</th>
+                            <th scope="col">작성자</th>
+                            <th scope="col">내용</th>
+                            <th scope="col">작성시간</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="goodsComment: ${goodsCommentList}">
+                            <td th:text="${goodsComment.goodsCommentId}"> 댓글번호 </td>
+                            <td th:text="${goodsComment.memberNickName}"> 작성자 </td>
+                            <td th:text="${goodsComment.goodsCommentContents}"> 내용 </td>
+                            <td th:text="${#temporals.format(goodsComment.getCreateTime(), 'MM-dd HH:mm')}"> 작성시간 </td>
+                            <td style="width: 20px" th:if="${session['LoginEmail'].equals(goodsComment.memberEmail)}">
+                                <button class="comment_delete_btn" th:onclick="goodsCommentDelete([[${goodsComment.goodsCommentId}]])">X</button>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">FAQ</div>
         </div>
-        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">FAQ</div>
-    </div>
 
     </div>
 
 
     <div>
-            <img id="goodsLike" src="/image/like_default.png">
-            좋아요
+        <img id="goodsLike" src="/image/like_default.png" style="width:100px">찜
         <input type="hidden" id="like_check" th:value="${like}">
     </div>
 
     <div class="d-grid gap-2 col-6 mx-auto mt-5 mb-5">
-<button id="check_module" class="btn-primary" th:if="${goods.goodsStock>0}"> 구매하기 </button>
+        <button id="check_module" class="btn-primary" th:if="${goods.goodsStock>0}"> 구매하기 </button>
     </div>
+
+        </div>
 </div>
+
+
+
 </body>
 
 
@@ -211,6 +305,20 @@
         });
     });
 
+    function goodsDelete(goodsId) {
+        $.ajax({
+            type: "delete",
+            url: "/goods/"+goodsId,
+            success: function () {
+                alert("삭제되었습니다.")
+                location.href="/goods/"
+            },
+            error: function () {
+                console.log("ajax 오류")
+            }
+        })
+    }
+
     // 댓글작성
     const goodsComment = document.getElementById("goodsCommentSave")
     goodsComment.addEventListener("click", function () {
@@ -241,7 +349,7 @@
         }
     })
 
-//    댓글삭제 기능
+    //    댓글삭제 기능
     const goodsCommentDelete = (goodsCommentId) => {
         const reqUrl = "/goodsComment/" + goodsCommentId
         $.ajax({
@@ -264,24 +372,24 @@
 <script th:inline="javascript">
 
     /*<![CDATA[*/
-        let goodsInfo = /*[[${goods}]]*/
-    /*]]*/
+    let goodsInfo = /*[[${goods}]]*/
+        /*]]*/
 
 
 
 
-    // const price = document.getElementById("price").value
-    // console.log(price)
+        // const price = document.getElementById("price").value
+        // console.log(price)
 
-    console.log(goodsInfo)
+        console.log(goodsInfo)
 
     $("#check_module").click(function () {
         const goodsId= "[[${goods.goodsId}]]";
-            const IMP = window.IMP; // 생략가능
-            IMP.init('imp59250378');
-            // i'mport 관리자 페이지 -> 내정보 -> 가맹점식별코드
-            // ''안에 띄어쓰기 없이 가맹점 식별코드를 붙여넣어주세요. 안그러면 결제창이 안뜹니다.
-            IMP.request_pay({
+        const IMP = window.IMP; // 생략가능
+        IMP.init('imp59250378');
+        // i'mport 관리자 페이지 -> 내정보 -> 가맹점식별코드
+        // ''안에 띄어쓰기 없이 가맹점 식별코드를 붙여넣어주세요. 안그러면 결제창이 안뜹니다.
+        IMP.request_pay({
                 pg: 'kakao',
                 pay_method: 'card',
                 merchant_uid: 'merchant_' + new Date().getTime(),
@@ -302,7 +410,7 @@
                 // 구매자 정보에 여러가지도 있으므로, 자세한 내용은 맨 위 링크를 참고해주세요.
                 buyer_postcode: '123-456',
             },
-                function (rsp) {
+            function (rsp) {
                 console.log(rsp);
                 if (rsp.success) {
                     let msg = '결제가 완료되었습니다.';

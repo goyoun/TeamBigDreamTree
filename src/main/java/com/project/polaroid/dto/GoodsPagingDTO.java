@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -19,6 +20,8 @@ public class GoodsPagingDTO {
     private int goodsView;
     private int goodsLikeCount;
     private int goodsStock;
+    private LocalDateTime createTime;
+    private LocalDateTime updateTime;
     private List<GoodsPhotoDetailDTO> photoList;
 
 

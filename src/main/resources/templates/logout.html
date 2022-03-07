@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="/css/reset.css" rel="stylesheet" type="text/css">
+    <link href="/css/common.css" rel="stylesheet" type="text/css">
+    <link href="/css/logout.css" rel="stylesheet" type="text/css">
+    <title>POLAROID</title>
+</head>
+<body>
+<div class="contents" style="background-color: #fff !important;">
+    <div class="max_box_3 pt_60">
+        <div class="board_save_box">
+            <div class="mb_40 text_center">
+                <p class="fs_24 fw_b">본인인증</p>
+                <div class="title_bottom_line"></div>
+            </div>
+            <div class="idCheck_box vertical_box">
+                <p class="idCheck_label fs_14 vertical_mid">이메일</p>
+                <input class="idCheck_input fs_14 vertical_mid" type="text" />
+                <div class="idCheck_btn_box vertical_mid">
+                    <input class="idCheck_btn fs_14" type="button" value="인증번호 발송" />
+                </div>
+            </div>
+            <p class="check_result_2">이메일 조건 불일치, 미입력 (전체동일, 이상없을 시 display:none</p>
+            <div class="idCheck_box vertical_box">
+                <p class="idCheck_label fs_14 vertical_mid">인증번호</p>
+                <input class="idCheck_input fs_14 vertical_mid" type="text" />
+                <div class="idCheck_btn_box vertical_mid">
+                    <input class="idCheck_btn idCheck_btn_2 fs_14" type="button" value="확인" onclick="location.href='/member_update'" />
+                </div>
+            </div>
+            <p class="check_result_2">인증번호 불일치, 미입력</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
