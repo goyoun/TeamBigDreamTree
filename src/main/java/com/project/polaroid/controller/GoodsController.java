@@ -76,6 +76,8 @@ public class GoodsController {
         model.addAttribute("goods", goods);
         model.addAttribute("goodsCommentList", goods.getGoodsCommentList());
 
+        model.addAttribute("imageSize", goods.getGoodsPhoto().size());
+
         int likeStatus = gs.findLike(goodsId, memberId);
         model.addAttribute("like",likeStatus);
         System.out.println("likeStatus = " + likeStatus);
@@ -101,13 +103,23 @@ public class GoodsController {
         return "goods/save";
     }
 
+//    // 굿즈보드 작성
+//    @PostMapping("save")
+//    public String save(@ModelAttribute GoodsSaveDTO goodsSaveDTO, @AuthenticationPrincipal PrincipalDetails principalDetails) throws IOException {
+//        Long goodsId = gs.save(goodsSaveDTO, principalDetails.getMember().getId());
+//        for (MultipartFile g: goodsSaveDTO.getGoodsFile()) {
+//            gs.saveFile(goodsId, g);
+//            }
+//        return "redirect:/goods/";
+//    }
+
     // 굿즈보드 작성
     @PostMapping("save")
-    public String save(@ModelAttribute GoodsSaveDTO goodsSaveDTO, @AuthenticationPrincipal PrincipalDetails principalDetails) throws IOException {
-        Long goodsId = gs.save(goodsSaveDTO, principalDetails.getMember().getId());
+    public String save(@ModelAttribute GoodsSaveDTO goodsSaveDTO) throws IOException {
+        Long goodsId = gs.save(goodsSaveDTO);
         for (MultipartFile g: goodsSaveDTO.getGoodsFile()) {
             gs.saveFile(goodsId, g);
-            }
+        }
         return "redirect:/goods/";
     }
 

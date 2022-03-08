@@ -13,13 +13,13 @@ import java.util.List;
 
 public class GoodsSaveDTO {
 
-    private Long goodsId;
-    private String goodsWriter;
+    private Long memberId;
+//    private String goodsWriter;
     private String goodsTitle;
     private String goodsContents;
     private int goodsPrice;
-    private int goodsView;
-    private int goodsLike;
+//    private int goodsView;
+//    private int goodsLike;
     private int goodsStock;
     private List<MultipartFile> goodsFile;
     private String goodsInFor;

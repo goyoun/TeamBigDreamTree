@@ -23,13 +23,19 @@
 <div class="header">
     <div class="max_box_2 vertical_box">
         <div class="header_logo vertical_mid">
-            <img class="header_logo_img" src="/image/logo_white.png" onclick="location.href='/main'"/>
+            <img class="header_logo_img" src="/image/logo_white.png" onclick="location.href='/'"/>
         </div>
         <div class="header_search_box vertical_mid">
-            <input class="header_search_input fs_16" type="text" placeholder="Search"/>
-            <div class="header_search_btn">
-                <img class="header_search_btn_img" src="/image/search.png"/>
-            </div>
+            <form action="/goods/search" method="get" class="text-center">
+                <select name="select" id="select" style="width: 15%">
+                    <option value="goodsTitle"> 제목 </option>
+                    <option value="goodsWriter"> 작성자 </option>
+                </select>
+                <input name="search" class="header_search_input fs_16" type="text" placeholder="Search"/>
+                <div class="header_search_btn">
+                    <button type="submit"> <img class="header_search_btn_img" src="/image/search.png"/> </button>
+                </div>
+            </form>
         </div>
         <div class="header_right vertical_mid">
             <!-- 채팅 -->
@@ -38,7 +44,7 @@
             </div>
             <!-- 좋아요 모아보기 -->
             <div class="header_like">
-                <img class="header_like_img" src="/image/like.png"/>
+                <a th:href="@{|/goods/pick/${session.LoginNumber}|}"> <img class="header_like_img" src="/image/like.png"/> </a>
             </div>
             <!-- 사용자 정보 -->
             <div class="header_user" id="userToggleButton">
@@ -81,8 +87,9 @@
         <form action="/goods/save" name="wow1" method="post" enctype="multipart/form-data">
             <div class="input_box">
                 <p class="input_label fs_14">작성자</p>
-                <input th:value="${member.memberNickname}" class="input_text_5 fs_14" type="text" id="memberNickname" name="memberNickname" placeholder="작성자" readonly>
+                <input th:value="${member.memberNickname}" class="input_text_5 fs_14" type="text" placeholder="작성자" readonly>
             </div>
+            <input type="hidden" name="memberId" th:value="${session.LoginNumber}">
             <div class="input_box">
                 <p class="input_label fs_14">제목</p>
                 <input class="input_text_5 fs_14" type="text" id="goodsTitle" name="goodsTitle">
@@ -158,9 +165,9 @@
         const files = input.files;
 
         // Check files count
-        if (files.length > 10) {
+        if (files.length > 5) {
             check.innerHTML = ""
-            alert(`10개 이하로 올려주세요.`);
+            alert(`5개 이하로 올려주세요.`);
             return;
         } else {
             check.innerHTML = ""

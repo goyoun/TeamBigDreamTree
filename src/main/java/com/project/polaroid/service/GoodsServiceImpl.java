@@ -76,10 +76,18 @@ public class GoodsServiceImpl implements GoodsService {
         return goodsDetailDTO;
     }
 
+//    // 글쓰기 기능
+//    @Override
+//    public Long save(GoodsSaveDTO goodsSaveDTO, Long memberId) {
+//        GoodsEntity goodsEntity = GoodsEntity.toGoodsEntitySave(goodsSaveDTO, ms.findById(memberId));
+//        Long goodsId = gr.save(goodsEntity).getId();
+//        return goodsId;
+//    }
+
     // 글쓰기 기능
     @Override
-    public Long save(GoodsSaveDTO goodsSaveDTO, Long memberId) {
-        GoodsEntity goodsEntity = GoodsEntity.toGoodsEntitySave(goodsSaveDTO, ms.findById(memberId));
+    public Long save(GoodsSaveDTO goodsSaveDTO) {
+        GoodsEntity goodsEntity = GoodsEntity.toGoodsEntitySave(goodsSaveDTO, ms.findById(goodsSaveDTO.getMemberId()));
         Long goodsId = gr.save(goodsEntity).getId();
         return goodsId;
     }
@@ -230,7 +238,7 @@ public class GoodsServiceImpl implements GoodsService {
         int page = pageable.getPageNumber();
         page = (page == 1) ? 0 : (page - 1);
         //                        몇페이지? / 몇개씩 볼껀지       / 무슨 기준으로 정렬할지 (내림차순)/ 기준 컬럼 (Entity 필드이름) /
-        Page<GoodsEntity> goodsDetailDTO = gr.findByIdGoodsWriter(memberId, PageRequest.of(pageable.getPageNumber() - 1, PagingConst.PAGE_LIMIT, Sort.by(Sort.Direction.DESC, "id")));
+        Page<GoodsEntity> goodsDetailDTO = gr.findByIdGoodsWriter(memberId, PageRequest.of(pageable.getPageNumber() - 1, PagingConst.LIST_PAGE_LIMIT, Sort.by(Sort.Direction.DESC, "id")));
         Page<GoodsPagingDTO> goodsList = goodsDetailDTO.map(
                 goods -> new GoodsPagingDTO(
                         goods.getId(),

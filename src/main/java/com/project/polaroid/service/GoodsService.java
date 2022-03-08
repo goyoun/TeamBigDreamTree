@@ -15,7 +15,8 @@ public interface GoodsService {
 
     GoodsDetailDTO findById(Long goodsId);
 
-    Long save(GoodsSaveDTO goodsSaveDTO, Long memberId);
+//    Long save(GoodsSaveDTO goodsSaveDTO, Long memberId);
+    Long save(GoodsSaveDTO goodsSaveDTO);
 
     void saveFile(Long goodsId, MultipartFile g) throws IOException;
 
