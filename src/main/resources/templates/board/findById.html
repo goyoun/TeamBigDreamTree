@@ -10,6 +10,11 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="/js/common.js"></script>
     <title>POLAROID</title>
+    <style>
+        body {
+            background-color: #f9f6f8;
+        }
+    </style>
 </head>
 <body>
 <!-- header -->
@@ -39,7 +44,7 @@
             </div>
             <div class="header_user_toggle_box" id="userToggleMenu">
                 <input class="header_user_toggle_btn fs_14" type="button" value="마이페이지" onclick="location.href='/mypage'" />
-                <input class="header_user_toggle_btn fs_14" id="show" type="button"  onclick="location.href='/logout'" value="로그아웃" />
+                <button type="button" class="header_user_toggle_btn fs_14" id="show" data-bs-toggle="modal" data-bs-target="#exampleModal">로그아웃</button>
             </div>
 
         </div>
@@ -51,10 +56,27 @@
 <!-- 로그아웃 확인 팝업 -->
 <!-- header -->
 
+<!-- 로그아웃 모달창 -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">로그아웃</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                정말로 로그아웃 하시겠습니까?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary" onclick="modalLogout()">로그아웃</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <div class="contents">
-    <a th:href="@{|/board/update/${board.boardId}|}" th:if="${session['LoginEmail'].equals(board.memberEmail)}">게시글 수정</a>
     <div class="max_box_3 pt_60">
         <div class="board_detail_box">
             <div class="board_detail_top vertical_box">
@@ -66,6 +88,7 @@
                     <label class="board_detail_name" th:text="${board.memberNickname}"></label>
                 </div>
             </div>
+
             <div class="board_detail_img_box">
                 <input type="radio" name="pos" id="pos1" checked>
                 <input type="radio" name="pos" id="pos2" th:if="${imageSize >= 2}">
@@ -138,6 +161,24 @@
                                     <button class="comment_delete_btn" th:onclick="commentDelete([[${comment.commentId}]])">X</button>
                                 </td>
                             </tr>
+                            <!--                            <tr>-->
+                            <!--                                <td class="comment_name">밥</td>-->
+                            <!--                                <td class="comment_text">떡볶이, 곱창, 치킨, 피자, 회, 냉면, 삼겹살, 파스타, 닭발, 쭈꾸미, 햄버거, 감자튀김, 돈까스, 짬뽕, 족발, 보쌈, 튀김, 모밀, 라멘, 초밥, 우동</td>-->
+                            <!--                                <td class="comment_date">2022-02-21 13:31</td>-->
+                            <!--                                <td class="comment_delete_btn"></td>-->
+                            <!--                            </tr>-->
+                            <!--                            <tr>-->
+                            <!--                                <td class="comment_name">loginName</td>-->
+                            <!--                                <td class="comment_text">본인이 작성한 댓글만 삭제 가능</td>-->
+                            <!--                                <td class="comment_date">2022-02-21 10:22</td>-->
+                            <!--                                <td class="comment_delete_btn">X</td>-->
+                            <!--                            </tr>-->
+                            <!--                            <tr>-->
+                            <!--                                <td class="comment_name">왕꿈트리</td>-->
+                            <!--                                <td class="comment_text">로 아 들 어 와</td>-->
+                            <!--                                <td class="comment_date">2022-02-21 09:04</td>-->
+                            <!--                                <td class="comment_delete_btn"></td>-->
+                            <!--                            </tr>-->
                             </tbody>
                         </table>
                         <!-- 댓글 목록 예시 -->
@@ -149,10 +190,41 @@
     </div>
 </div>
 <!-- 맨 위로 가기 버튼 -->
+<div th:if="${session['LoginEmail'].equals(board.memberEmail)}">
+    <div class="update_btn">
+        <a th:href="@{|/board/update/${board.boardId}|}">
+            <img class="update_btn_img" src="/image/wrench-adjustable-circle-fill.svg">
+        </a>
+    </div>
+    <div class="delete_btn" data-bs-toggle="modal" data-bs-target="#deleteModal">
+        <img class="delete_btn_img" src="/image/x-circle-fill.svg">
+    </div>
+</div>
+<div class="write_btn" onclick="location.href='/board/save'">
+    <img class="write_btn_img" src="/image/write.svg">
+</div>
 <div class="up_btn" onclick="location.href='#'">
     <img class="up_btn_img" src="/image/up_btn.png" />
 </div>
-<!-- 맨 위로 가기 버튼 -->
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">게시글 삭제</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                정말로 게시글을 삭제하시겠습니까?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary" th:onclick="boardDelete([[${board.boardId}]])">삭제하기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 <script>
     let content = document.getElementById("boardContents").value
@@ -284,6 +356,24 @@
         });
     });
 
+    function boardDelete(boardId) {
+        $.ajax({
+            type:"delete",
+            data: boardId,
+            url: "/board/"+boardId,
+            success: function () {
+                alert("삭제가 완료되었습니다.")
+                location.href="/board/"
+            },
+            error: function () {
+                alert("ajax 오류")
+            }
+        })
+    }
+
+    function modalLogout() {
+        location.href='/logout'
+    }
 </script>
 
 </html>

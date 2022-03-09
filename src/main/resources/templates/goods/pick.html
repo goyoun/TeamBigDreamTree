@@ -54,10 +54,28 @@
             <div class="header_user_toggle_box" id="userToggleMenu">
                 <input class="header_user_toggle_btn fs_14" type="button" value="마이페이지"
                        onclick="location.href='/my_page'"/>
-                <input class="header_user_toggle_btn fs_14" id="show" type="button" onclick="location.href='/logout'"
-                       value="로그아웃"/>
+                <button type="button" class="header_user_toggle_btn fs_14" id="show" data-bs-toggle="modal" data-bs-target="#exampleModal">로그아웃</button>
             </div>
 
+        </div>
+    </div>
+</div>
+
+<!-- 로그아웃 모달 -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">로그아웃</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                로그아웃 하시겠습니까?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary" onclick="modalLogout()">로그아웃</button>
+            </div>
         </div>
     </div>
 </div>
@@ -118,4 +136,10 @@
         });
     }
     </script>
+
+<script>
+    function modalLogout() {
+        location.href='/logout'
+    }
+</script>
 </html>

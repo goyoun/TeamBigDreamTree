@@ -15,10 +15,6 @@ public interface BoardService {
 
     Long save(BoardSaveDTO boardSaveDTO);
 
-    void deleteById(Long boardId);
-
-    Long update(BoardUpdateDTO boardUpdateDTO);
-
     Page<BoardPagingDTO> paging(Pageable pageable);
 
     void saveFile(Long boardId, MultipartFile boardFile) throws IOException;
@@ -30,6 +26,10 @@ public interface BoardService {
     int findLike(Long boardId, Long memberId);
 
     int saveLike(Long boardId, Long memberId);
+
+    void deleteById(Long boardId);
+
+    Long update(BoardUpdateDTO boardUpdateDTO);
 
 //    List<BoardDetailDTO> findByTag(String keyword);
 }

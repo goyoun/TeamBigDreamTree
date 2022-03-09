@@ -231,6 +231,11 @@ public class GoodsServiceImpl implements GoodsService {
         return goodsDetailDTOList;
     }
 
+    @Override
+    public void kakao(Long memberId, Long goodsId) {
+
+    }
+
     // 굿즈 내글 리스트
     @Override
     @Transactional

@@ -37,4 +37,6 @@ public interface GoodsService {
     void pay(Long goodsId, int count);
 
     List<GoodsDetailDTO> pick(Long memberId);
+
+    void kakao(Long memberId, Long goodsId);
 }

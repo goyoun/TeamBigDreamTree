@@ -52,7 +52,9 @@ public class GoodsController {
     @GetMapping("search")
     public String search(@PageableDefault(page =1) Pageable pageable,
                          @ModelAttribute GoodsSearchDTO goodsSearchDTO,
-                         Model model) {
+                         Model model, HttpSession session) {
+        Long memberId = (Long) session.getAttribute("LoginNumber");
+        model.addAttribute("memberId",memberId);
         Page<GoodsPagingDTO> goodsDetailDTOList = gs.search(goodsSearchDTO, pageable);
         model.addAttribute("goodsList", goodsDetailDTOList);
         int startPage = (((int) (Math.ceil((double) pageable.getPageNumber() / PagingConst.BLOCK_LIMIT))) - 1) * PagingConst.BLOCK_LIMIT + 1;
@@ -98,8 +100,10 @@ public class GoodsController {
 
     //굿즈보드  작성페이지
     @GetMapping("save")
-    public String saveForm(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
+    public String saveForm(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model, HttpSession session) {
         model.addAttribute("member", principalDetails.getMember());
+        Long memberId = (Long) session.getAttribute("LoginNumber");
+        model.addAttribute("memberId",memberId);
         return "goods/save";
     }
 
@@ -115,8 +119,9 @@ public class GoodsController {
 
     // 굿즈보드 작성
     @PostMapping("save")
-    public String save(@ModelAttribute GoodsSaveDTO goodsSaveDTO) throws IOException {
+    public String save(@ModelAttribute GoodsSaveDTO goodsSaveDTO, HttpSession session) throws IOException {
         Long goodsId = gs.save(goodsSaveDTO);
+        Long memberId = (Long) session.getAttribute("LoginNumber");
         for (MultipartFile g: goodsSaveDTO.getGoodsFile()) {
             gs.saveFile(goodsId, g);
         }
@@ -150,11 +155,14 @@ public class GoodsController {
 
     // 결제
     @PostMapping("pay")
-    public @ResponseBody String pay(@RequestParam ("goodsId") Long goodsId,
-                                    @RequestParam ("count") int count){
+    public @ResponseBody String pay(@RequestParam ("goodsId") Long goodsId, @PathVariable Long memberId,
+                                    @RequestParam ("count") int count,Model model){
+        model.addAttribute("goodsId", goodsId);
+        model.addAttribute("memberId",memberId);
         gs.pay(goodsId,count);
         return "ok";
     }
+
 
     // 업데이트폼
     @GetMapping("update/{goodsId}")
@@ -186,6 +194,12 @@ public class GoodsController {
         List<GoodsDetailDTO> goodsDetailDTO = gs.pick(memberId);
         model.addAttribute("pick", goodsDetailDTO);
         return "goods/pick";
+    }
+
+    // 결제
+    @PostMapping("paySuccess")
+    public void paySuccess(){
+
     }
 
 }
