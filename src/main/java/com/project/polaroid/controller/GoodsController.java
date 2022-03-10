@@ -3,6 +3,7 @@ package com.project.polaroid.controller;
 import com.project.polaroid.auth.PrincipalDetails;
 import com.project.polaroid.common.PagingConst;
 import com.project.polaroid.dto.*;
+import com.project.polaroid.entity.MemberEntity;
 import com.project.polaroid.repository.MemberRepository;
 import com.project.polaroid.service.GoodsService;
 import com.project.polaroid.service.MemberService;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
+import javax.websocket.Session;
 import java.io.IOException;
 import java.util.List;
 
@@ -128,12 +130,6 @@ public class GoodsController {
         return "redirect:/goods/";
     }
 
-    //굿즈보드 구매페이지
-    @GetMapping("buy")
-    public String buyForm() {
-        return "goods/buy";
-    }
-
 
     // 굿즈보드 본인게시글 확인
     @GetMapping("list/{memberId}")
@@ -155,14 +151,34 @@ public class GoodsController {
 
     // 결제
     @PostMapping("pay")
-    public @ResponseBody String pay(@RequestParam ("goodsId") Long goodsId, @PathVariable Long memberId,
+    public @ResponseBody String pay(@RequestParam ("goodsId") Long goodsId, @RequestParam("memberId") Long memberId,
                                     @RequestParam ("count") int count,Model model){
         model.addAttribute("goodsId", goodsId);
         model.addAttribute("memberId",memberId);
         gs.pay(goodsId,count);
+        gs.paySuccess(goodsId, memberId, count);
         return "ok";
     }
 
+    // 결제 완료 창
+    @GetMapping("paySuccess/{goodsId}")
+    public String paySuccess(@PathVariable Long goodsId, HttpSession session, Model model) {
+        Long memberId = (Long) session.getAttribute("LoginNumber");
+        PayDetailDTO payDetailDTO = gs.payFind(goodsId, memberId);
+        model.addAttribute("pay", payDetailDTO);
+        return "goods/paySuccess";
+    }
+
+    // 본인 결제리스트
+    @GetMapping("payList")
+    public String payList(HttpSession session, Model model) {
+        Long memberId = (Long) session.getAttribute("LoginNumber");
+        MemberEntity memberEntity = ms.findById(memberId);
+        List<PayDetailDTO> payDetailDTOList = gs.payList(memberId);
+        model.addAttribute("payList", payDetailDTOList);
+        model.addAttribute("member", memberEntity);
+        return "goods/payList";
+    }
 
     // 업데이트폼
     @GetMapping("update/{goodsId}")
@@ -191,16 +207,12 @@ public class GoodsController {
     // 찜목록
     @GetMapping("pick/{memberId}")
     public String pick(@PathVariable Long memberId, Model model ) {
+        model.addAttribute("memberNickname", ms.findById(memberId).getMemberNickname());
         List<GoodsDetailDTO> goodsDetailDTO = gs.pick(memberId);
         model.addAttribute("pick", goodsDetailDTO);
         return "goods/pick";
     }
 
-    // 결제
-    @PostMapping("paySuccess")
-    public void paySuccess(){
-
-    }
 
 }
 

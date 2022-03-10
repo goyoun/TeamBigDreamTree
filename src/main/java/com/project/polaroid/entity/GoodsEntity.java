@@ -3,6 +3,7 @@ package com.project.polaroid.entity;
 import com.fasterxml.jackson.databind.ser.Serializers;
 import com.project.polaroid.dto.GoodsSaveDTO;
 import com.project.polaroid.dto.GoodsUpdateDTO;
+import com.project.polaroid.dto.PaySuccessDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -47,6 +48,9 @@ public class GoodsEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "goodsEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<GoodsLikeEntity> goodsLikeEntityList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "goodsEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<PayEntity> payEntityList = new ArrayList<>();
 
 
     // 멤버엔티티 참조

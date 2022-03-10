@@ -270,10 +270,11 @@ function joinSubmit(){
     const phone=document.getElementById("pnOut").innerText
 
     const checkResult = document.getElementById('joinOut');
+    joinForm.submit();
 
-    if(mail=="GOOD" && pw1=="GOOD" && pw2=="GOOD" && code=="GOOD" && name=='GOOD' && addresst=='GOOD' && phone=="GOOD")
-        joinForm.submit();
-    else {
-
-    }
+    // if(mail=="GOOD" && pw1=="GOOD" && pw2=="GOOD" && code=="GOOD" && name=='GOOD' && addresst=='GOOD' && phone=="GOOD")
+    //     joinForm.submit();
+    // else {
+    //
+    // }
 }

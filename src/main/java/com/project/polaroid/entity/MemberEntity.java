@@ -80,6 +80,9 @@ public class MemberEntity {
     @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<GoodsLikeEntity> goodsLikeEntityList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<PayEntity> payEntityList = new ArrayList<>();
+
 
 
 

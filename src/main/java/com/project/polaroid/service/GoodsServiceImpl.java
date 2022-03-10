@@ -2,14 +2,8 @@ package com.project.polaroid.service;
 
 import com.project.polaroid.common.PagingConst;
 import com.project.polaroid.dto.*;
-import com.project.polaroid.entity.GoodsEntity;
-import com.project.polaroid.entity.GoodsLikeEntity;
-import com.project.polaroid.entity.GoodsPhotoEntity;
-import com.project.polaroid.entity.MemberEntity;
-import com.project.polaroid.repository.GoodsLikeRepository;
-import com.project.polaroid.repository.GoodsPhotoRepository;
-import com.project.polaroid.repository.GoodsRepository;
-import com.project.polaroid.repository.MemberRepository;
+import com.project.polaroid.entity.*;
+import com.project.polaroid.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,6 +26,7 @@ public class GoodsServiceImpl implements GoodsService {
     private final MemberService ms;
     private final GoodsLikeRepository glr;
     private final MemberRepository mr;
+    private final PayRepository pr;
 
     // 페이징
     @Override
@@ -231,9 +226,30 @@ public class GoodsServiceImpl implements GoodsService {
         return goodsDetailDTOList;
     }
 
+    // 결제 성공 정보 저장
     @Override
-    public void kakao(Long memberId, Long goodsId) {
+    public void paySuccess(Long goodsId, Long memberId, int count) {
+        MemberEntity memberEntity = mr.findById(memberId).get();
+        GoodsEntity goodsEntity = gr.findById(goodsId).get();
+        PayEntity payEntity = PayEntity.toPayEntity(memberEntity, goodsEntity, count);
+        pr.save(payEntity);
+    }
 
+    @Override
+    public PayDetailDTO payFind(Long goodsId, Long memberId) {
+        GoodsEntity goodsEntity = gr.findById(goodsId).get();
+        MemberEntity memberEntity = mr.findById(memberId).get();
+        PayEntity payEntity = pr.findTop1ByGoodsEntityAndMemberEntityOrderByIdDesc(goodsEntity, memberEntity);
+        PayDetailDTO payDetailDTO = PayDetailDTO.toPayDetailDTO(payEntity);
+        return payDetailDTO;
+    }
+
+    @Override
+    public List<PayDetailDTO> payList(Long memberId) {
+        MemberEntity memberEntity = mr.findById(memberId).get();
+        List<PayEntity> payEntityList = pr.findAllByMemberEntity(memberEntity);
+        List<PayDetailDTO> payDetailDTOList = PayDetailDTO.toPayDetailDTOList(payEntityList);
+        return payDetailDTOList;
     }
 
     // 굿즈 내글 리스트
