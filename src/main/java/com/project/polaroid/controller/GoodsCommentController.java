@@ -24,7 +24,7 @@ public class GoodsCommentController {
 
     @PostMapping("save")
     public @ResponseBody List<GoodsCommentDetailDTO> save (@ModelAttribute GoodsCommentSaveDTO goodsCommentSaveDTO) {
-        System.out.println("댓글이 넘어오나요?1");
+//        System.out.println("댓글이 넘어오나요?1");
         Long goodsCommentId = gcs.save(goodsCommentSaveDTO);
         List<GoodsCommentDetailDTO> goodsCommentList = gcs.findAll(goodsCommentSaveDTO.getGoodsId());
         return goodsCommentList;
@@ -32,7 +32,7 @@ public class GoodsCommentController {
 
     @DeleteMapping("{goodsCommentId}")
     public ResponseEntity delete (@PathVariable Long goodsCommentId) {
-        System.out.println("댓글이 넘어오나요?2");
+//        System.out.println("댓글이 넘어오나요?2");
         gcs.deleteById(goodsCommentId);
         return new ResponseEntity(HttpStatus.OK);
     }

@@ -235,6 +235,7 @@ public class GoodsServiceImpl implements GoodsService {
         pr.save(payEntity);
     }
 
+    // 결제정보
     @Override
     public PayDetailDTO payFind(Long goodsId, Long memberId) {
         GoodsEntity goodsEntity = gr.findById(goodsId).get();
@@ -244,10 +245,11 @@ public class GoodsServiceImpl implements GoodsService {
         return payDetailDTO;
     }
 
+    // 결제 리스트
     @Override
     public List<PayDetailDTO> payList(Long memberId) {
         MemberEntity memberEntity = mr.findById(memberId).get();
-        List<PayEntity> payEntityList = pr.findAllByMemberEntity(memberEntity);
+        List<PayEntity> payEntityList = pr.findAllByMemberEntityOrderByIdDesc(memberEntity);
         List<PayDetailDTO> payDetailDTOList = PayDetailDTO.toPayDetailDTOList(payEntityList);
         return payDetailDTOList;
     }

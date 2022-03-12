@@ -98,7 +98,7 @@
             <tbody>
             <tr th:each="goods: ${goodsList}">
 <!--                <td th:text="${goods.goodsId}"></td>-->
-                <td><img th:src="@{|/goodsFile/${goods.getPhotoList().get(0).getGoodsFilename()}|}" style="width: 100px; border-radius: 0.5rem"></td>
+                <td><img th:src="@{|/goodsFile/${goods.getPhotoList().get(0).getGoodsFilename()}|}" style="width: 100px; height: 100px; border-radius: 0.5rem"></td>
                 <td th:text="${goods.goodsTitle}"></td>
                 <!--                <td th:text="${goods.goodsWriter}"></td>-->
                 <!--                <td th:text="${goods.goodsContents}"></td>-->

@@ -83,9 +83,9 @@
 
   <thead>
     <tr>
-      <th scope="col">결제번호</th>
-      <th scope="col">사진</th>
-      <th scope="col">상품번호</th>
+<!--      <th scope="col">결제번호</th>-->
+      <th scope="col">제품</th>
+<!--      <th scope="col">상품번호</th>-->
       <th scope="col">상품명</th>
       <th scope="col">결제수량</th>
       <th scope="col">결제금액</th>
@@ -95,9 +95,9 @@
 
   <tbody>
     <tr th:each="pay: ${payList}">
-      <td th:text="${pay.payId}"></td>
+<!--      <td th:text="${pay.payId}"></td>-->
       <td><img th:src="@{|/goodsFile/${pay.getGoodsPhoto().get(0).getGoodsFilename()}|}" style="width:100px; height:100px;" class="img-fluid rounded-start" alt="..."></td>
-      <td th:text="${pay.goodsId}"></td>
+<!--      <td th:text="${pay.goodsId}"></td>-->
       <td th:text="${pay.goodsTitle}"></td>
       <td><span th:text="${pay.count}"></span><span>개</span></td>
       <td th:text="${pay.goodsPrice}+'원'"></td>

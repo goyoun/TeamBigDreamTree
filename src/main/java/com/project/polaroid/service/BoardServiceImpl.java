@@ -1,10 +1,7 @@
 package com.project.polaroid.service;
 
 import com.project.polaroid.dto.*;
-import com.project.polaroid.entity.BoardEntity;
-import com.project.polaroid.entity.LikeEntity;
-import com.project.polaroid.entity.MemberEntity;
-import com.project.polaroid.entity.PhotoEntity;
+import com.project.polaroid.entity.*;
 import com.project.polaroid.page.PagingConst;
 import com.project.polaroid.repository.BoardRepository;
 import com.project.polaroid.repository.LikeRepository;
@@ -21,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -43,10 +42,8 @@ public class BoardServiceImpl implements BoardService {
     public void saveFile(Long boardId, MultipartFile boardFile) throws IOException {
         String boardFilename = boardFile.getOriginalFilename();
         boardFilename = System.currentTimeMillis() + "-" + boardFilename;
-        String savePath = "C:\\Development\\source\\springboot\\Polaroid\\src\\main\\resources\\static\\boardFile\\" + boardFilename;
-
-//   지석이용    String savePath = "/Users/sky/EclipseJava/source/SpringBoot/Polaroid/src/main/resources/static/upload/" + boardFilename;
-
+//        String savePath = "/Users/sky/EclipseJava/source/SpringBoot/Polaroid/src/main/resources/static/upload/" + boardFilename;
+        String savePath = "C:\\Development\\source\\springboot\\Polaroid\\src\\main\\resources\\static\\upload\\" + boardFilename;
         if (!boardFile.isEmpty()) {
             boardFile.transferTo(new File(savePath));
         }
@@ -108,7 +105,9 @@ public class BoardServiceImpl implements BoardService {
         } else {
             lr.deleteByBoardIdAndMemberId(boardId, memberId);
             return 0;
+
         }
+
     }
 
     @Override
@@ -139,4 +138,5 @@ public class BoardServiceImpl implements BoardService {
         );
         return boardList;
     }
+
 }

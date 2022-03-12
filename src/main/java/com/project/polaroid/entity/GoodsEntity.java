@@ -37,9 +37,9 @@ public class GoodsEntity extends BaseEntity {
     private int goodsPrice;
     @Column
     private int goodsView;
-
     @Column
     private String goodsInFor;
+
     @OneToMany(mappedBy = "goodsEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<GoodsPhotoEntity> GoodsPhotoEntity = new ArrayList<>();
 
@@ -79,7 +79,8 @@ public class GoodsEntity extends BaseEntity {
         goods.setGoodsStock(goodsUpdateDTO.getGoodsStock());
         goods.setGoodsContents(goodsUpdateDTO.getGoodsContents());
         goods.setGoodsView(goodsEntity.getGoodsView());
-        goods.setGoodsInFor(goodsEntity.getGoodsInFor());
+//        goods.setGoodsInFor(goodsEntity.getGoodsInFor());
+        goods.setGoodsInFor(goodsUpdateDTO.getGoodsInFor());
         goods.setGoodsCommentEntityList(goodsEntity.getGoodsCommentEntityList());
         goods.setGoodsPhotoEntity(goodsEntity.getGoodsPhotoEntity());
         goods.setGoodsLikeEntityList(goodsEntity.getGoodsLikeEntityList());

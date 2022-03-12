@@ -15,7 +15,7 @@
     background-color: #fff;
 }
 .max_box {
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
 }
 .max_box_2 {
@@ -100,6 +100,19 @@
     height: 100%;
 }
 
+.admin_delete_btn {
+    width: 40px;
+    height: 40px;
+    position: fixed;
+    right: 120px;
+    bottom: 240px;
+    cursor: pointer;
+}
+
+.admin_delete_btn_img {
+    width: 100%;
+    height: 100%;
+}
 
 /** header **/
 .header {

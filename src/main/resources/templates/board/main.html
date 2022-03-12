@@ -9,7 +9,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="/js/common.js"></script>
-
     <script th:inline="javascript">
 
         /*<![CDATA[*/
@@ -63,7 +62,7 @@
                                         let image = board.photoList
                                         output += "<td class='main_board'>"
                                         output += "<a href='/board/"+board.boardId+"'>"
-                                        output += "<img class='main_board_img' src='/boardFile/"+image[0].boardFilename+"'>"
+                                        output += "<img class='main_board_img' src='/upload/"+image[0].boardFilename+"'>"
                                         output += "</a>"
                                         output += "</td>"
                                     })
@@ -134,17 +133,13 @@
 <!-- 로그아웃 모달창 -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">로그아웃</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content p_30 bg_ef">
+            <div class="modal-body fs_16 text_center fw_b">
+                로그아웃 하시겠습니까?
             </div>
-            <div class="modal-body">
-                정말로 로그아웃 하시겠습니까?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                <button type="button" class="btn btn-primary" onclick="modalLogout()">로그아웃</button>
+            <div class="modal-footer border_none modal_btn_box">
+                <button type="button" class="btn btn-secondary flex-grow-1 bg_ccc logout_modal_btn logout_modal_btn_cancel" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary flex-grow-1 bg_524A4E logout_modal_btn logout_modal_btn_okay" onclick="modalLogout()">로그아웃</button>
             </div>
         </div>
     </div>
@@ -171,7 +166,7 @@
             <tr class="d-flex flex-wrap">
                 <td class="main_board" th:each="board: ${boardList}">
                     <a th:href="@{|/board/${board.boardId}|}">
-                        <img class="main_board_img" th:src="@{|/boardFile/${board.getPhotoList().get(0).getBoardFilename()}|}"/>
+                        <img class="main_board_img" th:src="@{|/upload/${board.getPhotoList().get(0).getBoardFilename()}|}"/>
                     </a>
                 </td>
             </tr>
@@ -179,6 +174,9 @@
         <!-- 이부분 수정해야함. 예시 -->
 
         <!-- 맨 위로 가기 버튼 -->
+        <div class="delete_btn" onclick="location.href='/goods/'">
+            <img class="delete_btn_img" src="/image/shopping-cart-png-icon-0.jpg">
+        </div>
         <div class="write_btn" onclick="location.href='/board/save'">
             <img class="write_btn_img" src="/image/write.svg">
         </div>

@@ -88,7 +88,7 @@
             <tr class="d-flex flex-wrap">
                 <td class="main_board" th:each="board: ${boardList}">
                     <a th:href="@{|/board/${board.boardId}|}">
-                        <img class="main_board_img" th:src="@{|/boardFile/${board.getPhotoList().get(0).getBoardFilename()}|}"/>
+                        <img class="main_board_img" th:src="@{|/upload/${board.getPhotoList().get(0).getBoardFilename()}|}"/>
                     </a>
                 </td>
             </tr>

@@ -252,6 +252,13 @@
         <div class="up_btn" onclick="location.href='#'">
             <img class="up_btn_img" src="/image/up_btn.png" />
         </div>
+        <div th:if="${session.LoginRole.equals('ROLE_ADMIN')}">
+            <div class="admin_delete_btn" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                <img class="admin_delete_btn_img" src="/image/red-x.svg">
+            </div>
+        </div>
+
+
 <!--        <div th:if="${session.LoginRole.equals('ROLE_ADMIN')}">-->
 <!--            <div class="admin_delete_btn" data-bs-toggle="modal" data-bs-target="#deleteModal">-->
 <!--                <img class="admin_delete_btn_img" src="/image/red-x.svg">-->
