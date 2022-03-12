@@ -43,6 +43,7 @@ public class GoodsController {
         model.addAttribute("goodsList", goodsList);
         Long memberId = (Long) session.getAttribute("LoginNumber");
         model.addAttribute("memberId", memberId);
+        model.addAttribute("member",ms.findById(memberId));
         // 삼항연산자로 바꿈
         int startPage = (((int) (Math.ceil((double) pageable.getPageNumber() / PagingConst.BLOCK_LIMIT))) - 1) * PagingConst.BLOCK_LIMIT + 1;
         int endPage = ((startPage + PagingConst.BLOCK_LIMIT - 1) < goodsList.getTotalPages()) ? startPage + PagingConst.BLOCK_LIMIT - 1 : goodsList.getTotalPages();
@@ -57,6 +58,7 @@ public class GoodsController {
                          Model model, HttpSession session) {
         Long memberId = (Long) session.getAttribute("LoginNumber");
         model.addAttribute("memberId",memberId);
+        model.addAttribute("member",ms.findById(memberId));
         Page<GoodsPagingDTO> goodsDetailDTOList = gs.search(goodsSearchDTO, pageable);
         model.addAttribute("goodsList", goodsDetailDTOList);
         int startPage = (((int) (Math.ceil((double) pageable.getPageNumber() / PagingConst.BLOCK_LIMIT))) - 1) * PagingConst.BLOCK_LIMIT + 1;
@@ -106,6 +108,7 @@ public class GoodsController {
         model.addAttribute("member", principalDetails.getMember());
         Long memberId = (Long) session.getAttribute("LoginNumber");
         model.addAttribute("memberId",memberId);
+        model.addAttribute("member",ms.findById(memberId));
         return "goods/save";
     }
 
@@ -121,9 +124,10 @@ public class GoodsController {
 
     // 굿즈보드 작성
     @PostMapping("save")
-    public String save(@ModelAttribute GoodsSaveDTO goodsSaveDTO, HttpSession session) throws IOException {
+    public String save(@ModelAttribute GoodsSaveDTO goodsSaveDTO, HttpSession session, Model model) throws IOException {
         Long goodsId = gs.save(goodsSaveDTO);
         Long memberId = (Long) session.getAttribute("LoginNumber");
+        model.addAttribute("member",ms.findById(memberId));
         for (MultipartFile g: goodsSaveDTO.getGoodsFile()) {
             gs.saveFile(goodsId, g);
         }
@@ -137,13 +141,18 @@ public class GoodsController {
                           @ModelAttribute GoodsDetailDTO goodsDetailDTO, Model model,
                           @PageableDefault(page = 1) Pageable pageable) {
         Page<GoodsPagingDTO> goodsDetailDTOList = gs.list(memberId, pageable);
+
         String memberNickname = mr.findById(memberId).get().getMemberNickname();
+        model.addAttribute("member",ms.findById(memberId));
         model.addAttribute("goodsList", goodsDetailDTOList);
         model.addAttribute("memberNickname", memberNickname);
+
         int startPage = (((int) (Math.ceil((double) pageable.getPageNumber() / PagingConst.BLOCK_LIMIT))) - 1) * PagingConst.BLOCK_LIMIT + 1;
         int endPage = ((startPage + PagingConst.BLOCK_LIMIT - 1) < goodsDetailDTOList.getTotalPages()) ? startPage + PagingConst.BLOCK_LIMIT - 1 : goodsDetailDTOList.getTotalPages();
+
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
+
         model.addAttribute("memberId", memberId);
         return "/goods/myList";
 
@@ -155,6 +164,7 @@ public class GoodsController {
                                     @RequestParam ("count") int count,Model model){
         model.addAttribute("goodsId", goodsId);
         model.addAttribute("memberId",memberId);
+        model.addAttribute("member",ms.findById(memberId));
         gs.pay(goodsId,count);
         gs.paySuccess(goodsId, memberId, count);
         return "ok";
@@ -164,6 +174,7 @@ public class GoodsController {
     @GetMapping("paySuccess/{goodsId}")
     public String paySuccess(@PathVariable Long goodsId, HttpSession session, Model model) {
         Long memberId = (Long) session.getAttribute("LoginNumber");
+        model.addAttribute("member",ms.findById(memberId));
         PayDetailDTO payDetailDTO = gs.payFind(goodsId, memberId);
         model.addAttribute("pay", payDetailDTO);
         return "goods/paySuccess";
@@ -174,6 +185,7 @@ public class GoodsController {
     public String payList(HttpSession session, Model model) {
         Long memberId = (Long) session.getAttribute("LoginNumber");
         MemberEntity memberEntity = ms.findById(memberId);
+        model.addAttribute("member",ms.findById(memberId));
         List<PayDetailDTO> payDetailDTOList = gs.payList(memberId);
         model.addAttribute("payList", payDetailDTOList);
         model.addAttribute("member", memberEntity);
@@ -182,8 +194,10 @@ public class GoodsController {
 
     // 업데이트폼
     @GetMapping("update/{goodsId}")
-    public String updateForm(@PathVariable Long goodsId, Model model) {
+    public String updateForm(@PathVariable Long goodsId, Model model, HttpSession session) {
         GoodsDetailDTO goodsDetailDTO = gs.findById(goodsId);
+        Long memberId = (Long) session.getAttribute("LoginNumber");
+        model.addAttribute("member",ms.findById(memberId));
         System.out.println("goodsDetailDTO.getMemberId() = " + goodsDetailDTO.getMemberId());
         model.addAttribute("goods", goodsDetailDTO);
         return "goods/update";
@@ -208,6 +222,7 @@ public class GoodsController {
     @GetMapping("pick/{memberId}")
     public String pick(@PathVariable Long memberId, Model model ) {
         model.addAttribute("memberNickname", ms.findById(memberId).getMemberNickname());
+        model.addAttribute("member",ms.findById(memberId));
         List<GoodsDetailDTO> goodsDetailDTO = gs.pick(memberId);
         model.addAttribute("pick", goodsDetailDTO);
         return "goods/pick";

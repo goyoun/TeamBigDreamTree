@@ -35,3 +35,16 @@ function viewMore() {
         : "-webkit-box";
     flagMainText = !flagMainText;
 }
+
+
+    // 로그아웃 확인 팝업
+    function show () {
+    document.querySelector(".background").className = "background show";
+}
+    function close () {
+    document.querySelector(".background").className = "background";
+}
+    document.querySelector("#show").addEventListener('click', show);
+    document.querySelector("#close").addEventListener('click', close);
+
+

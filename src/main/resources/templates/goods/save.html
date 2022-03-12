@@ -50,6 +50,7 @@
             <div class="header_user_toggle_box" id="userToggleMenu">
                 <input class="header_user_toggle_btn fs_14" type="button" value="마이페이지" onclick="location.href='/my_page'"/>
                 <input class="header_user_toggle_btn fs_14" type="button" value="결제리스트" onclick="location.href='/goods/payList'"/>
+                <input class="header_user_toggle_btn fs_14" type="button" value="굿즈페이지" th:if="${member.memberRole == 'ROLE_SELLER'}" th:onclick="'location.href=\''+ @{|/goods/list/${memberId}|} + '\''"/>
                 <button type="button" class="header_user_toggle_btn fs_14" id="show" data-bs-toggle="modal" data-bs-target="#exampleModal">로그아웃</button>
             </div>
 
@@ -60,17 +61,13 @@
 <!-- 로그아웃 모달 -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">로그아웃</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
+        <div class="modal-content p_30 bg_ef">
+            <div class="modal-body fs_16 text_center fw_b">
                 로그아웃 하시겠습니까?
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">취소</button>
-                <button type="button" class="btn btn-primary" onclick="modalLogout()">로그아웃</button>
+            <div class="modal-footer border_none modal_btn_box">
+                <button type="button" class="btn btn-secondary flex-grow-1 bg_ccc logout_modal_btn logout_modal_btn_cancel" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary flex-grow-1 bg_524A4E logout_modal_btn logout_modal_btn_okay" onclick="modalLogout()">로그아웃</button>
             </div>
         </div>
     </div>
@@ -127,8 +124,8 @@
             </div>
             <div class="input_box_2">
                 <p class="input_label fs_14">상품 정보</p>
-                <textarea class="input_text_6" name="goodsInFor" id="floatingTextarea2"></textarea>
-                <label for="floatingTextarea2"> 상품정보를 입력하세요 </label>
+                <textarea class="input_text_6" name="goodsInFor" id="floatingTextarea2" placeholder="상품정보를 입력하세요"></textarea>
+<!--                <label for="floatingTextarea2">  </label>-->
             </div>
             <div id="check"></div>
 

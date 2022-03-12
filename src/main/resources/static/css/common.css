@@ -8,6 +8,12 @@
     padding: 60px 0px;
     background-color: #f9f6f8;
 }
+.contents2{
+    width: 100%;
+    height: auto;
+    padding: 60px 0px;
+    background-color: #fff;
+}
 .max_box {
     max-width: 800px;
     margin: 0 auto;
@@ -36,6 +42,9 @@
 .text_right {
     text-align: right;
 }
+.text_left {
+    text-align: left;
+}
 /* 맨 위로 가기 버튼 */
 .up_btn {
     width: 40px;
@@ -49,6 +58,48 @@
     width: 100%;
     height: 100%;
 }
+.write_btn {
+    width: 40px;
+    height: 40px;
+    position: fixed;
+    right: 120px;
+    bottom: 90px;
+    cursor: pointer;
+}
+
+.write_btn_img {
+    width: 100%;
+    height: 100%;
+}
+
+.delete_btn {
+    width: 40px;
+    height: 40px;
+    position: fixed;
+    right: 120px;
+    bottom: 140px;
+    cursor: pointer;
+}
+
+.delete_btn_img {
+    width: 100%;
+    height: 100%;
+}
+
+.update_btn {
+    width: 40px;
+    height: 40px;
+    position: fixed;
+    right: 120px;
+    bottom: 190px;
+    cursor: pointer;
+}
+
+.update_btn_img {
+    width: 100%;
+    height: 100%;
+}
+
 
 /** header **/
 .header {
@@ -440,3 +491,111 @@ textarea[readonly]{
     color: #999999;
 }
 /** color **/
+
+
+/* 로그아웃 확인 팝업 */
+.modal_btn_box {
+    justify-content: space-around !important;
+}
+.logout_modal_btn {
+    border-color: transparent !important;
+}
+.logout_modal_btn_cancel:hover {
+    background-color: #999 !important;
+}
+.logout_modal_btn_okay:hover {
+    background-color: #333 !important;
+}
+.border_none {
+    border: none !important;
+}
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+
+    /* 숨기기 */
+    z-index: -1;
+    opacity: 0;
+}
+
+.show {
+    opacity: 1;
+    z-index: 1000;
+    transition: all .5s;
+}
+
+.window {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.popup {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.3);
+
+    /* 임시 지정 */
+    width: 100px;
+    height: 100px;
+
+    /* 초기에 약간 아래에 배치 */
+    transform: translate(-50%, -40%);
+}
+
+.show .popup {
+    transform: translate(-50%, -50%);
+    transition: all .5s;
+}
+/* 로그아웃 확인 팝업 */
+
+.bg_ef {
+    background-color: #efefef !important;
+}
+.bg_524A4E {
+    background-color: #524A4E !important;
+}
+.bg_ccc {
+    background-color: #ccc !important;
+}
+
+/* 3월 11일 추가*/
+ .icon-badge-group .icon-badge-container {
+     display: inline-block;
+     margin-left: 15px;
+ }
+
+.icon-badge-group .icon-badge-container:first-child {
+    margin-left: 0
+}
+
+.icon-badge-container {
+    margin-top: 20px;
+    position: relative;
+}
+
+.icon-badge-icon {
+    font-size: 30px;
+    position: relative;
+}
+
+.icon-badge {
+    background-color: red;
+    font-size: 12px;
+    color: white;
+    text-align: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 35%;
+    position: relative;
+    top: -35px;
+    left: 17px;
+}
