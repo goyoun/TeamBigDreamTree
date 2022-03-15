@@ -1,8 +1,13 @@
 package com.project.polaroid.service;
 
 import com.project.polaroid.dto.*;
-import com.project.polaroid.entity.*;
+import com.project.polaroid.entity.BoardEntity;
+import com.project.polaroid.entity.LikeEntity;
+import com.project.polaroid.entity.MemberEntity;
+import com.project.polaroid.entity.PhotoEntity;
 import com.project.polaroid.page.PagingConst;
+import com.project.polaroid.page.PagingConstBoard;
+import com.project.polaroid.page.PagingConstGoods;
 import com.project.polaroid.repository.BoardRepository;
 import com.project.polaroid.repository.LikeRepository;
 import com.project.polaroid.repository.MemberRepository;
@@ -18,8 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,8 +47,9 @@ public class BoardServiceImpl implements BoardService {
     public void saveFile(Long boardId, MultipartFile boardFile) throws IOException {
         String boardFilename = boardFile.getOriginalFilename();
         boardFilename = System.currentTimeMillis() + "-" + boardFilename;
-//        String savePath = "/Users/sky/EclipseJava/source/SpringBoot/Polaroid/src/main/resources/static/upload/" + boardFilename;
-        String savePath = "C:\\Development\\source\\springboot\\Polaroid\\src\\main\\resources\\static\\upload\\" + boardFilename;
+        String savePath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\upload\\" + boardFilename;
+//        String savePath = "/Users/seongwookheo/source/springboot/Polaroid/src/main/resources/static/upload/" + boardFilename;
+
         if (!boardFile.isEmpty()) {
             boardFile.transferTo(new File(savePath));
         }
@@ -124,6 +130,15 @@ public class BoardServiceImpl implements BoardService {
         return br.save(updateBoardEntity).getId();
     }
 
+    @Transactional
+    @Override
+    public List<BoardDetailDTO> myPage(Long memberId) {
+        List<BoardEntity> boardEntityList = br.mypage(memberId);
+        List<BoardDetailDTO> boardList=BoardDetailDTO.toBoardDetailDTOList(boardEntityList);
+        return boardList;
+    }
+
+
     @Override
     public Page<BoardPagingDTO> paging(Pageable pageable) {
         int page = pageable.getPageNumber();
@@ -139,4 +154,9 @@ public class BoardServiceImpl implements BoardService {
         return boardList;
     }
 
+    // 보드 숫자
+    @Override
+    public List<BoardEntity> boardCount(Long id) {
+        return br.boardCount(id);
+    }
 }

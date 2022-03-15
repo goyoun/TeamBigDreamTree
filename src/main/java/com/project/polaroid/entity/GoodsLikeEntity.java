@@ -1,9 +1,6 @@
 package com.project.polaroid.entity;
 
-import com.project.polaroid.dto.GoodsLikeSaveDTO;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -19,12 +16,14 @@ public class GoodsLikeEntity {
     @Column(name="goodsLike_id")
     private Long id;
 
+    // 해당 굿즈
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn (name="goods_id")
     private GoodsEntity goodsEntity;
 
-    @ManyToOne(fetch = FetchType.LAZY) //LAZY 부하 ↓
-    @JoinColumn(name = "member_id") // 부모테이블의 pk 컬럼이름
+    // 찜 누른 사람
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
     private MemberEntity memberEntity;
 
     public static GoodsLikeEntity toGoodsLikeEntity(GoodsEntity goodsEntity, MemberEntity memberEntity) {
@@ -33,5 +32,5 @@ public class GoodsLikeEntity {
         goodsLikeEntity.setMemberEntity(memberEntity);
         return goodsLikeEntity;
     }
-}
 
+}

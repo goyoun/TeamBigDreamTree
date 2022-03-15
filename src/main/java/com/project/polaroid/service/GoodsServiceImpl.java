@@ -1,6 +1,7 @@
 package com.project.polaroid.service;
 
-import com.project.polaroid.common.PagingConst;
+
+import com.project.polaroid.page.PagingConstGoods;
 import com.project.polaroid.dto.*;
 import com.project.polaroid.entity.*;
 import com.project.polaroid.repository.*;
@@ -36,7 +37,7 @@ public class GoodsServiceImpl implements GoodsService {
 //        page = page - 1;
         page = (page == 1) ? 0 : (page - 1);
         //                        몇페이지? / 몇개씩 볼껀지       / 무슨 기준으로 정렬할지 (내림차순)/ 기준 컬럼 (Entity 필드이름) /
-        Page<GoodsEntity> goodsEntities = gr.findAll(PageRequest.of(page, PagingConst.PAGE_LIMIT, Sort.by(Sort.Direction.DESC, "id")));
+        Page<GoodsEntity> goodsEntities = gr.findAll(PageRequest.of(page, PagingConstGoods.PAGE_LIMIT, Sort.by(Sort.Direction.DESC, "id")));
         // Entity는 서비스 밖으로 나가면 안됨
         // Page<BoardEntity> => Page(BoardPagingDTO) 로 변환시켜야하지만 페이징은 안된다.
         Page<GoodsPagingDTO> goodsList = goodsEntities.map(
@@ -71,14 +72,6 @@ public class GoodsServiceImpl implements GoodsService {
         return goodsDetailDTO;
     }
 
-//    // 글쓰기 기능
-//    @Override
-//    public Long save(GoodsSaveDTO goodsSaveDTO, Long memberId) {
-//        GoodsEntity goodsEntity = GoodsEntity.toGoodsEntitySave(goodsSaveDTO, ms.findById(memberId));
-//        Long goodsId = gr.save(goodsEntity).getId();
-//        return goodsId;
-//    }
-
     // 글쓰기 기능
     @Override
     public Long save(GoodsSaveDTO goodsSaveDTO) {
@@ -92,7 +85,11 @@ public class GoodsServiceImpl implements GoodsService {
     public void saveFile(Long goodsId, MultipartFile goodsFile) throws IOException {
         String goodsFilename = goodsFile.getOriginalFilename();
         goodsFilename = System.currentTimeMillis() + "-" + goodsFilename;
-        String savePath = "C:\\Development\\source\\springboot\\Polaroid\\src\\main\\resources\\static\\goodsFile\\" + goodsFilename;
+        // 윤성경로 경로찾아서 보내는 방식
+        String savePath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\goodsFile\\" + goodsFilename;
+        // 성욱경로
+//        String savePath = "/Users/seongwookheo/source/springboot/Polaroid/src/main/resources/static/goodsFile/" + goodsFilename;
+
         if (!goodsFile.isEmpty()) {
             goodsFile.transferTo(new File(savePath));
         }
@@ -107,7 +104,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public Page<GoodsPagingDTO> search(GoodsSearchDTO goodsSearchDTO, Pageable pageable) {
         if(goodsSearchDTO.getSelect().equals("goodsTitle")){
-            Page<GoodsEntity> goodsEntityList = gr.findByGoodsTitleContaining(goodsSearchDTO.getSearch(), PageRequest.of(pageable.getPageNumber()-1, PagingConst.PAGE_LIMIT, Sort.by(Sort.Direction.DESC, "id")));
+            Page<GoodsEntity> goodsEntityList = gr.findByGoodsTitleContaining(goodsSearchDTO.getSearch(), PageRequest.of(pageable.getPageNumber()-1, PagingConstGoods.PAGE_LIMIT, Sort.by(Sort.Direction.DESC, "id")));
             Page<GoodsPagingDTO> goodsList = goodsEntityList.map(
                     goods -> new GoodsPagingDTO(
                             goods.getId(),
@@ -125,7 +122,7 @@ public class GoodsServiceImpl implements GoodsService {
             );
             return goodsList;
         } else {
-            Page<GoodsEntity> goodsEntities =  gr.searchWriter(goodsSearchDTO.getSearch(), PageRequest.of(pageable.getPageNumber() - 1, PagingConst.PAGE_LIMIT, Sort.by(Sort.Direction.DESC, "id")));
+            Page<GoodsEntity> goodsEntities =  gr.searchWriter(goodsSearchDTO.getSearch(), PageRequest.of(pageable.getPageNumber() - 1, PagingConstGoods.PAGE_LIMIT, Sort.by(Sort.Direction.DESC, "id")));
             Page<GoodsPagingDTO> goodsList = goodsEntities.map(
                     goods -> new GoodsPagingDTO(
                             goods.getId(),
@@ -261,7 +258,7 @@ public class GoodsServiceImpl implements GoodsService {
         int page = pageable.getPageNumber();
         page = (page == 1) ? 0 : (page - 1);
         //                        몇페이지? / 몇개씩 볼껀지       / 무슨 기준으로 정렬할지 (내림차순)/ 기준 컬럼 (Entity 필드이름) /
-        Page<GoodsEntity> goodsDetailDTO = gr.findByIdGoodsWriter(memberId, PageRequest.of(pageable.getPageNumber() - 1, PagingConst.LIST_PAGE_LIMIT, Sort.by(Sort.Direction.DESC, "id")));
+        Page<GoodsEntity> goodsDetailDTO = gr.findByIdGoodsWriter(memberId, PageRequest.of(pageable.getPageNumber() - 1, PagingConstGoods.LIST_PAGE_LIMIT, Sort.by(Sort.Direction.DESC, "id")));
         Page<GoodsPagingDTO> goodsList = goodsDetailDTO.map(
                 goods -> new GoodsPagingDTO(
                         goods.getId(),

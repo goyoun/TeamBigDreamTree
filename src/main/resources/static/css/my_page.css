@@ -1,5 +1,5 @@
 .my_page_box {
-    width: 600px;
+    width: 602px;
     border: 1px solid #ede1e7;
 }
 .my_page_top_box {
@@ -98,9 +98,12 @@
 
 
 .main_board {;
+    width: 200px;
     height: 200px;
-    background-color: #a0939a;
+    margin: 0 auto;
     overflow: hidden !important;
+    position:relative;
+    background-color: #a0939a;
 }
 .main_board_img {
     width: 100%;
@@ -112,6 +115,7 @@
     -ms-transform: scale(1);
     -o-transform: scale(1);
     transition: all 0.3s ease-in-out;
+    object-fit:cover;
 }
 .main_board_img:hover {
     transform: scale(1.2);

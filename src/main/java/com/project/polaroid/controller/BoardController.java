@@ -1,7 +1,10 @@
 package com.project.polaroid.controller;
 
 import com.project.polaroid.auth.PrincipalDetails;
-import com.project.polaroid.dto.*;
+import com.project.polaroid.dto.BoardDetailDTO;
+import com.project.polaroid.dto.BoardPagingDTO;
+import com.project.polaroid.dto.BoardSaveDTO;
+import com.project.polaroid.dto.BoardUpdateDTO;
 import com.project.polaroid.entity.MemberEntity;
 import com.project.polaroid.service.BoardService;
 import com.project.polaroid.service.MemberService;
@@ -19,8 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -31,25 +32,18 @@ public class BoardController {
     private final MemberService memberService;
 
     @GetMapping
-    public String main(@PageableDefault(page = 1) Pageable pageable, @AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
+    public String main(@PageableDefault(page = 1) Pageable pageable, HttpSession session, Model model) {
         Page<BoardPagingDTO> boardList = bs.paging(pageable);
         model.addAttribute("boardList", boardList);
 
-        MemberEntity member=memberService.findById(principalDetails.getMember().getId());
-        System.out.println("member = " + member);
-        model.addAttribute("member", member);
-
-
-        System.out.println("boardList.getContent() = " + boardList.getContent()); // 요청 페이지에 들어있는 데이터, toString이 없기 때문에 주소값이 출력
-        System.out.println("boardList.getTotalElements() = " + boardList.getTotalElements()); // 전체 글 갯수
-        System.out.println("boardList.getNumber() = " + boardList.getNumber()); // JPA 기준 요청 페이지
-        System.out.println("boardList.getTotalPages() = " + boardList.getTotalPages()); // 전체 페이지 갯수
-        System.out.println("boardList.getSize() = " + boardList.getSize()); // 한 페이지에 보여지는 글 갯수
-        System.out.println("boardList.hasPrevious() = " + boardList.hasPrevious()); // 이전 페이지 존재 여부
-        System.out.println("boardList.isFirst() = " + boardList.isFirst()); // 첫 페이지인지 여부
-        System.out.println("boardList.isLast() = " + boardList.isLast()); // 마지막 페이지인지 여부
-
-        return "board/main";
+        if(session.getAttribute("LoginNumber") != null) {
+            MemberEntity member = memberService.findById((Long) session.getAttribute("LoginNumber"));
+            System.out.println("member = " + member);
+            model.addAttribute("member", member);
+            return "board/main";
+        }
+        else
+            return "board/main";
     }
 
     @GetMapping("save")
@@ -100,15 +94,6 @@ public class BoardController {
         model.addAttribute("keyword", keyword);
 
         model.addAttribute("boardList", boardList);
-
-        System.out.println("boardList.getContent() = " + boardList.getContent()); // 요청 페이지에 들어있는 데이터, toString이 없기 때문에 주소값이 출력
-        System.out.println("boardList.getTotalElements() = " + boardList.getTotalElements()); // 전체 글 갯수
-        System.out.println("boardList.getNumber() = " + boardList.getNumber()); // JPA 기준 요청 페이지
-        System.out.println("boardList.getTotalPages() = " + boardList.getTotalPages()); // 전체 페이지 갯수
-        System.out.println("boardList.getSize() = " + boardList.getSize()); // 한 페이지에 보여지는 글 갯수
-        System.out.println("boardList.hasPrevious() = " + boardList.hasPrevious()); // 이전 페이지 존재 여부
-        System.out.println("boardList.isFirst() = " + boardList.isFirst()); // 첫 페이지인지 여부
-        System.out.println("boardList.isLast() = " + boardList.isLast()); // 마지막 페이지인지 여부
 
         return "board/search";
     }

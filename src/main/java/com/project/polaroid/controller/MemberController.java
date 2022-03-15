@@ -1,16 +1,21 @@
 package com.project.polaroid.controller;
 
 import com.project.polaroid.auth.PrincipalDetails;
+import com.project.polaroid.dto.BoardDetailDTO;
+import com.project.polaroid.dto.BoardPagingDTO;
 import com.project.polaroid.dto.MemberAddInfo;
 import com.project.polaroid.dto.MemberUpdateDTO;
+import com.project.polaroid.entity.BoardEntity;
+import com.project.polaroid.entity.FollowEntity;
 import com.project.polaroid.entity.MemberEntity;
+import com.project.polaroid.page.PagingConstBoard;
 import com.project.polaroid.repository.MemberRepository;
 import com.project.polaroid.repository.NoticeRepository;
-import com.project.polaroid.service.ChatMessageService;
-import com.project.polaroid.service.FollowService;
-import com.project.polaroid.service.MemberService;
-import com.project.polaroid.service.SellerRoleService;
+import com.project.polaroid.service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
@@ -20,6 +25,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -37,6 +43,7 @@ public class MemberController {
     private final JavaMailSender javaMailSender;
     private final NoticeRepository noticeRepository;
     private final ChatMessageService chatMessageService;
+    private final BoardService boardService;
 
 
     @GetMapping("/addInfo")
@@ -55,19 +62,80 @@ public class MemberController {
 
     // 마이페이지 출력 (팔로워 수, 내 정보)
     @GetMapping("/mypage")
-    public String mypageForm(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model){
+    public String mypageForm(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                             Model model){
+
 
         // 알림 처리
         notice(principalDetails.getMember().getId());
-
         MemberEntity member=memberService.findById(principalDetails.getMember().getId());
         model.addAttribute("member",member);
+
+        // 팔로우 팔로잉 수
         ArrayList<Integer> followCount=followService.followCount(principalDetails.getMember().getId());
         model.addAttribute("follower",followCount.get(0));
         model.addAttribute("following",followCount.get(1));
 
+        // 팔로잉 목록
+        List<FollowEntity> following = followService.followingList(principalDetails.getMember().getId());
+        model.addAttribute("followingList",following);
+        // 팔로워 목록
+        List<FollowEntity> follower = followService.followerList(principalDetails.getMember().getId());
+        model.addAttribute("followerList",follower);
+
+        // 게시글 수
+        List<BoardEntity> boardCount=boardService.boardCount(principalDetails.getMember().getId());
+        model.addAttribute("boardCount",boardCount.size());
+
+        // 페이징
+        List<BoardDetailDTO> boardList=boardService.myPage(principalDetails.getMember().getId());
+        model.addAttribute("boardList",boardList);
+        System.out.println("MemberController.mypageForm");
+        for(BoardDetailDTO b :boardList ){
+            System.out.println("b = " + b);
+        }
+
+        System.out.println("MemberController.mypageForm");
         return "member/myPage";
     }
+
+//    // 멤버 상세페이지 (팔로워 수, 내 정보)
+//    @GetMapping("/{memberId}")
+//    public String mypageForm(@PathVariable Long memberId, HttpSession session, Model model){
+//
+//        Long myId = (Long) session.getAttribute("LoginNumber");
+//
+//        // 알림 처리
+//        notice(myId);
+//        MemberEntity myMember = memberService.findById(myId);
+//        model.addAttribute("myMember",myMember);
+//
+//        MemberEntity member=memberService.findById(memberId);
+//        model.addAttribute("member",member);
+//        ArrayList<Integer> followCount=followService.followCount(memberId);
+//        model.addAttribute("follower",followCount.get(0));
+//        model.addAttribute("following",followCount.get(1));
+//
+//        // 팔로잉 목록
+//        List<FollowEntity> following = followService.followingList(memberId);
+//        model.addAttribute("followingList",following);
+//        // 팔로워 목록
+//        List<FollowEntity> follower = followService.followerList(memberId);
+//        model.addAttribute("followerList",follower);
+//
+//        // 팔로우 버튼
+//        int check=followService.followCheck(myId,memberId);
+//        System.out.println("MemberController.mypageForm");
+//        System.out.println("check = " + check);
+//        if(check==0){
+//            model.addAttribute("followButton",1);
+//        }
+//        else
+//            model.addAttribute("followButton",0);
+//
+//        return "member/memberDetail";
+//    }
+
 
     // 판매자 권한신청
     @GetMapping("/sellerRole")
@@ -86,7 +154,7 @@ public class MemberController {
 
     // 본인 확인페이지
     @GetMapping("/selfAuthentication")
-    public String selfAuthentication (){
+   public String selfAuthentication (){
         return "member/selfAuthentication";
     }
 
@@ -151,6 +219,7 @@ public class MemberController {
     // 회원탈퇴 페이지
     @GetMapping("/resign")
     public String memberResignForm(@AuthenticationPrincipal PrincipalDetails principalDetails,Model model){
+        notice(principalDetails.getMember().getId());
         MemberEntity member=memberService.findById(principalDetails.getMember().getId());
         model.addAttribute("member",member);
         return "member/resign";

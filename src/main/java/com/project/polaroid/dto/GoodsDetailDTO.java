@@ -1,13 +1,9 @@
 package com.project.polaroid.dto;
 
-import com.project.polaroid.entity.BoardEntity;
-import com.project.polaroid.entity.GoodsCommentEntity;
 import com.project.polaroid.entity.GoodsEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -60,8 +56,8 @@ public class GoodsDetailDTO {
 
         goodsDetailDTO.setGoodsPhoto(GoodsPhotoDetailDTO.toGoodsPhotoDetailDTOList(goodsEntity.getGoodsPhotoEntity()));
 
-            return goodsDetailDTO;
-        }
+        return goodsDetailDTO;
+    }
 
     public static List<GoodsDetailDTO> toChangeDTOList(List<GoodsEntity> goodsEntityList) {
         List<GoodsDetailDTO> goodsDetailDTOList = new ArrayList<>();
@@ -72,3 +68,4 @@ public class GoodsDetailDTO {
     }
 
 }
+

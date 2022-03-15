@@ -16,19 +16,6 @@
         }
     </style>
 </head>
-<script>
-    // 로그아웃 확인 팝업
-    function show() {
-        document.querySelector(".background").className = "background show";
-    }
-
-    function close() {
-        document.querySelector(".background").className = "background";
-    }
-
-    document.querySelector("#show").addEventListener('click', show);
-    document.querySelector("#close").addEventListener('click', close);
-</script>
 <body>
 <!-- header -->
 <div class="header">
@@ -37,9 +24,11 @@
             <img class="header_logo_img" src="/image/logo_white.png" onclick="location.href='/board/'" />
         </div>
         <div class="header_search_box vertical_mid">
-            <input class="header_search_input fs_16" type="text" placeholder="Search" />
+            <input class="header_search_input fs_16" id="keyword" type="text" placeholder="Search" />
             <div class="header_search_btn">
-                <img class="header_search_btn_img" src="/image/search.png" />
+                <button onclick="tagSearch()">
+                    <img class="header_search_btn_img" src="/image/search.png"/>
+                </button>
             </div>
         </div>
         <div class="header_right vertical_mid">
@@ -216,28 +205,24 @@
     <img class="up_btn_img" src="/image/up_btn.png" />
 </div>
 <div th:if="${session.LoginRole.equals('ROLE_ADMIN')}">
-    <div class="admin_delete_btn" data-bs-toggle="modal" data-bs-target="#deleteModal">
+    <div class="admin_delete_btn" data-bs-toggle="modal" data-bs-target="#adminDeleteModal">
         <img class="admin_delete_btn_img" src="/image/red-x.svg">
     </div>
 </div>
 
-<!--<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">-->
-<!--    <div class="modal-dialog">-->
-<!--        <div class="modal-content">-->
-<!--            <div class="modal-header">-->
-<!--                <h5 class="modal-title" id="deleteModalLabel">게시글 삭제</h5>-->
-<!--                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
-<!--            </div>-->
-<!--            <div class="modal-body">-->
-<!--                정말로 게시글을 삭제하시겠습니까?-->
-<!--            </div>-->
-<!--            <div class="modal-footer">-->
-<!--                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>-->
-<!--                <button type="button" class="btn btn-primary" th:onclick="boardDelete([[${board.boardId}]])">삭제하기</button>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
+<div class="modal fade" id="adminDeleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content p_30 bg_ef">
+            <div class="modal-body fs_16 text_center fw_b">
+                정말로 게시글을 삭제하시겠습니까?
+            </div>
+            <div class="modal-footer border_none modal_btn_box">
+                <button type="button" class="btn btn-secondary flex-grow-1 bg_ccc logout_modal_btn logout_modal_btn_cancel" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary flex-grow-1 bg_524A4E logout_modal_btn logout_modal_btn_okay" th:onclick="adminBoardDelete([[${board.boardId}]])">삭제하기</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -257,27 +242,16 @@
 <script>
     let content = document.getElementById("boardContents").value
     let splitedArray = content.split(' ');
-    // let splitedArray = content.split('#');
-    // console.log(splitedArray)
     let linkedContent = '';
     for (let word in splitedArray) {
         word = splitedArray[word];
-        // console.log(word)
         if (word.indexOf('#') == 0) {
-            // let reqUrl = "@{|/board/search/(keyword=" + word + ")|}"
             let reqUrl = "/board/search/"+word.replace('#',"")
-            // word += '<button>'
-            // word += '<a href="'+reqUrl+'">' + word + '</a>';
-            // word += '</button>'
             word = '<a href="'+reqUrl+'">' + word + '</a>';
-            // console.log(reqUrl)
-            // console.log(word)
-            // word = '<input type="button" id="tag_search' + i++ +'" name="keyword" value="' + word + '"/>';
         }
         linkedContent += word + ' ';
     }
     document.getElementById('contentElement').innerHTML = linkedContent;
-    // content.innerHTML = linkedContent;
 
     const comment = document.getElementById("commentSave")
     comment.addEventListener("click", function () {
@@ -287,10 +261,6 @@
         if (!commentContents) {
             alert("내용을 입력해주세요.")
         } else {
-            // console.log("댓글내용 : ",commentContents)
-            // console.log("게시글번호 : ",boardId)
-            // console.log("회원번호 : ",memberId)
-
             $.ajax({
                 type: "post",
                 url: "/comment/save",
@@ -399,6 +369,23 @@
         })
     }
 
+    function adminBoardDelete(boardId) {
+        $.ajax({
+            type:"delete",
+            data: boardId,
+            url: "/admin/board/"+boardId,
+            success: function () {
+                location.href="/admin/boardList"
+            },
+            error: function () {
+                alert("ajax 오류")
+            }
+        })
+    }
+    function tagSearch() {
+        let keyword = document.getElementById("keyword").value
+        location.href = "/board/search/" + keyword.replace("#", "")
+    }
     function modalLogout() {
         location.href='/logout'
     }

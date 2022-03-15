@@ -1,7 +1,7 @@
 package com.project.polaroid.controller;
 
 import com.project.polaroid.auth.PrincipalDetails;
-import com.project.polaroid.common.PagingConst;
+import com.project.polaroid.page.PagingConstGoods;
 import com.project.polaroid.dto.*;
 import com.project.polaroid.entity.MemberEntity;
 import com.project.polaroid.repository.MemberRepository;
@@ -36,17 +36,15 @@ public class GoodsController {
     // 굿즈보드 페이징
     @GetMapping
     public String paging(@PageableDefault(page = 1) Pageable pageable,Model model,HttpSession session) {
-//        @AuthenticationPrincipal PrincipalDetails principalDetails
-//        model.addAttribute("member", principalDetails.getMember().getId());
-        // Page 객체 // 서비스로 넘기는건 pageable 객체를 넘긴다
+
         Page<GoodsPagingDTO> goodsList = gs.paging(pageable);
         model.addAttribute("goodsList", goodsList);
         Long memberId = (Long) session.getAttribute("LoginNumber");
         model.addAttribute("memberId", memberId);
         model.addAttribute("member",ms.findById(memberId));
         // 삼항연산자로 바꿈
-        int startPage = (((int) (Math.ceil((double) pageable.getPageNumber() / PagingConst.BLOCK_LIMIT))) - 1) * PagingConst.BLOCK_LIMIT + 1;
-        int endPage = ((startPage + PagingConst.BLOCK_LIMIT - 1) < goodsList.getTotalPages()) ? startPage + PagingConst.BLOCK_LIMIT - 1 : goodsList.getTotalPages();
+        int startPage = (((int) (Math.ceil((double) pageable.getPageNumber() / PagingConstGoods.BLOCK_LIMIT))) - 1) * PagingConstGoods.BLOCK_LIMIT + 1;
+        int endPage = ((startPage + PagingConstGoods.BLOCK_LIMIT - 1) < goodsList.getTotalPages()) ? startPage + PagingConstGoods.BLOCK_LIMIT - 1 : goodsList.getTotalPages();
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
         return "goods/paging";
@@ -61,8 +59,8 @@ public class GoodsController {
         model.addAttribute("member",ms.findById(memberId));
         Page<GoodsPagingDTO> goodsDetailDTOList = gs.search(goodsSearchDTO, pageable);
         model.addAttribute("goodsList", goodsDetailDTOList);
-        int startPage = (((int) (Math.ceil((double) pageable.getPageNumber() / PagingConst.BLOCK_LIMIT))) - 1) * PagingConst.BLOCK_LIMIT + 1;
-        int endPage = ((startPage + PagingConst.BLOCK_LIMIT - 1) < goodsDetailDTOList.getTotalPages()) ? startPage + PagingConst.BLOCK_LIMIT - 1 : goodsDetailDTOList.getTotalPages();
+        int startPage = (((int) (Math.ceil((double) pageable.getPageNumber() / PagingConstGoods.BLOCK_LIMIT))) - 1) * PagingConstGoods.BLOCK_LIMIT + 1;
+        int endPage = ((startPage + PagingConstGoods.BLOCK_LIMIT - 1) < goodsDetailDTOList.getTotalPages()) ? startPage + PagingConstGoods.BLOCK_LIMIT - 1 : goodsDetailDTOList.getTotalPages();
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
         model.addAttribute("select", goodsSearchDTO.getSelect());
@@ -112,22 +110,10 @@ public class GoodsController {
         return "goods/save";
     }
 
-//    // 굿즈보드 작성
-//    @PostMapping("save")
-//    public String save(@ModelAttribute GoodsSaveDTO goodsSaveDTO, @AuthenticationPrincipal PrincipalDetails principalDetails) throws IOException {
-//        Long goodsId = gs.save(goodsSaveDTO, principalDetails.getMember().getId());
-//        for (MultipartFile g: goodsSaveDTO.getGoodsFile()) {
-//            gs.saveFile(goodsId, g);
-//            }
-//        return "redirect:/goods/";
-//    }
-
     // 굿즈보드 작성
     @PostMapping("save")
-    public String save(@ModelAttribute GoodsSaveDTO goodsSaveDTO, HttpSession session, Model model) throws IOException {
+    public String save(@ModelAttribute GoodsSaveDTO goodsSaveDTO) throws IOException {
         Long goodsId = gs.save(goodsSaveDTO);
-        Long memberId = (Long) session.getAttribute("LoginNumber");
-        model.addAttribute("member",ms.findById(memberId));
         for (MultipartFile g: goodsSaveDTO.getGoodsFile()) {
             gs.saveFile(goodsId, g);
         }
@@ -147,8 +133,8 @@ public class GoodsController {
         model.addAttribute("goodsList", goodsDetailDTOList);
         model.addAttribute("memberNickname", memberNickname);
 
-        int startPage = (((int) (Math.ceil((double) pageable.getPageNumber() / PagingConst.BLOCK_LIMIT))) - 1) * PagingConst.BLOCK_LIMIT + 1;
-        int endPage = ((startPage + PagingConst.BLOCK_LIMIT - 1) < goodsDetailDTOList.getTotalPages()) ? startPage + PagingConst.BLOCK_LIMIT - 1 : goodsDetailDTOList.getTotalPages();
+        int startPage = (((int) (Math.ceil((double) pageable.getPageNumber() / PagingConstGoods.BLOCK_LIMIT))) - 1) * PagingConstGoods.BLOCK_LIMIT + 1;
+        int endPage = ((startPage + PagingConstGoods.BLOCK_LIMIT - 1) < goodsDetailDTOList.getTotalPages()) ? startPage + PagingConstGoods.BLOCK_LIMIT - 1 : goodsDetailDTOList.getTotalPages();
 
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);

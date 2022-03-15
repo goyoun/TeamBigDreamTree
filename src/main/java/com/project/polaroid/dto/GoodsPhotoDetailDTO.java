@@ -1,7 +1,6 @@
 package com.project.polaroid.dto;
 
 import com.project.polaroid.entity.GoodsPhotoEntity;
-import com.project.polaroid.entity.PhotoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

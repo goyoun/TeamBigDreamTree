@@ -1,11 +1,24 @@
+/*a 태그 효과 간편로그인*/
+a:link { color: black; text-decoration: none;}
+a:visited { color: black; text-decoration: none;}
+a:hover { color: blue; text-decoration: none;}
+
+
 html, body {
     background-color: #fff !important;
 }
-.general_login_area, .easy_login_area {
+.general_login_area {
     width: 50%;
     padding: 20px 40px;
     flex-grow: 1;
 }
+
+.easy_login_area {
+    width: 50%;
+    padding: 8px 40px;
+    flex-grow: 1;
+}
+
 .general_login_area {
     border-right: 1px solid #FDEFF4;
 }
@@ -24,16 +37,14 @@ html, body {
 }
 .general_login_input {
     width: 240px;
-    height: 40px;
     flex-grow: 1;
     border-radius: 4px;
 }
 .general_login_btn_box {
-    width: 100%;
+    width: 319px;
     height: 40px;
-    padding-left: 110px;
+    padding-left: 87px;
     margin-bottom: 8px;
-    margin-top: 20px;
 }
 .general_login_btn {
     width: 100%;
@@ -51,9 +62,9 @@ html, body {
     box-shadow: 0px 0px 5px #a0939a;
 }
 .general_login_bottom {
-    width: 100%;
+    width: 319px;
     height: auto;
-    padding-left: 110px;
+    padding-left: 87px;
 }
 .general_login_bottom_find_pw_btn, .general_login_bottom_signup_btn {
     width: auto;
@@ -87,7 +98,7 @@ html, body {
     border-right: 1px solid rgba(255,255,255,0.4);
     padding: 10px;
     display: inline-block;
-}
+ }
 .easy_login_contents_img {
     width: 20px;
     height: 20px;
@@ -104,5 +115,4 @@ html, body {
 .easy_login_contents_name {
     font-weight: bold;
     font-size: 15px;
-    cursor: pointer;
 }

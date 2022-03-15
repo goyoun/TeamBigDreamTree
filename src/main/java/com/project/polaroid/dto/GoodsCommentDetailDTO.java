@@ -4,7 +4,6 @@ import com.project.polaroid.entity.GoodsCommentEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,9 +24,7 @@ public class GoodsCommentDetailDTO {
     private LocalDateTime updateTime;
 
     public static GoodsCommentDetailDTO toGoodsCommentDetailDTO(GoodsCommentEntity goodsCommentEntity) {
-        // 객체생성
         GoodsCommentDetailDTO goodsCommentDetailDTO = new GoodsCommentDetailDTO();
-        // 옮겨담기
         goodsCommentDetailDTO.setGoodsCommentId(goodsCommentEntity.getId());
         goodsCommentDetailDTO.setGoodsId(goodsCommentEntity.getId());
         goodsCommentDetailDTO.setMemberId(goodsCommentEntity.getMemberId().getId());

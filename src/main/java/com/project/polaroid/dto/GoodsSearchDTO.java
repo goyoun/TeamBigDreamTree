@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GoodsSearchDTO {
+
     private String select;
     private String search;
+
 }
+

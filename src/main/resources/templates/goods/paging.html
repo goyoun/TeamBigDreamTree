@@ -22,9 +22,6 @@
 
 <style>
     .img-wrapper {
-        /*width: 100%;*/
-        /*height: 400px;*/
-        /*overflow: hidden;*/
         width: 450px;
         height: 450px;
         margin: 0 auto;
@@ -36,22 +33,7 @@
         width: 100%;
         height: 100%;
         object-fit:cover;
-        /*object-fit: contain;*/
     }
-    a{
-        text-decoration-line: none;
-    }
-    a:link {
-        color:black;
-    }
-    a:hover {
-        color:blue;
-        text-decoration: underline;
-    }
-    a:visited {
-        color:black;
-    }
-
     .sold_goods {
         opacity: 0.5;
         filter: brightness(20%);
@@ -61,6 +43,8 @@
         opacity: 1.0;
         filter: alpha(opacity=100);
     }
+
+
 
 </style>
 
@@ -90,14 +74,15 @@
             </div>
             <!-- 좋아요 모아보기 -->
             <div class="header_like">
-                <a th:href="@{|/goods/pick/${memberId}|}"> <img class="header_like_img" src="/image/like.png"/> </a>
+                <a th:href="@{|/goods/pick/${memberId}|}"> <img class="header_like_img" src="/image/star.png"/> </a>
             </div>
             <!-- 사용자 정보 -->
             <div class="header_user" id="userToggleButton">
                 <img class="header_user_img" src="/image/user_default.png"/>
             </div>
             <div class="header_user_toggle_box" id="userToggleMenu">
-                <input class="header_user_toggle_btn fs_14" type="button" value="마이페이지" onclick="location.href='/my_page'"/>
+                <input class="header_user_toggle_btn fs_14" type="button" value="마이페이지" onclick="location.href='/member/mypage'"/>
+                <input class="header_user_toggle_btn fs_14" type="button" value="SNS로가기" onclick="location.href='/board/'"/>
                 <input class="header_user_toggle_btn fs_14" type="button" value="결제리스트" onclick="location.href='/goods/payList'"/>
                 <input class="header_user_toggle_btn fs_14" type="button" value="굿즈페이지" th:if="${member.memberRole == 'ROLE_SELLER'}" th:onclick="'location.href=\''+ @{|/goods/list/${memberId}|} + '\''"/>
                 <button type="button" class="header_user_toggle_btn fs_14" id="show" data-bs-toggle="modal" data-bs-target="#exampleModal">로그아웃</button>
@@ -132,7 +117,7 @@
             <div class="title_bottom_line2"></div>
         </div>
 
-<a href="/goods/save" th:if="${member.memberRole == 'ROLE_SELLER'}"> 글쓰기 </a>
+<!--<a href="/goods/save" th:if="${member.memberRole == 'ROLE_SELLER'}"> 글쓰기 </a>-->
 <!--<a th:href="@{|/goods/list/${memberId}|}"> 리스트 </a>-->
 <!--<a th:href="@{|/goods/pick/${memberId}|}"> 찜목록 </a>-->
 
@@ -164,22 +149,28 @@
                     <div class="img-wrapper" th:if="${goods.goodsStock>0}">
                         <img class="rounded mx-auto d-block mt-3 btn imgFile" alt="" th:src="@{|/goodsFile/${goods.getPhotoList().get(0).getGoodsFilename()}|}">
                     </div>
+                    <div class="card_bottom_line mt-3"></div>
+                    <div class="card_bottom_line"></div>
                 </a>
                 <div class="card-body">
                     <div class="d-flex bd-highlight mb-3">
                         <div class="me-auto p-2 bd-highlight">
-                            <p class="card-text"> <h2 th:text="${goods.goodsTitle}"> </h2> <p th:text="'남은재고 '+${goods.goodsStock}+'개'"> </p> <font style="vertical-align: inherit;">
-                            <font style="vertical-align: inherit;"> </font><font style="vertical-align: inherit;">
+                            <p class="card-text fs_24" th:text="${goods.goodsTitle}"></p>
+                            <p th:text="'남은재고 '+${goods.goodsStock}+'개'" style="color: #1f1f1f"> </p>
+<!--                            <font style="vertical-align: inherit;">-->
+<!--                            <font style="vertical-align: inherit;"></font>-->
+<!--                                <font style="vertical-align: inherit;">-->
 
-                        </font></font></p>
+<!--                        </font></font>-->
+
                         </div>
                         <div class="p-2 bd-highlight">
                             <!--                            좋아요 이미지랑 카운트 -->
-                            <img id="heart" src="/image/like.png" style="width:25px">
+                            <img id="heart" src="/image/star.png" style="width:25px; margin-bottom: 2px">
                             <label class="fs_14 pt_2"> <span th:text="${goods.goodsLikeCount}"> </span></label>
 
                             <!--                            조회수 이미지랑 카운트-->
-                            <img src="/image/eye.png" style="width:30px">
+                            <img src="/image/eye.png" style="width:30px; margin-bottom: 2px">
                             <label class="fs_14 pt_2"> <span th:text="${goods.goodsView}"> </span></label>
 
                         </div>
@@ -189,15 +180,12 @@
 <!--                        <div style="border:1px solid black; border-radius: 1rem">-->
                             <img class="header_user_img2" src="/image/user_default.png"/>
                         </a>
-                        <a th:href="@{|/goods/list/${goods.memberId}|}" >
-                                <h4 th:text="${goods.memberNickname}"></h4> </font></font>
+                        <a th:href="@{|/memberDetail/${goods.memberId}|}">
+                                <h4 th:text="${goods.memberNickname}" style="color: #1f1f1f; margin-top: 2px"></h4>
                         </a>
 <!--                        </div>-->
                         <div class="ms-auto p-2 bd-highlight">
-                            <small class="text-muted"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                            <h3 th:text="${goods.goodsPrice}+원"> </h3>
-                            </font></font>
-                            </small>
+                            <h4 th:text="${goods.goodsPrice}+원" style="margin-top: 3px; color:#1f1f1f;"> </h4>
                         </div>
                     </div>
                 </div>

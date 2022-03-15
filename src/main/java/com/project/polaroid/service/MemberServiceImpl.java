@@ -46,7 +46,7 @@ public class MemberServiceImpl implements MemberService{
     // 아이디 중복체크
     @Override
     public String mailDuplicate(String mail) {
-        MemberEntity member=memberRepository.findByMemberEmail(mail);
+         MemberEntity member=memberRepository.findByMemberEmail(mail);
         if (member==null)
             return "ok";
         else

@@ -17,4 +17,5 @@ public class GoodsUpdateDTO {
     private String goodsContents;
     private String goodsInFor;
 
+
 }

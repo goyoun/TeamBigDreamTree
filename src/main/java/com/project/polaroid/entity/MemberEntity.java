@@ -62,7 +62,6 @@ public class MemberEntity {
     // 팔로우 테이블
     @OneToMany(mappedBy = "followMy", cascade = CascadeType.ALL, orphanRemoval = true,  fetch = FetchType.LAZY)
     private List<FollowEntity> memberFollowMy = new ArrayList<>();
-
     @OneToMany(mappedBy = "followYour", cascade = CascadeType.ALL, orphanRemoval = true,  fetch = FetchType.LAZY)
     private List<FollowEntity> memberFollowYour = new ArrayList<>();
 
@@ -73,25 +72,12 @@ public class MemberEntity {
     // 보드 테이블
     @OneToMany(mappedBy = "memberId", cascade = CascadeType.ALL, orphanRemoval = true,  fetch = FetchType.LAZY)
     private List<BoardEntity> boardEntityList = new ArrayList<>();
-
     @OneToMany(mappedBy = "memberId", cascade = CascadeType.ALL, orphanRemoval = true,  fetch = FetchType.LAZY)
     private List<CommentEntity> commentEntityList = new ArrayList<>();
-
     @OneToMany(mappedBy = "memberId", cascade = CascadeType.ALL, orphanRemoval = true,  fetch = FetchType.LAZY)
     private List<LikeEntity> likeEntityList = new ArrayList<>();
 
     // 굿즈 테이블
-    @OneToMany(mappedBy = "goodsWriter", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<GoodsEntity> goodsEntityList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "memberId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<GoodsCommentEntity> goodsCommentEntityList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<GoodsLikeEntity> goodsLikeEntityList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<PayEntity> payEntityList = new ArrayList<>();
 
     @Builder
     public MemberEntity(String memberEmail, String memberPw, String memberFilename, String memberRole, String memberProvider, String memberProviderId, String memberCheckmail) {

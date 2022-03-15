@@ -2,7 +2,9 @@ package com.project.polaroid.service;
 
 import com.project.polaroid.dto.GoodsCommentDetailDTO;
 import com.project.polaroid.dto.GoodsCommentSaveDTO;
-import com.project.polaroid.entity.*;
+import com.project.polaroid.entity.GoodsCommentEntity;
+import com.project.polaroid.entity.GoodsEntity;
+import com.project.polaroid.entity.MemberEntity;
 import com.project.polaroid.repository.GoodsCommentRepository;
 import com.project.polaroid.repository.GoodsRepository;
 import com.project.polaroid.repository.MemberRepository;
@@ -18,10 +20,9 @@ public class GoodsCommentServiceImpl implements GoodsCommentService{
     private final GoodsRepository gr;
     private final MemberRepository mr;
 
-    // 굿즈 코멘트 세이브
+    // 댓글 저장
     @Override
     public Long save(GoodsCommentSaveDTO goodsCommentSaveDTO) {
-        System.out.println("댓글이 넘어오나요?3");
         GoodsEntity goodsEntity = gr.findById(goodsCommentSaveDTO.getGoodsId()).get();
         MemberEntity memberEntity = mr.findById(goodsCommentSaveDTO.getMemberId()).get();
         GoodsCommentEntity goodsCommentEntity = GoodsCommentEntity.toGoodsCommentEntity(goodsCommentSaveDTO, goodsEntity, memberEntity);
@@ -29,18 +30,18 @@ public class GoodsCommentServiceImpl implements GoodsCommentService{
         return goodsCommentId;
     }
 
+    // 댓글 출력
     @Override
     public List<GoodsCommentDetailDTO> findAll(Long goodsId) {
-        System.out.println("댓글이 넘어오나요?4");
         GoodsEntity goodsEntity = gr.findById(goodsId).get();
         List<GoodsCommentEntity> goodsCommentEntityList = goodsEntity.getGoodsCommentEntityList();
         List<GoodsCommentDetailDTO> goodsCommentList = GoodsCommentDetailDTO.toGoodsCommentDetailDTOList(goodsCommentEntityList);
         return goodsCommentList;
     }
 
+    // 댓글 삭제
     @Override
     public void deleteById(Long goodsCommentId) {
-        System.out.println("삭제가되나요");
         gcr.deleteById(goodsCommentId);
 
     }

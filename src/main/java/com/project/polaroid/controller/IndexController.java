@@ -1,17 +1,28 @@
 package com.project.polaroid.controller;
 
+import com.project.polaroid.dto.BoardDetailDTO;
+import com.project.polaroid.dto.BoardPagingDTO;
+import com.project.polaroid.entity.BoardEntity;
+import com.project.polaroid.entity.FollowEntity;
 import com.project.polaroid.entity.MemberEntity;
+import com.project.polaroid.page.PagingConstBoard;
+import com.project.polaroid.service.BoardService;
+import com.project.polaroid.service.FollowService;
 import com.project.polaroid.service.IndexService;
 import com.project.polaroid.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -22,6 +33,9 @@ public class IndexController {
     private final MemberService memberService;
     private final IndexService indexService;
     private final JavaMailSender javaMailSender;
+    private final FollowService followService;
+    private final MemberController memberController;
+    private final BoardService boardService;
 
     // 시작 페이지
     @GetMapping({"","/"})
@@ -146,23 +160,56 @@ public class IndexController {
         return "accessDenied";
     }
 
-    // 권한 테스트
-    @GetMapping("/member")
-    public @ResponseBody String member(){
-        return "member";
-    }
+    // 멤버 상세페이지 (팔로워 수, 내 정보)
+    @GetMapping("/memberDetail/{memberId}")
+    public String mypageForm(@PathVariable Long memberId, @PageableDefault(page = 1) Pageable pageable,
+                             HttpSession session, Model model){
+
+        // 헤더 알람
+        Long myId = (Long) session.getAttribute("LoginNumber");
+        if(myId != null){
+            memberController.notice(myId);
+            MemberEntity myMember = memberService.findById(myId);
+            model.addAttribute("myMember",myMember);
+        }
+        else{
+            MemberEntity myMember=null;
+            model.addAttribute("myMember",myMember);
+        }
+
+        // 멤버 정보
+        MemberEntity member=memberService.findById(memberId);
+        model.addAttribute("member",member);
+
+        // 팔로우 팔로워 수
+        ArrayList<Integer> followCount=followService.followCount(memberId);
+        model.addAttribute("follower",followCount.get(0));
+        model.addAttribute("following",followCount.get(1));
+
+        // 팔로잉 목록
+        List<FollowEntity> following = followService.followingList(memberId);
+        model.addAttribute("followingList",following);
+        // 팔로워 목록
+        List<FollowEntity> follower = followService.followerList(memberId);
+        model.addAttribute("followerList",follower);
+
+        // 게시글 수
+        List<BoardEntity> boardCount=boardService.boardCount(memberId);
+        model.addAttribute("boardCount",boardCount.size());
+
+        int check=followService.followCheck(myId,memberId);
+        if(check==0){
+            model.addAttribute("followButton",1);
+        }
+        else
+            model.addAttribute("followButton",0);
+
+        // 페이징
+        List<BoardDetailDTO> boardList=boardService.myPage(memberId);
+        model.addAttribute("boardList",boardList);
 
 
-    // 권한 테스트
-    @GetMapping("/seller")
-    public @ResponseBody String seller(){
-        return "seller";
-    }
-
-    // 권한 테스트
-    @GetMapping("/admin")
-    public @ResponseBody String admin(){
-        return "admin";
+        return "member/memberDetail";
     }
 
 

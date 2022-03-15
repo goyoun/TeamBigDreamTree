@@ -1,13 +1,10 @@
 package com.project.polaroid.entity;
 
-import com.fasterxml.jackson.databind.ser.Serializers;
 import com.project.polaroid.dto.GoodsSaveDTO;
 import com.project.polaroid.dto.GoodsUpdateDTO;
-import com.project.polaroid.dto.PaySuccessDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -24,34 +21,42 @@ public class GoodsEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "goods_id")
     private Long id;
-    @OneToOne
-    @JoinColumn(name = "board_id")
-    private BoardEntity boardEntity;
+
+    // 제목
     @Column
     private String goodsTitle;
+
+    // 굿즈 내용
     @Column
     private String goodsContents;
+
+    // 재고
     @Column
     private int goodsStock;
+
+    // 가격
     @Column
     private int goodsPrice;
+
+    // 조회수
     @Column
     private int goodsView;
+
+    // 세부 내용
     @Column
     private String goodsInFor;
 
+    // 사진
     @OneToMany(mappedBy = "goodsEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<GoodsPhotoEntity> GoodsPhotoEntity = new ArrayList<>();
 
+    // 댓글
     @OneToMany(mappedBy = "goodsId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<GoodsCommentEntity> goodsCommentEntityList = new ArrayList<>();
 
+    // 찜
     @OneToMany(mappedBy = "goodsEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<GoodsLikeEntity> goodsLikeEntityList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "goodsEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<PayEntity> payEntityList = new ArrayList<>();
-
 
     // 멤버엔티티 참조
     @ManyToOne(fetch = FetchType.LAZY)
@@ -79,11 +84,11 @@ public class GoodsEntity extends BaseEntity {
         goods.setGoodsStock(goodsUpdateDTO.getGoodsStock());
         goods.setGoodsContents(goodsUpdateDTO.getGoodsContents());
         goods.setGoodsView(goodsEntity.getGoodsView());
-//        goods.setGoodsInFor(goodsEntity.getGoodsInFor());
         goods.setGoodsInFor(goodsUpdateDTO.getGoodsInFor());
         goods.setGoodsCommentEntityList(goodsEntity.getGoodsCommentEntityList());
         goods.setGoodsPhotoEntity(goodsEntity.getGoodsPhotoEntity());
         goods.setGoodsLikeEntityList(goodsEntity.getGoodsLikeEntityList());
         return goods;
     }
+
 }

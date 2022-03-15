@@ -19,19 +19,19 @@
     <div class="max_box_3 pt_60">
         <div class="board_save_box">
             <form action="/member/selfAuthentication" method="post" id="authenticationForm">
-                <div class="mb_40 text_center">
-                    <p class="fs_24 fw_b">본인인증</p>
-                    <div class="title_bottom_line"></div>
+            <div class="mb_40 text_center">
+                <p class="fs_24 fw_b">본인인증</p>
+                <div class="title_bottom_line"></div>
+            </div>
+            <div class="idCheck_box vertical_box">
+                <p class="idCheck_label fs_14 vertical_mid">인증번호</p>
+                <input class="idCheck_input fs_14 vertical_mid" type="text" id="code" placeholder="인증번호" onblur="codeCheck()" />
+                <div class="idCheck_btn_box vertical_mid">
+                    <input class="idCheck_btn idCheck_btn_2 fs_14" type="button" value="인증번호 전송" onclick="submitMail()" />
                 </div>
-                <div class="idCheck_box vertical_box">
-                    <p class="idCheck_label fs_14 vertical_mid">인증번호</p>
-                    <input class="idCheck_input fs_14 vertical_mid" type="text" id="code" placeholder="인증번호" onblur="codeCheck()" />
-                    <div class="idCheck_btn_box vertical_mid">
-                        <input class="idCheck_btn idCheck_btn_2 fs_14" type="button" value="인증번호 전송" onclick="submitMail()" />
-                    </div>
-                </div>
-                <p class="check_result_2" id="output"></p>
-                <input class="memberUpdate_save_btn" type="button" id="joinButton"onclick="joinSubmit()" value="다음" />
+            </div>
+            <p class="check_result_2" id="output"></p>
+            <input class="memberUpdate_save_btn mx-auto" type="button" id="joinButton"onclick="joinSubmit()" value="다음" style="display: block; width: 46%; margin-top: 20px"/>
             </form>
         </div>
     </div>

@@ -24,5 +24,4 @@ public class GoodsPagingDTO {
     private LocalDateTime updateTime;
     private List<GoodsPhotoDetailDTO> photoList;
 
-
 }

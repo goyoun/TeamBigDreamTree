@@ -11,18 +11,17 @@ import javax.persistence.*;
 @Table(name = "gphoto_table")
 public class GoodsPhotoEntity {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "gphoto_id")
-        private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "gphoto_id")
+    private Long id;
 
-        @ManyToOne
-        @JoinColumn(name = "goods_id")
-        private GoodsEntity goodsEntity;
+    // 해당 굿즈
+    @ManyToOne
+    @JoinColumn(name = "goods_id")
+    private GoodsEntity goodsEntity;
 
-        @Column
-        private String goodsFilename;
+    @Column
+    private String goodsFilename;
 
-
-    }
-
+}

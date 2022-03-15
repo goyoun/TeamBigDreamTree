@@ -1,6 +1,5 @@
 package com.project.polaroid.controller;
 
-import com.project.polaroid.dto.GoodsDetailDTO;
 import com.project.polaroid.entity.BoardEntity;
 import com.project.polaroid.entity.GoodsEntity;
 import com.project.polaroid.entity.MemberEntity;
@@ -8,14 +7,14 @@ import com.project.polaroid.entity.SellerEntity;
 import com.project.polaroid.repository.BoardRepository;
 import com.project.polaroid.repository.GoodsRepository;
 import com.project.polaroid.repository.MemberRepository;
-import com.project.polaroid.service.BoardService;
-import com.project.polaroid.service.GoodsService;
 import com.project.polaroid.service.MemberService;
 import com.project.polaroid.service.SellerRoleService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.Banner;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -24,7 +23,6 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class AdminController {
-
     public final SellerRoleService sellerRoleService;
     public final MemberRepository mr;
     public final BoardRepository br;
@@ -68,4 +66,15 @@ public class AdminController {
         return "admin/sellerList";
     }
 
+    @DeleteMapping("admin/board/{boardId}")
+    public ResponseEntity boardDelete(@PathVariable Long boardId) {
+        br.deleteById(boardId);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @DeleteMapping("admin/goods/{goodsId}")
+    public ResponseEntity goodsDelete(@PathVariable Long goodsId) {
+        gr.deleteById(goodsId);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 }
