@@ -43,4 +43,6 @@ public interface GoodsService {
     PayDetailDTO payFind(Long goodsId, Long memberId);
 
     List<PayDetailDTO> payList(Long memberId);
+    // 3.13 hsw 추가 찜 게시글
+    List<GoodsDetailDTO> pickList(Long id);
 }

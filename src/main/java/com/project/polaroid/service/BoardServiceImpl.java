@@ -47,8 +47,7 @@ public class BoardServiceImpl implements BoardService {
     public void saveFile(Long boardId, MultipartFile boardFile) throws IOException {
         String boardFilename = boardFile.getOriginalFilename();
         boardFilename = System.currentTimeMillis() + "-" + boardFilename;
-        String savePath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\upload\\" + boardFilename;
-//        String savePath = "/Users/seongwookheo/source/springboot/Polaroid/src/main/resources/static/upload/" + boardFilename;
+        String savePath = "C:\\Development\\source\\springboot\\POLAROID\\src\\main\\resources\\static\\upload\\" + boardFilename;
 
         if (!boardFile.isEmpty()) {
             boardFile.transferTo(new File(savePath));
@@ -159,4 +158,21 @@ public class BoardServiceImpl implements BoardService {
     public List<BoardEntity> boardCount(Long id) {
         return br.boardCount(id);
     }
+
+    // 3.13 hsw 추가 좋아요 목록
+    @Override
+    @Transactional
+    public List<BoardDetailDTO>  likeList(Long id) {
+        List<LikeEntity> likeEntityList=lr.likeList(id);
+        List<BoardEntity> boardList=new ArrayList<>();
+        for(LikeEntity l:likeEntityList){
+            boardList.add(l.getBoardId());
+        }
+        List<BoardDetailDTO> boardLikeList=BoardDetailDTO.toBoardDetailDTOList(boardList);
+
+        return boardLikeList;
+    }
+
+
+
 }

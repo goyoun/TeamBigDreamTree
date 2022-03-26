@@ -1,19 +1,17 @@
 package com.project.polaroid.entity;
 
 import com.project.polaroid.dto.MemberUpdateDTO;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
-@NoArgsConstructor
+@Setter
+@Getter
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name="member_table")
 public class MemberEntity {
 
@@ -78,6 +76,18 @@ public class MemberEntity {
     private List<LikeEntity> likeEntityList = new ArrayList<>();
 
     // 굿즈 테이블
+    @OneToMany(mappedBy = "memberId", cascade = CascadeType.ALL, orphanRemoval = true,  fetch = FetchType.LAZY)
+    private List<GoodsCommentEntity> goodsEntityList = new ArrayList<>();
+    @OneToMany(mappedBy = "goodsWriter", cascade = CascadeType.ALL, orphanRemoval = true,  fetch = FetchType.LAZY)
+    private List<GoodsEntity> goodsCommentEntityList = new ArrayList<>();
+    @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.ALL, orphanRemoval = true,  fetch = FetchType.LAZY)
+    private List<GoodsLikeEntity> goodsLikeEntityList = new ArrayList<>();
+
+    // 채팅 테이블
+    @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL, orphanRemoval = true,  fetch = FetchType.LAZY)
+    private List<ChatMessageEntity> chatMessageEntityList = new ArrayList<>();
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true,  fetch = FetchType.LAZY)
+    private List<ChatRoomJoinEntity> chatRoomJoinEntityList = new ArrayList<>();
 
     @Builder
     public MemberEntity(String memberEmail, String memberPw, String memberFilename, String memberRole, String memberProvider, String memberProviderId, String memberCheckmail) {

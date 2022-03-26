@@ -37,4 +37,7 @@ public interface BoardService {
 
     // 보드 숫자
     List<BoardEntity> boardCount(Long id);
+
+    // 3.13 hsw 추가 좋아요 게시글
+    List<BoardDetailDTO>  likeList(Long id);
 }

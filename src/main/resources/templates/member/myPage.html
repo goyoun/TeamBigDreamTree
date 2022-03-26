@@ -13,220 +13,90 @@
 </head>
 <script>
     window.onload=function(){
-        showBoard();
-    }
-    function follow(){
-        let my=document.getElementById("myId").value;
-        let your=document.getElementById("yourId").value;
-
-        $.ajax({
-            type: 'post',
-            url:'/member/followAdd',
-            data:{"myId" : my,"yourId" : your},
-            success : function (result){
-                alert(result);
-            },
-            error : function (){
-                alert("오류")
-            }
-
-        });
-    }
-
-    function followCancel(){
-        let my=document.getElementById("myId").value;
-        let your=document.getElementById("yourId").value;
-
-        $.ajax({
-            type: 'post',
-            url:'/member/followCancel',
-            data:{"myId" : my,"yourId" : your},
-            success : function (result){
-                alert(result);
-            },
-            error : function (){
-                alert("오류")
-            }
-
-        });
-    }
-    function showFollow(){
-        $("#follower").show();
-        $("#following").hide();
-        $("#board").hide();
-    }
-
-    function showFollowing(){
-        $("#follower").hide();
-        $("#following").show();
-        $("#board").hide();
-    }
-
-    function showBoard(){
-        $("#follower").hide();
-        $("#following").hide();
-        $("#board").show();
+        const my= "[[${status}]]";
+        if(my==="false") {
+            const likeView = document.getElementById("like-list");
+            const pickView = document.getElementById("pick-list");
+            likeView.style.display = "none";
+            pickView.style.display = "none";
+        }
+        else if(my==="pick"){
+            pickView();
+        }
+        else if (my==="like") {
+            likeView();
+        }
     }
 
 
 </script>
+<style>
+    body {
+        background-color: #f9f6f8;
+    }
+</style>
 <body>
-<!--&lt;!&ndash; header &ndash;&gt;-->
-<!--<div class="header">-->
-<!--    <div class="max_box_2 vertical_box">-->
-<!--        <div class="header_logo vertical_mid">-->
-<!--            <img class="header_logo_img" src="/image/logo_white.png" onclick="location.href='/main'" />-->
-<!--        </div>-->
-<!--        <div class="header_search_box vertical_mid">-->
-<!--            <input class="header_search_input fs_16" type="text" placeholder="Search" />-->
-<!--            <div class="header_search_btn">-->
-<!--                <img class="header_search_btn_img" src="/image/search.png" />-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        <div class="header_right vertical_mid">-->
-<!--            &lt;!&ndash; 채팅 &ndash;&gt;-->
-<!--            <div class="header_chat">-->
-<!--                <img class="header_chat_img" src="/image/chat.png" />-->
-<!--            </div>-->
-<!--            &lt;!&ndash; 좋아요 모아보기 &ndash;&gt;-->
-<!--            <div class="header_like">-->
-<!--                <img class="header_like_img" src="/image/like.png" />-->
-<!--            </div>-->
-<!--            &lt;!&ndash; 사용자 정보 &ndash;&gt;-->
-<!--            <div class="header_user" id="userToggleButton">-->
-<!--                <img class="header_user_img" th:src="@{|/profile/${member.memberFilename}|}" />-->
-<!--            </div>-->
-<!--            <div class="header_user_toggle_box" id="userToggleMenu">-->
-<!--                <input class="header_user_toggle_btn fs_14" type="button" value="마이페이지" onclick="location.href='/my_page'" />-->
-<!--                <input class="header_user_toggle_btn fs_14" id="show" type="button"  onclick="location.href='/logout'" value="로그아웃" />-->
-<!--            </div>-->
-
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
-<!--&lt;!&ndash; header &ndash;&gt;-->
-
-<!--<br>-->
-<!--<br>-->
-<!--<br>-->
-<!--<br>-->
-
-<!--<img class="header_user_img" th:src="@{|/profile/${member.memberFilename}|}" />-->
-
-
-<!--<p th:text="${member.memberNickname}">  </p>-->
-
-<!--<div th:if="${member.memberRole=='ROLE_SELLER'}">-->
-<!--    <p>판매자 인증</p>-->
-<!--</div>-->
-
-
-<!--팔로워수 <p th:text="${follower}" onclick="showFollow()">  </p>-->
-<!--팔로잉수 <p th:text="${following}" onclick="showFollowing()">  </p>-->
-
-<!--게시물 수-->
-<!--<p th:text="${boardCount}" onclick="showBoard()"></p>-->
-<!--<br>-->
-
-<!--<a href="/member/selfAuthentication"> 정보수정 </a>-->
-<!--<a th:href="@{member/likeList/${member.id}}">좋아요 목록</a>-->
-<!--<a href="member/board/write">글작성</a>-->
-
-<!--<div th:if="${member.memberRole=='ROLE_SELLER'}">-->
-<!--    <p>판매자</p>-->
-<!--</div>-->
-<!--<div th:if="${member.memberRole !='ROLE_SELLER'}">-->
-<!--    <button><a href="sellerRole"> 판매자 신청 </a> </button>-->
-<!--</div>-->
-
-<!--팔로우 하기 기능-->
-<!--<input type="text" id="myId">-->
-<!--<input type="text" id="yourId">-->
-<!--<button type="button" id="followButton" onclick="follow()">add</button>-->
-<!--<button type="button" id="followCancelButton" onclick="followCancel()">cancel</button>-->
-
-<!--<div id="follower">-->
-<!--팔로워-->
-<!--<table>-->
-<!--    <thead>-->
-<!--    <tr>-->
-<!--        <th scope="col">판매자 권한 신청 번호</th>-->
-<!--        <th scope="col">프로필</th>-->
-<!--        <th scope="col">닉네임</th>-->
-<!--    </tr>-->
-<!--    </thead>-->
-<!--    <tbody>-->
-<!--    <tr th:each="followerList: ${followerList}">-->
-<!--        <td th:text="${followerList.followMy.memberNickname}"></td>-->
-<!--        <td><img th:src="@{|/profile/${followerList.followMy.memberFilename}|}" alt=""> <br></td>-->
-<!--    </tr>-->
-<!--    </tbody>-->
-<!--</table>-->
-<!--</div>-->
-
-<!--<div id="following">-->
-<!--팔로잉-->
-<!--<table>-->
-<!--    <thead>-->
-<!--    <tr>-->
-<!--        <th scope="col">판매자 권한 신청 번호</th>-->
-<!--        <th scope="col">프로필</th>-->
-<!--        <th scope="col">닉네임</th>-->
-<!--    </tr>-->
-<!--    </thead>-->
-<!--    <tbody>-->
-<!--    <tr th:each="followingList: ${followingList}">-->
-<!--        <td th:text="${followingList.followYour.memberNickname}"></td>-->
-<!--        <td><img th:src="@{|/profile/${followingList.followYour.memberFilename}|}" alt=""> <br></td>-->
-<!--    </tr>-->
-<!--    </tbody>-->
-<!--</table>-->
-<!--</div>-->
-
-<!--<br>-->
-<!--<br>-->
-
-
-
-
 <!-- header -->
 <div class="header">
     <div class="max_box_2 vertical_box">
         <div class="header_logo vertical_mid">
-            <img class="header_logo_img" src="/image/logo_white.png" onclick="location.href='/main'" />
+            <img class="header_logo_img" src="/image/logo_white.png" onclick="location.href='/'" />
         </div>
         <div class="header_search_box vertical_mid">
-            <input class="header_search_input fs_16" type="text" placeholder="Search" />
+            <input class="header_search_input fs_16" id="keyword" type="text" placeholder="Search" />
             <div class="header_search_btn">
-                <img class="header_search_btn_img" src="/image/search.png" />
+                <button onclick="tagSearch()">
+                    <img class="header_search_btn_img" src="/image/search.png"/>
+                </button>
             </div>
         </div>
-        <div class="header_right vertical_mid">
-            <!-- 채팅 -->
-            <div class="header_chat">
-                <img class="header_chat_img" src="/image/chat.png" />
-            </div>
-            <!-- 좋아요 모아보기 -->
-            <div class="header_like">
-                <img class="header_like_img" src="/image/like.png" />
-            </div>
-            <!-- 사용자 정보 -->
-            <div class="header_user" id="userToggleButton">
-                <img class="header_user_img" th:src="@{|/profile/${member.memberFilename}|}" />
+        <div class="header_right vertical_mid" >
+            <div class="dis_flex header_right_box" th:if="${session['LoginEmail']} != null">
+                <!-- 채팅 -->
+                <div class="header_chat_box flex-grow-1">
+                    <div class="header_chat ">
+                        <img class="far fa-envelope icon-badge-icon header_chat_img" src="/image/chat.png" onclick="location.href='/chat'"/>
+                        <div class="icon-badge" th:if="${member.memberMessage>0}"><p th:text="${member.memberMessage}"> </p></div>
+                    </div>
+                </div>
+                <!-- 좋아요 모아보기 -->
+                <div class="header_like flex-grow-1">
+                    <img class="header_like_img" src="/image/like.png" onclick="location.href='/member/likeListShow'"/>
+                </div>
+                <!-- 사용자 정보 -->
+                <div class="header_user flex-grow-1" id="userToggleButton">
+                    <img class="header_user_img" th:src="@{|/profile/${member.memberFilename}|}"/>
+                </div>
             </div>
             <div class="header_user_toggle_box" id="userToggleMenu">
-                <input class="header_user_toggle_btn fs_14" type="button" value="마이페이지" onclick="location.href='/my_page'" />
-                <input class="header_user_toggle_btn fs_14" id="show" type="button"  onclick="location.href='/logout'" value="로그아웃" />
+                <input class="header_user_toggle_btn fs_14" type="button" value="마이페이지" onclick="location.href='/member/mypage'"/>
+                <input class="header_user_toggle_btn fs_14" type="button" value="SNS" onclick="location.href='/board/'"/>
+                <input class="header_user_toggle_btn fs_14" type="button" value="결제리스트" onclick="location.href='/goods/payList'"/>
+                <input class="header_user_toggle_btn fs_14" type="button" value="내 쇼핑몰" th:if="${member.memberRole == 'ROLE_SELLER'}" th:onclick="'location.href=\''+ @{|/goods/list/${session.LoginNumber}|} + '\''"/>
+                <button type="button" class="header_user_toggle_btn fs_14" id="show" data-bs-toggle="modal" data-bs-target="#exampleModal">로그아웃</button>
             </div>
-
         </div>
     </div>
 </div>
 
-<!-- 로그아웃 확인 팝업 -->
-<!-- 해야함 -->
-<!-- 로그아웃 확인 팝업 -->
+<!-- 로그아웃 모달창 -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content p_30 bg_ef">
+            <div class="modal-body fs_16 text_center fw_b">
+                로그아웃 하시겠습니까?
+            </div>
+            <div class="modal-footer border_none modal_btn_box">
+                <button type="button" class="btn btn-secondary flex-grow-1 bg_ccc logout_modal_btn logout_modal_btn_cancel" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary flex-grow-1 bg_524A4E logout_modal_btn logout_modal_btn_okay" onclick="modalLogout()">로그아웃</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 로그아웃 모달창 -->
+
 <!-- header -->
+
 
 <div class="contents">
     <div class="max_box_3 pt_60">
@@ -236,7 +106,9 @@
                 <div class="dis_flex">
                     <!-- 1. user(img, name) -->
                     <div class="my_page_top_1">
-                        <img class="my_page_top_1_user_img" th:src="@{|/profile/${member.memberFilename}|}" />
+                        <div class="my_page_top_1_user_img_box">
+                            <img class="my_page_top_1_user_img" th:src="@{|/profile/${member.memberFilename}|}" />
+                        </div>
                         <div class="my_page_top_1_user_box">
                             <span class="my_page_top_1_user_name" th:text="${member.memberNickname}"></span>
                             <!-- 판매자 표시 시작 -->
@@ -286,7 +158,6 @@
 
             <!-- 게시물 모아보기 -->
             <div class="my_page_bottom_board_box" id="board-list">
-                <!-- 이부분 수정해야함. 아마 루프?. 예시. -->
                 <table class="main_board_box">
                     <tr class="d-flex flex-wrap">
                         <td class="main_board" th:each="board: ${boardList}">
@@ -294,9 +165,17 @@
                                 <img class="main_board_img" th:src="@{|/upload/${board.getPhoto().get(0).getBoardFilename()}|}"/>
                             </a>
                         </td>
+                        <td class="main_board" th:if="${boardCount %3==1}">
+                            <img  src='/image/dummy_img.png' />
+                        </td>
+                        <td class="main_board" th:if="${boardCount %3==1}">
+                            <img  src='/image/dummy_img.png' />
+                        </td>
+                        <td class="main_board" th:if="${boardCount %3==2}">
+                            <img  src='/image/dummy_img.png' />
+                        </td>
                     </tr>
                 </table>
-                <!-- 이부분 수정해야함. 예시 -->
             </div>
             <!-- 게시물 모아보기 -->
 
@@ -305,44 +184,16 @@
                 <div class="my_page_bottom_list_title_box">
                     <p class="my_page_bottom_list_title">팔로워</p>
                 </div>
-                <!-- 리스트~~~~ -->
-                <div class="my_page_bottom_list_contents_box vertical_box">
-                    <img class="my_page_bottom_list_contents_img vertical_mid" src="/image/user_default.png" />
-                    <lable class="my_page_bottom_list_contents_name fs_16 vertical_mid">
-                        팔로팔로미
-                    </lable>
+                <div class="my_page_bottom_list_contents_box vertical_box" th:each="followerList: ${followerList}">
+<!--                    <th:block th:each="followerList: ${followerList}">-->
+                        <a th:href="@{|/memberDetail/${followerList.followMy.id}|}">
+                            <img class="my_page_bottom_list_contents_img vertical_mid" th:src="@{|/profile/${followerList.followMy.memberFilename}|}"  />
+                        </a>
+                        <lable class="my_page_bottom_list_contents_name fs_16 vertical_mid">
+                            <p th:text="${followerList.followMy.memberNickname}"></p>
+                        </lable>
+<!--                    </th:block>-->
                 </div>
-                <div class="my_page_bottom_list_contents_box vertical_box">
-                    <img class="my_page_bottom_list_contents_img vertical_mid" src="/image/user_default.png" />
-                    <lable class="my_page_bottom_list_contents_name fs_16 vertical_mid">
-                        덩기덕쿵더러러럭
-                    </lable>
-                </div>
-                <div class="my_page_bottom_list_contents_box vertical_box">
-                    <img class="my_page_bottom_list_contents_img vertical_mid" src="/image/user_default.png" />
-                    <lable class="my_page_bottom_list_contents_name fs_16 vertical_mid">
-                        알콜프리
-                    </lable>
-                </div>
-                <div class="my_page_bottom_list_contents_box vertical_box">
-                    <img class="my_page_bottom_list_contents_img vertical_mid" src="/image/user_default.png" />
-                    <lable class="my_page_bottom_list_contents_name fs_16 vertical_mid">
-                        보쌈vs수육
-                    </lable>
-                </div>
-                <div class="my_page_bottom_list_contents_box vertical_box">
-                    <img class="my_page_bottom_list_contents_img vertical_mid" src="/image/user_default.png" />
-                    <lable class="my_page_bottom_list_contents_name fs_16 vertical_mid">
-                        아진짜할거너무많다
-                    </lable>
-                </div>
-                <div class="my_page_bottom_list_contents_box vertical_box">
-                    <img class="my_page_bottom_list_contents_img vertical_mid" src="/image/user_default.png" />
-                    <lable class="my_page_bottom_list_contents_name fs_16 vertical_mid">
-                        성욱이형도와줘
-                    </lable>
-                </div>
-                <!-- 리스트~~~~ -->
             </div>
             <!-- 팔로워 리스트 -->
 
@@ -351,128 +202,74 @@
                 <div class="my_page_bottom_list_title_box">
                     <p class="my_page_bottom_list_title">팔로잉</p>
                 </div>
-                <!-- 리스트~~~~ -->
-                <div class="my_page_bottom_list_contents_box vertical_box">
-                    <img class="my_page_bottom_list_contents_img vertical_mid" src="/image/user_default.png" />
-                    <lable class="my_page_bottom_list_contents_name fs_16 vertical_mid">
-                        구월동파스쿠찌짱이다
-                    </lable>
+                <div class="my_page_bottom_list_contents_box vertical_box" th:each="followingList: ${followingList}">
+<!--                    <th:block th:each="followingList: ${followingList}">-->
+                        <a th:href="@{|/memberDetail/${followingList.followYour.id}|}">
+                            <img class="my_page_bottom_list_contents_img vertical_mid" th:src="@{|/profile/${followingList.followYour.memberFilename}|}" />
+                        </a>
+                        <lable class="my_page_bottom_list_contents_name fs_16 vertical_mid">
+                            <p th:text="${followingList.followYour.memberNickname}"></p>
+                        </lable>
+<!--                    </th:block>-->
                 </div>
-                <div class="my_page_bottom_list_contents_box vertical_box">
-                    <img class="my_page_bottom_list_contents_img vertical_mid" src="/image/user_default.png" />
-                    <lable class="my_page_bottom_list_contents_name fs_16 vertical_mid">
-                        형철이언제와
-                    </lable>
-                </div>
-                <div class="my_page_bottom_list_contents_box vertical_box">
-                    <img class="my_page_bottom_list_contents_img vertical_mid" src="/image/user_default.png" />
-                    <lable class="my_page_bottom_list_contents_name fs_16 vertical_mid">
-                        벌써세시라니
-                    </lable>
-                </div>
-                <div class="my_page_bottom_list_contents_box vertical_box">
-                    <img class="my_page_bottom_list_contents_img vertical_mid" src="/image/user_default.png" />
-                    <lable class="my_page_bottom_list_contents_name fs_16 vertical_mid">
-                        오므라이스냠냠
-                    </lable>
-                </div>
-                <div class="my_page_bottom_list_contents_box vertical_box">
-                    <img class="my_page_bottom_list_contents_img vertical_mid" src="/image/user_default.png" />
-                    <lable class="my_page_bottom_list_contents_name fs_16 vertical_mid">
-                        99지석이형철이99
-                    </lable>
-                </div>
-                <div class="my_page_bottom_list_contents_box vertical_box">
-                    <img class="my_page_bottom_list_contents_img vertical_mid" src="/image/user_default.png" />
-                    <lable class="my_page_bottom_list_contents_name fs_16 vertical_mid">
-                        얼죽아회원1
-                    </lable>
-                </div>
-                <!-- 리스트~~~~ -->
             </div>
             <!-- 팔로잉 리스트 -->
 
             <!-- 좋아요 모아보기 -->
             <div class="my_page_bottom_board_box" id="like-list">
-                <!-- 이부분 수정해야함. 아마 루프?. 예시. -->
-<!--                <table>-->
-<!--                    <tr>-->
-<!--                        <td class="main_board">-->
-<!--                            <img class="main_board_img" src="/image/ex02.jpg" />-->
-<!--                        </td>-->
-<!--                        <td class="main_board">-->
-<!--                            <img class="main_board_img" src="/image/ex03.jpg" />-->
-<!--                        </td>-->
-<!--                        <td class="main_board">-->
-<!--                            <img class="main_board_img" src="/image/ex01.jpg" />-->
-<!--                        </td>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <td class="main_board">-->
-<!--                            <img class="main_board_img" src="/image/ex03.jpg" />-->
-<!--                        </td>-->
-<!--                        <td class="main_board">-->
-<!--                            <img class="main_board_img" src="/image/ex01.jpg" />-->
-<!--                        </td>-->
-<!--                        <td class="main_board">-->
-<!--                            <img class="main_board_img" src="/image/ex02.jpg" />-->
-<!--                        </td>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <td class="main_board">-->
-<!--                            <img class="main_board_img" src="/image/ex04.jpg" />-->
-<!--                        </td>-->
-<!--                        <td class="main_board">-->
-<!--                            <img class="main_board_img" src="/image/ex05.jpg" />-->
-<!--                        </td>-->
-<!--                        <td class="main_board">-->
-<!--                            <img class="main_board_img" src="" onerror="this.style.display='none'"/>-->
-<!--                        </td>-->
-<!--                    </tr>-->
-<!--                </table>-->
-                <!-- 이부분 수정해야함. 예시 -->
+                <table class="main_board_box">
+                    <tr class="d-flex flex-wrap">
+                        <td class="main_board" th:each="like: ${likeList}">
+                            <a th:href="@{|/board/${like.boardId}|}">
+                                <img class="main_board_img" th:src="@{|/upload/${like.getPhoto().get(0).getBoardFilename()}|}"/>
+                            </a>
+                        </td>
+                        <td class="main_board" th:if="${likeList.size() %3}==1">
+                            <a>
+                                <img  src='/image/dummy_img.png'/>
+                            </a>
+                        </td>
+                        <td class="main_board" th:if="${likeList.size() %3}==1">
+                            <a>
+                                <img  src='/image/dummy_img.png'/>
+                            </a>
+                        </td>
+                        <td class="main_board" th:if="${likeList.size() %3}==2">
+                            <a>
+                                <img  src='/image/dummy_img.png'/>
+                            </a>
+                        </td>
+                    </tr>
+                </table>
             </div>
             <!-- 좋아요 모아보기 -->
 
             <!-- 찜 모아보기 -->
             <div class="my_page_bottom_board_box" id="pick-list">
-                <!-- 이부분 수정해야함. 아마 루프?. 예시. -->
-<!--                <table>-->
-<!--                    <tr>-->
-<!--                        <td class="main_board">-->
-<!--                            <img class="main_board_img" src="/image/ex05.jpg" />-->
-<!--                        </td>-->
-<!--                        <td class="main_board">-->
-<!--                            <img class="main_board_img" src="/image/ex01.jpg" />-->
-<!--                        </td>-->
-<!--                        <td class="main_board">-->
-<!--                            <img class="main_board_img" src="/image/ex02.jpg" />-->
-<!--                        </td>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <td class="main_board">-->
-<!--                            <img class="main_board_img" src="/image/ex01.jpg" />-->
-<!--                        </td>-->
-<!--                        <td class="main_board">-->
-<!--                            <img class="main_board_img" src="/image/ex04.jpg" />-->
-<!--                        </td>-->
-<!--                        <td class="main_board">-->
-<!--                            <img class="main_board_img" src="/image/ex05.jpg" />-->
-<!--                        </td>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <td class="main_board">-->
-<!--                            <img class="main_board_img" src="/image/ex03.jpg" />-->
-<!--                        </td>-->
-<!--                        <td class="main_board">-->
-<!--                            <img class="main_board_img" src="/image/ex01.jpg" />-->
-<!--                        </td>-->
-<!--                        <td class="main_board">-->
-<!--                            <img class="main_board_img" src="" onerror="this.style.display='none'"/>-->
-<!--                        </td>-->
-<!--                    </tr>-->
-<!--                </table>-->
-                <!-- 이부분 수정해야함. 예시 -->
+                <table class="main_board_box">
+                    <tr class="d-flex flex-wrap">
+                        <td class="main_board" th:each="pick: ${pickList}">
+                            <a th:href="@{|/goods/${pick.goodsId}|}">
+                                <img class="main_board_img" th:src="@{|/goodsFile/${pick.getGoodsPhoto().get(0).getGoodsFilename()}|}"/>
+                            </a>
+                        </td>
+                        <td class="main_board" th:if="${pickList.size() %3}==1">
+                            <a>
+                                <img  src='/image/dummy_img.png'/>
+                            </a>
+                        </td>
+                        <td class="main_board" th:if="${pickList.size() %3}==1">
+                            <a>
+                                <img src='/image/dummy_img.png'/>
+                            </a>
+                        </td>
+                        <td class="main_board" th:if="${pickList.size() %3}==2">
+                            <a>
+                                <img  src='/image/dummy_img.png'/>
+                            </a>
+                        </td>
+                    </tr>
+                </table>
             </div>
             <!-- 찜 모아보기 -->
         </div>

@@ -159,4 +159,12 @@ function close() {
 document.querySelector("#show").addEventListener('click', show);
 document.querySelector("#close").addEventListener('click', close);
 
+function tagSearch() {
+    let keyword = document.getElementById("keyword").value
+    location.href = "/board/search/" + keyword.replace("#", "")
+}
+function modalLogout() {
+    location.href='/logout'
+}
+
 

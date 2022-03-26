@@ -19,6 +19,6 @@ public interface BoardRepository extends JpaRepository<BoardEntity,Long> {
     @Query (value = "SELECT a FROM BoardEntity  a WHERE a.memberId.id=:memberId")
     List<BoardEntity> boardCount(Long memberId);
 
-    @Query (value = "SELECT a FROM BoardEntity  a WHERE a.memberId.id=:memberId")
+    @Query (value = "SELECT a FROM BoardEntity  a WHERE a.memberId.id=:memberId ORDER BY a.id DESC ")
     List<BoardEntity> mypage(Long memberId);
 }

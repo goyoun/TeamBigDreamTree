@@ -1,10 +1,7 @@
 package com.project.polaroid.controller;
 
 import com.project.polaroid.auth.PrincipalDetails;
-import com.project.polaroid.dto.BoardDetailDTO;
-import com.project.polaroid.dto.BoardPagingDTO;
-import com.project.polaroid.dto.MemberAddInfo;
-import com.project.polaroid.dto.MemberUpdateDTO;
+import com.project.polaroid.dto.*;
 import com.project.polaroid.entity.BoardEntity;
 import com.project.polaroid.entity.FollowEntity;
 import com.project.polaroid.entity.MemberEntity;
@@ -44,7 +41,7 @@ public class MemberController {
     private final NoticeRepository noticeRepository;
     private final ChatMessageService chatMessageService;
     private final BoardService boardService;
-
+    private final GoodsService goodsService;
 
     @GetMapping("/addInfo")
     public String addInfoForm(){
@@ -60,11 +57,12 @@ public class MemberController {
         return "index";
     }
 
-    // 마이페이지 출력 (팔로워 수, 내 정보)
+    // hsw 3.13 수정 마이페이지 출력 (팔로워 수, 내 정보)
     @GetMapping("/mypage")
     public String mypageForm(@AuthenticationPrincipal PrincipalDetails principalDetails,
                              Model model){
 
+        model.addAttribute("status",false);
 
         // 알림 처리
         notice(principalDetails.getMember().getId());
@@ -87,55 +85,21 @@ public class MemberController {
         List<BoardEntity> boardCount=boardService.boardCount(principalDetails.getMember().getId());
         model.addAttribute("boardCount",boardCount.size());
 
-        // 페이징
+        // 내 게시글
         List<BoardDetailDTO> boardList=boardService.myPage(principalDetails.getMember().getId());
         model.addAttribute("boardList",boardList);
-        System.out.println("MemberController.mypageForm");
-        for(BoardDetailDTO b :boardList ){
-            System.out.println("b = " + b);
-        }
+
+        // hsq 3.13 추가 좋아요 목록
+        List<BoardDetailDTO> likeList=boardService.likeList(principalDetails.getMember().getId());
+        model.addAttribute("likeList",likeList);
+
+        // hsw 3.13 추가 찜 목록
+        List<GoodsDetailDTO> pickList=goodsService.pickList(principalDetails.getMember().getId());
+        model.addAttribute("pickList",pickList);
 
         System.out.println("MemberController.mypageForm");
         return "member/myPage";
     }
-
-//    // 멤버 상세페이지 (팔로워 수, 내 정보)
-//    @GetMapping("/{memberId}")
-//    public String mypageForm(@PathVariable Long memberId, HttpSession session, Model model){
-//
-//        Long myId = (Long) session.getAttribute("LoginNumber");
-//
-//        // 알림 처리
-//        notice(myId);
-//        MemberEntity myMember = memberService.findById(myId);
-//        model.addAttribute("myMember",myMember);
-//
-//        MemberEntity member=memberService.findById(memberId);
-//        model.addAttribute("member",member);
-//        ArrayList<Integer> followCount=followService.followCount(memberId);
-//        model.addAttribute("follower",followCount.get(0));
-//        model.addAttribute("following",followCount.get(1));
-//
-//        // 팔로잉 목록
-//        List<FollowEntity> following = followService.followingList(memberId);
-//        model.addAttribute("followingList",following);
-//        // 팔로워 목록
-//        List<FollowEntity> follower = followService.followerList(memberId);
-//        model.addAttribute("followerList",follower);
-//
-//        // 팔로우 버튼
-//        int check=followService.followCheck(myId,memberId);
-//        System.out.println("MemberController.mypageForm");
-//        System.out.println("check = " + check);
-//        if(check==0){
-//            model.addAttribute("followButton",1);
-//        }
-//        else
-//            model.addAttribute("followButton",0);
-//
-//        return "member/memberDetail";
-//    }
-
 
     // 판매자 권한신청
     @GetMapping("/sellerRole")
@@ -202,9 +166,12 @@ public class MemberController {
 
     // 본인확인 -> 수정페이지
     @PostMapping("selfAuthentication")
-    public String selfAuthentication(@AuthenticationPrincipal PrincipalDetails principalDetails,Model model){
-        MemberEntity member=memberService.findById(principalDetails.getMember().getId());
-        model.addAttribute("member",member);
+    public String selfAuthentication(@AuthenticationPrincipal PrincipalDetails principalDetails,Model model,HttpSession session){
+        // 헤더
+        Long memberId = (Long)session.getAttribute("LoginNumber");
+        notice(memberId);
+        model.addAttribute("member",memberService.findById(memberId));
+
         sendCode= UUID.randomUUID().toString();
         return "member/update";
     }
@@ -232,22 +199,6 @@ public class MemberController {
         return "redirect:http://localhost:8081/logout";
     }
 
-    // 팔로우 팔로잉 리스트 페이지
-    @GetMapping("/followList")
-    public String followList(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model){
-        MemberEntity member=memberService.findById(principalDetails.getMember().getId());
-        model.addAttribute("member",member);
-        ArrayList<Integer> followCount=followService.followCount(principalDetails.getMember().getId());
-
-        // 팔로윙 리스트
-        model.addAttribute("followingList",followService.followingList(principalDetails.getMember().getId()));
-        // 팔로우 리스트
-        model.addAttribute("followerList",followService.followerList(principalDetails.getMember().getId()));
-
-        model.addAttribute("follower",followCount.get(0));
-        model.addAttribute("following",followCount.get(1));
-        return "member/followList";
-    }
 
     // 알림 처리
     public void notice(Long memberId){
@@ -265,4 +216,22 @@ public class MemberController {
         memberService.memberResign(memberId);
         return new ResponseEntity(HttpStatus.OK);
     }
+
+    // hsw 3.13 좋아요 목록
+    @GetMapping("/likeListShow")
+    public String likeList(@AuthenticationPrincipal PrincipalDetails principalDetails,Model model){
+        String s = mypageForm(principalDetails, model);
+        model.addAttribute("status","like");
+        return s;
+    }
+
+    // hsw 3.13 좋아요 목록
+    @GetMapping("/pickListShow")
+    public String pickList(@AuthenticationPrincipal PrincipalDetails principalDetails,Model model){
+        String s = mypageForm(principalDetails, model);
+        model.addAttribute("status","pick");
+        return s;
+    }
+
+
 }

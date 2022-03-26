@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Member;
 import java.util.*;
 
 @Service
@@ -54,6 +53,7 @@ public class GoodsServiceImpl implements GoodsService {
                         goods.getGoodsStock(),
                         goods.getCreateTime(),
                         goods.getUpdateTime(),
+                        goods.getGoodsWriter().getMemberFilename(),
                         GoodsPhotoDetailDTO.toGoodsPhotoDetailDTOList(goods.getGoodsPhotoEntity()))
         );
         return goodsList;
@@ -72,6 +72,14 @@ public class GoodsServiceImpl implements GoodsService {
         return goodsDetailDTO;
     }
 
+//    // 글쓰기 기능
+//    @Override
+//    public Long save(GoodsSaveDTO goodsSaveDTO, Long memberId) {
+//        GoodsEntity goodsEntity = GoodsEntity.toGoodsEntitySave(goodsSaveDTO, ms.findById(memberId));
+//        Long goodsId = gr.save(goodsEntity).getId();
+//        return goodsId;
+//    }
+
     // 글쓰기 기능
     @Override
     public Long save(GoodsSaveDTO goodsSaveDTO) {
@@ -85,10 +93,10 @@ public class GoodsServiceImpl implements GoodsService {
     public void saveFile(Long goodsId, MultipartFile goodsFile) throws IOException {
         String goodsFilename = goodsFile.getOriginalFilename();
         goodsFilename = System.currentTimeMillis() + "-" + goodsFilename;
-        // 윤성경로 경로찾아서 보내는 방식
-        String savePath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\goodsFile\\" + goodsFilename;
-        // 성욱경로
-//        String savePath = "/Users/seongwookheo/source/springboot/Polaroid/src/main/resources/static/goodsFile/" + goodsFilename;
+        // 윤성경로
+        String savePath = "C:\\Development\\source\\springboot\\POLAROID\\src\\main\\resources\\static\\goodsFile\\" + goodsFilename;
+//        String savePath = System.getProperty("user.dir") + "/src/main/resources/static/goodsFile/" + goodsFilename;;
+
 
         if (!goodsFile.isEmpty()) {
             goodsFile.transferTo(new File(savePath));
@@ -118,8 +126,9 @@ public class GoodsServiceImpl implements GoodsService {
                             goods.getGoodsStock(),
                             goods.getCreateTime(),
                             goods.getUpdateTime(),
+                            goods.getGoodsWriter().getMemberFilename(),
                             GoodsPhotoDetailDTO.toGoodsPhotoDetailDTOList(goods.getGoodsPhotoEntity()))
-            );
+                    );
             return goodsList;
         } else {
             Page<GoodsEntity> goodsEntities =  gr.searchWriter(goodsSearchDTO.getSearch(), PageRequest.of(pageable.getPageNumber() - 1, PagingConstGoods.PAGE_LIMIT, Sort.by(Sort.Direction.DESC, "id")));
@@ -136,6 +145,7 @@ public class GoodsServiceImpl implements GoodsService {
                             goods.getGoodsStock(),
                             goods.getCreateTime(),
                             goods.getUpdateTime(),
+                            goods.getGoodsWriter().getMemberFilename(),
                             GoodsPhotoDetailDTO.toGoodsPhotoDetailDTOList(goods.getGoodsPhotoEntity()))
 
             );
@@ -252,6 +262,7 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     // 굿즈 내글 리스트
+
     @Override
     @Transactional
     public Page<GoodsPagingDTO> list(Long memberId, Pageable pageable) {
@@ -272,13 +283,27 @@ public class GoodsServiceImpl implements GoodsService {
                         goods.getGoodsStock(),
                         goods.getCreateTime(),
                         goods.getUpdateTime(),
+                        goods.getGoodsWriter().getMemberFilename(),
                         GoodsPhotoDetailDTO.toGoodsPhotoDetailDTOList(goods.getGoodsPhotoEntity()))
 
         );
         return goodsList;
     }
 
+    // 3.13 hsw 추가 좋아요 게시글
+    @Override
+    public List<GoodsDetailDTO> pickList(Long id) {
+        List<GoodsLikeEntity> pickList= glr.pickList(id);
+        List<GoodsEntity> goodsList=new ArrayList<>();
 
+        for(GoodsLikeEntity g: pickList){
+            goodsList.add(g.getGoodsEntity());
+        }
+
+        List<GoodsDetailDTO> pickGoodsList=GoodsDetailDTO.toChangeDTOList(goodsList);
+
+        return pickGoodsList;
+    }
 
 }
 

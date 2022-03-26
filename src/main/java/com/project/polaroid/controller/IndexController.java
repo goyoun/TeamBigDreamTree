@@ -2,20 +2,19 @@ package com.project.polaroid.controller;
 
 import com.project.polaroid.dto.BoardDetailDTO;
 import com.project.polaroid.dto.BoardPagingDTO;
+import com.project.polaroid.dto.GoodsDetailDTO;
 import com.project.polaroid.entity.BoardEntity;
 import com.project.polaroid.entity.FollowEntity;
 import com.project.polaroid.entity.MemberEntity;
 import com.project.polaroid.page.PagingConstBoard;
-import com.project.polaroid.service.BoardService;
-import com.project.polaroid.service.FollowService;
-import com.project.polaroid.service.IndexService;
-import com.project.polaroid.service.MemberService;
+import com.project.polaroid.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +35,8 @@ public class IndexController {
     private final FollowService followService;
     private final MemberController memberController;
     private final BoardService boardService;
+    private final GoodsService goodsService;
+    private final ChatRoomController chatRoomController;
 
     // 시작 페이지
     @GetMapping({"","/"})
@@ -162,54 +163,71 @@ public class IndexController {
 
     // 멤버 상세페이지 (팔로워 수, 내 정보)
     @GetMapping("/memberDetail/{memberId}")
-    public String mypageForm(@PathVariable Long memberId, @PageableDefault(page = 1) Pageable pageable,
+    @PreAuthorize("hasRole('ROLE_MEMBER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_SELLER')" )
+    public String mypageForm(@PathVariable Long memberId,
                              HttpSession session, Model model){
 
         // 헤더 알람
         Long myId = (Long) session.getAttribute("LoginNumber");
-        if(myId != null){
-            memberController.notice(myId);
-            MemberEntity myMember = memberService.findById(myId);
-            model.addAttribute("myMember",myMember);
+        if(myId==memberId){
+            return "redirect:http://localhost:8081/member/mypage";
         }
-        else{
-            MemberEntity myMember=null;
-            model.addAttribute("myMember",myMember);
+        else {
+            if(myId != null)
+                model.addAttribute("myNickname",memberService.findById(myId).getMemberNickname());
+
+            // 헤더 알람
+            if (myId != null) {
+                memberController.notice(myId);
+                MemberEntity myMember = memberService.findById(myId);
+                model.addAttribute("myMember", myMember);
+                model.addAttribute("myId",myId);
+            }
+            else
+                model.addAttribute("myId",-1);
+            // 해당멤버 정보
+            MemberEntity member = memberService.findById(memberId);
+            model.addAttribute("member", member);
+
+            // 팔로우 팔로워 수
+            ArrayList<Integer> followCount = followService.followCount(memberId);
+            model.addAttribute("follower", followCount.get(0));
+            model.addAttribute("following", followCount.get(1));
+
+            // 팔로잉 목록
+            List<FollowEntity> following = followService.followingList(memberId);
+            model.addAttribute("followingList", following);
+            // 팔로워 목록
+            List<FollowEntity> follower = followService.followerList(memberId);
+            model.addAttribute("followerList", follower);
+
+            // 게시글 수
+            List<BoardEntity> boardCount = boardService.boardCount(memberId);
+            model.addAttribute("boardCount", boardCount.size());
+
+            // 내 게시글
+            List<BoardDetailDTO> boardList = boardService.myPage(memberId);
+            model.addAttribute("boardList", boardList);
+
+            // hsq 3.13 추가 좋아요 목록
+            List<BoardDetailDTO> likeList = boardService.likeList(memberId);
+            model.addAttribute("likeList", likeList);
+
+            // hsw 3.13 추가 찜 목록
+            List<GoodsDetailDTO> pickList = goodsService.pickList(memberId);
+            model.addAttribute("pickList", pickList);
+
+            Long chatId = chatRoomController.newChat(memberService.findById(myId).getMemberNickname(), member.getMemberNickname());
+            model.addAttribute("chatId",chatId);
+
+            int check = followService.followCheck(myId, memberId);
+            if (check == 0) {
+                model.addAttribute("followButton", 1);
+            } else
+                model.addAttribute("followButton", 0);
+
+            return "member/memberDetail";
         }
-
-        // 멤버 정보
-        MemberEntity member=memberService.findById(memberId);
-        model.addAttribute("member",member);
-
-        // 팔로우 팔로워 수
-        ArrayList<Integer> followCount=followService.followCount(memberId);
-        model.addAttribute("follower",followCount.get(0));
-        model.addAttribute("following",followCount.get(1));
-
-        // 팔로잉 목록
-        List<FollowEntity> following = followService.followingList(memberId);
-        model.addAttribute("followingList",following);
-        // 팔로워 목록
-        List<FollowEntity> follower = followService.followerList(memberId);
-        model.addAttribute("followerList",follower);
-
-        // 게시글 수
-        List<BoardEntity> boardCount=boardService.boardCount(memberId);
-        model.addAttribute("boardCount",boardCount.size());
-
-        int check=followService.followCheck(myId,memberId);
-        if(check==0){
-            model.addAttribute("followButton",1);
-        }
-        else
-            model.addAttribute("followButton",0);
-
-        // 페이징
-        List<BoardDetailDTO> boardList=boardService.myPage(memberId);
-        model.addAttribute("boardList",boardList);
-
-
-        return "member/memberDetail";
     }
 
 

@@ -8,18 +8,6 @@ server:
       force: true
 
 spring:
-  devtools:
-    livereload:
-      enabled: true
-    restart:
-      enabled: true
-    thymleaf:
-      cache: false
-
-  servlet:
-    multipart:
-      max-file-size: 50MB
-      max-request-size: 50MB
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -41,6 +29,22 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
+
+  devtools:
+    livereload:
+      enabled: true
+    remote:
+      restart:
+        enabled: true
+  thyleaf:
+    cache: false
+
+  servlet:
+    multipart:
+      max-file-size:
+        50MB
+      max-request-size:
+        50MB
 
   jpa:
     hibernate:
